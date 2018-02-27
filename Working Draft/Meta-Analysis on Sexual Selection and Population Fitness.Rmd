@@ -182,7 +182,7 @@ A lot of the covariates are categorical, so here we assign them as factors and r
 ```{r}
 prelim.data$Study.ID <- prelim.data$Study.ID %>% factor
 prelim.data$Taxon <- prelim.data$Taxon %>% factor
-prelim.data$Experiment.ID <- prelim.data$Experiment.ID %>% factor 
+prelim.data$Group.ID <- prelim.data$Group.ID %>% factor 
 prelim.data$Authors <- prelim.data$Authors %>% factor
 prelim.data$Environment <- prelim.data$Environment %>% factor %>% relevel(ref="Unstressed")
 prelim.data$Sex <- prelim.data$Sex %>% factor %>% relevel(ref="B")
@@ -215,6 +215,7 @@ prelim.data %>% summarise(Effect_sizes = n(),
                        Effect_sizes_.Unstressedq = (sum(prelim.data$Environment == "Unstressed")),         
                        Effect_sizes_.Maleq = (sum(prelim.data$Sex == "M")),
                        Effect_sizes_.Femaleq = (sum(prelim.data$Sex == "F")),
+                       Effect_sizes_.Both_sexesq = (sum(prelim.data$Sex == "B")),
                        Different_species =  prelim.data$Species %>% unique %>% length,
                        Effect_sizes_.Beetleq = sum(Taxon == "Beetle"),
                        Effect_sizes_.Flyq = sum(Taxon == "Fly"),
@@ -233,18 +234,18 @@ prelim.data %>% summarise(Effect_sizes = n(),
 
 ###Forest plot using ggplot 
 
-Here we show the residual effect sizes for each outcome measured. The following forest plot is based on the residual effect sizes. The model is an intercept only model with the same multilevel random effects structure as we use later when investigating environment and sex
+Here we show the residual effect sizes for each outcome measured. The following forest plot is based on the residual effect sizes. The model is an intercept only model with standard random effects structure.
 
 > Although I am not sure whether having the raw values would be better. In addition whether it is worth it to add in summary polygons (effect sizes) for a grouped outcome
 
 Using ggplot the forest plot is grouped according to environment and sex, with multiple effect sizes on one row for a given study
 
 ```{r, fig.height=30, fig.width=22.5}
-#Create model we later establish and analyse but not restricted
-forest.model <- rma.mv(g, var.g, mods = ~ 1, random = ~ 1 | Study.ID/Outcome, method = "REML", data = prelim.data)
+#Create standard random effectrs model
+forest.model <- rma(g, var.g, mods = ~ 1, method = "REML", data = prelim.data)
 
 #Obtain residuals
-resstandards <- (rstandard.rma.mv(forest.model, type="response"))
+resstandards <- (rstandard.rma.uni(forest.model, type="response"))
 
 #Create new df with residuals replacing raw
 df.forest.model <- prelim.data
@@ -628,7 +629,7 @@ for(i in 3:6) predictions.complete2[,i] <- unlist(predictions.complete2[,i])
 
 #And plot the results
 
-pd <- position_dodgev(height = .3)
+pd <- position_dodgev(height = .5)
 predictions.complete2 %>% ggplot(aes(x = pred, y= Environment, colour = Sex)) + 
   geom_vline(xintercept = 0, linetype = 2, colour = "grey70") + 
   geom_errorbarh(aes(xmin = predictions.complete2$ci.lb, xmax = predictions.complete2$ci.ub), height = 0, position = pd) +
@@ -638,6 +639,13 @@ predictions.complete2 %>% ggplot(aes(x = pred, y= Environment, colour = Sex)) +
   xlim(-.75, .75)+
   ggtitle('Effects of Sex, Stress \non Population Fitness')
 ```
+
+We see that female fitness in stressed environments is greater than the other measurements. For outcomes that were measured for both female and males we see a greater uncertainty in the estimate. It is not obviously clear why this is. The 'both' outcomes are restricted to extinction rate, offspring viability, mutant frequency and reproductive success. However, the shift from 'both' being ns in unstressed to significant in stressed may reflect the dampening of the negative correlations (sexual antagonism).
+
+```{r}
+table(restricted.data$Outcome, restricted.data$Sex)
+```
+
 
 
 __________________________________
@@ -673,6 +681,7 @@ restricted.dataRS <- restricted.data %>% filter(restricted.data$Outcome == "Repr
 #Run reproductive success only model 
 model.completeRS <- rma.mv(g, var.g, mods = ~ 1 + Sex + Environment + Sex:Environment, random = ~ 1 | Study.ID, method = "REML", data = restricted.dataRS)
 
+
 #Run estimate of heterogeneity
 W2 <- diag(1/restricted.dataRS$var.g)
 X2 <- model.matrix(model.completeRS)
@@ -692,9 +701,13 @@ This means that within a study, between different outcomes, there is a correlati
 round(sum(model.complete2$sigma2), 3)
 ```
 
+____________
+
+
+
 #### Multilevel model using metafors alternative random effect structure 
 
-> This inner, outer factor stuff from the metafor package is a bit strange. There is a goodish description in ``?rma.mv()`` but still unsure how it differs from the above model. It seems that it is useful to breakdown variance-covariance matrix but unsure how that would benefit our analysis.
+> This inner, outer factor stuff from the metafor package is a bit strange. There is a description in ``?rma.mv()`` but still unsure how it differs from the above model. It seems that it is useful to breakdown variance-covariance matrix but unsure how that would benefit our analysis.
 
 ```{r}
 #Just to check, how about with outcome as the inner factor 
@@ -812,22 +825,22 @@ prelim.data2$var.lnCVr <- Calc.var.lnCVR(prelim.data2$mean.low, prelim.data2$sd.
 #Run simple models subsetted for each environment/sex (this is perhaps a clunky way so we also use predictions shown below)
 
 # For stressed environment and females
-varSF <- rma.mv(lnCVr, var.lnCVr, data = prelim.data2, mods = ~ 1, random = ~ 1 | Study.ID, subset = (Environment == "Stressed" & Sex == "F"))
+varSF <- rma.mv(lnCVr, var.lnCVr, data = prelim.data2, mods = ~ 1, random = ~ 1 | Study.ID/Outcome, subset = (Environment == "Stressed" & Sex == "F"))
 
 # For stressed environment and females
-varSM <- rma.mv(lnCVr, var.lnCVr, data = prelim.data2, mods = ~ 1, random = ~ 1 | Study.ID, subset = (Environment == "Stressed" & Sex == "M"))
+varSM <- rma.mv(lnCVr, var.lnCVr, data = prelim.data2, mods = ~ 1, random = ~ 1 | Study.ID/Outcome, subset = (Environment == "Stressed" & Sex == "M"))
 
 # For stressed environment and females
-varSB <- rma.mv(lnCVr, var.lnCVr, data = prelim.data2, mods = ~ 1, random = ~ 1 | Study.ID, subset = (Environment == "Stressed" & Sex == "B"))
+varSB <- rma.mv(lnCVr, var.lnCVr, data = prelim.data2, mods = ~ 1, random = ~ 1 | Study.ID/Outcome, subset = (Environment == "Stressed" & Sex == "B"))
 
 #For Benign environment and females
-varUF<- rma.mv(lnCVr, var.lnCVr, data = prelim.data2, mods = ~1, random = ~ 1 | Study.ID, subset = (Environment == "Unstressed" & Sex == "F"))
+varUF<- rma.mv(lnCVr, var.lnCVr, data = prelim.data2, mods = ~1, random = ~ 1 | Study.ID/Outcome, subset = (Environment == "Unstressed" & Sex == "F"))
 
 #For Benign environment and males
-varUM<- rma.mv(lnCVr, var.lnCVr, data = prelim.data2, mods = ~1, random = ~ 1 | Study.ID, subset = (Environment == "Unstressed" & Sex == "M"))
+varUM<- rma.mv(lnCVr, var.lnCVr, data = prelim.data2, mods = ~1, random = ~ 1 | Study.ID/Outcome, subset = (Environment == "Unstressed" & Sex == "M"))
 
 #For Benign environment and both
-varUB <- rma.mv(lnCVr, var.lnCVr, data = prelim.data2, mods = ~1, random = ~ 1 | Study.ID, subset = (Environment == "Unstressed" & Sex == "B"))
+varUB <- rma.mv(lnCVr, var.lnCVr, data = prelim.data2, mods = ~1, random = ~ 1 | Study.ID/Outcome, subset = (Environment == "Unstressed" & Sex == "B"))
 
 #Create dataframe of estimates and confidence intervals
 lnCVR <- c(varSF$b, varSM$b, varSB$b, varUF$b, varUM$b, varUB$b)
@@ -911,13 +924,14 @@ ____________________
 
 Checking for biases with a funnell plot. Note that the trim and fill method does not work with rma.mv objects. However we can perform Eggers test using the ``ragtest()`` function. This tests for asymmetry via assessing relationships between effect size and a specified predictor. See ``?ragtest()`` for more information. Also the eggers test does not work for rma.mv objects. 
 ```{r}
-funnel.rma(model.Ambiguous)
+trim.ambig <- trimfill.rma.uni(model.Ambiguous)
+funnel.rma(trim.ambig)
 regtest(model.Ambiguous, predictor = "vi")
 funnel.rma(model.Indirect)
-regtest(model.Indirect)
+regtest(model.Indirect, predictor = "vi")
 funnel.rma(model.Direct)
-regtest(model.Direct)
-funnel.rma(model.complete2)
+regtest(model.Direct, predictor = "vi")
+funnel.rma(model.complete2, type="rstandard", yaxis = "sei")
 ```
 
 >Now use ggplot for funnel plot. This is pretty clunky and unlike the ``funnel.rma`` it does not use residuals but raw effect sizes, we could of course add residuals, so it depends on how much customization you think these plots should have. The outline taken from: https://sakaluk.wordpress.com/2016/02/16/7-make-it-pretty-plots-for-meta-analysis/
@@ -1003,36 +1017,75 @@ fp
 
 ###Other tests of publication bias suggest there is little evidence for publication bias
 
+####Journal Impact Factor
 
-If we see a positive trend with effect size and Journal Impact Factor it may represent publication bias whereby significant (positive) results are published more readily and in more circulated journals. Our journal impact factor dataset is not evenly distributed as several publications in Nature (JIF ~ 40) are much larger than the next highest JIF (~11)
+If we see a positive trend with effect size and Journal Impact Factor it may represent publication bias whereby significant (positive) results are published more readily and in more circulated journals. Our journal impact factor dataset is not evenly distributed as several publications in Nature (JIF ~ 40) are much larger than the next highest JIF (~11). 
 
 ```{r}
-prelim.data %>% ggplot(aes(x=JIF, y=(g), size = 1/sqrt(var.g)))+
-  geom_jitter()+
+
+```
+
+
+```{r, fig.width=10, fig.height=8}
+prelim.data %>% ggplot(aes(x=JIF, y=(g)))+
+  geom_jitter(color='darkgreen', alpha=.3, aes(size = (1/(var.g))))+
   geom_hline(yintercept=0, linetype = 'dotted')+
-  geom_smooth(method = 'lm')
+  geom_smooth(method='lm', color='black')+
+  labs(size = 'weight')
 ```
 
 > I think it may also be interesting to plot the maximum effect size for each study and then plot the results as many studies measure a suite of traits.
 
+
+####Time-lag Bias
+
+
 We can also look at the time-lag bias, which suggests effect size decreases over time. Again, because one publication from 1980 is well before the next publication in the late 1990s we see a very uneven distribution.
 
-```{r}
-prelim.data %>% ggplot(aes(x=Year, y=g, size = (1/(var.g))))+
-  geom_jitter()+
+```{r, fig.width=7.50, fig.height=6}
+prelim.data %>% ggplot(aes(x=Year, y=g))+
+  geom_jitter(color='orange', alpha=.3, aes(size = (1/(var.g))))+
   geom_hline(yintercept=0, linetype = 'dotted')+
-  geom_smooth(method='lm')+
+  geom_smooth(method='lm', color='black')+
   labs(size = 'weight')
 ```
 
+####Blinding
+
 From these graphs, we see a small trend for larger effect sizes to be published in higher impact journals as well as for effect size to decrease over successive years. Additionally to publication bias, other forms of bias may exist within studies. We initially collected data on whether studies were blind or not. Although not enough studies were blind for us to include it as a fixed effect within the model we can test whether blinding affects the raw effect size: 
 
-```{r}
-df.forest.model %>% ggplot(aes(x=Blinding, y=g, color = Outcome.Class))+
+```{r, fig.width=10, fig.height=8}
+df.forest.model %>% ggplot(aes(x=Blinding, y=g))+
   geom_boxplot()+
+  geom_jitter(aes(color=Blinding))+
   geom_hline(yintercept=0, linetype = 'dotted')
 ```
 
+####Sample Size
 
+
+We also collected sample sizes for each of the effect sizes calculated. Because we are dealing withj different taxa some studies are not suited to have sample sizes in the 1000's. We can simply inspect the sample size ande effect sizes through the following plot:
+```{r, fig.width=5, fig.height=10}
+prelim.data %>% ggplot(aes(x=(n), y = g))+
+  geom_point()+
+  xlim(0,2100)+
+  facet_grid(Taxon~., scales='free')+
+  ylim(-3.5,3.5)+
+  geom_hline(yintercept=0, linetype="dashed")
+```
+
+(Promislow 1998 has one sample size of >10,000) and is not shown here. From these plots we can see that with increased sample size the effect sizes are closer to zero. Thistrend should be taken into account as meta-analytic models are wighted by 1/variance. 
+
+
+####Generations
+
+We recorded the number of generations of experimental exolution each study used. The number of generations proved a negligable predictor in the meta-analytic models and can be seen here: 
+
+```{r, fig.width=8, fig.height=7}
+prelim.data %>% ggplot(aes(x=Generations, y=g, color=Taxon))+
+  geom_point()+
+  ylim(-3.5,3.5)+
+  geom_hline(yintercept=0, linetype="dashed")
+```
 
 
