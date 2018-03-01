@@ -923,7 +923,7 @@ prelim.data %>% ggplot(aes(x=n, y = g))+
 
 #### Generations
 
-We recorded the number of generations of experimental exolution each study used. The number of generations proved a negligable predictor in the meta-analytic models and can be seen here: 
+We recorded the number of generations of experimental exolution each study used. The number of generations proved a negligible predictor in the meta-analytic models and can be seen here: 
 
 ```{r, fig.width=8, fig.height=7}
 prelim.data %>% ggplot(aes(x=Generations, y=g, fill=Taxon))+
