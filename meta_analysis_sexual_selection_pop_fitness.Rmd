@@ -230,8 +230,11 @@ prelim.data %>%
  <br/><br/> 
 <input type=button class=hideshow></input>
 ```{r}
-Outcome_and_sex <- table(prelim.data$Outcome, prelim.data$Sex) %>%
-  pander(split.cell = 40, split.table = Inf)
+Outcome_and_sex <- as.data.frame.matrix(table(prelim.data$Outcome, prelim.data$Sex))
+colnames(Outcome_and_sex) <- cbind("Both", "Male", "Female")
+
+Outcome_and_sex %>% pander(split.cell = 40, split.table = Inf)
+
 ```
 
 
@@ -315,7 +318,7 @@ p.meta <- prelim.data %>%
   ylab('Reference') + 
   geom_vline(xintercept=0, color='black', linetype='dashed')+
   facet_grid(Outcome_f~., scales= 'free', space='free')+
-  theme(strip.text.y = element_text(angle = 0))+
+  theme(strip.text.y = element_text(angle = 0))
 ggsave(plot = p.meta, filename = "figures/Big_forest_plot.eps", height = 25, width = 12)
 p.meta
 ```
@@ -419,8 +422,6 @@ model.preliminary <- rma.mv(g, var.g,
                          data = prelim.data)
 
 summary(model.preliminary)
-
-
 ```
 <br></br>
 **A note on random effects** Here we utilise crossed random effects of Study.ID and Outcome. Nesting Outcomes within Study.ID can also be achieved through ``random = ~ 1 | Study.ID/Outcome``. However given that the same outcome is expected to be measured in the same/very similar way between studies we used a crossed random effects design. 
@@ -493,7 +494,7 @@ Thirdly, plot the model predictions for effect size (Hedges' g) for male, female
 <!-- > You can make tables with ggplot, and bind them to graphs using the grid and gridExtra packages. It's pretty hard! See ?gridExtra::tableGrob.  -->
 <!-- > Honestly might be easier to do it manually with e.g. Inkscape or Illustrator.	 -->
 
-```{r, fig.height= 5, fig.width=7.5}
+```{r, fig.height= 7.5, fig.width=10}
 pd <- position_dodgev(height = .7)
 Taxon.metaanlysis <- predictions.complete %>% ggplot(aes(x = pred, 
                                                          y= Environment, 
@@ -508,12 +509,12 @@ Taxon.metaanlysis <- predictions.complete %>% ggplot(aes(x = pred,
   ylab("Environment \n")+
   xlab("\nModel Prediction (Hedges g)")+
   xlim(-2, 2)+
-  ggtitle('Effects of Sex, Stress and Outcome Class \non Population Fitness for Each Taxon')+
+  ggtitle('Effects of Sex and Stress on \nPopulation Fitness for Each Taxon')+
   scale_fill_brewer(palette = "Set1")+
   scale_color_brewer(palette = "Set1")
 
 
-ggsave(plot = Taxon.metaanlysis, filename = "figures/Taxon_metaanalysis_plot.eps", height = 5, width = 7.5)
+ggsave(plot = Taxon.metaanlysis, filename = "figures/Taxon_metaanalysis_plot.eps", height = 7.5, width = 10)
 Taxon.metaanlysis
 ```
 
@@ -537,7 +538,7 @@ summary(model.complete2)
 ```
 
 
-```{r, fig.height= 5, fig.width=7.5}
+```{r, fig.height= 7.5, fig.width=10}
 
 #Generate predictions without taxon utilising the previously described function
 
@@ -569,11 +570,11 @@ EnvSex.metaanalysis <- predictions.complete2 %>% ggplot(aes(x = pred, y= Environ
   ylab("Environment\n")+
   xlab("\nEffect Size (Hedges g)")+
   xlim(-.75, .75)+
-  ggtitle('Effects of Sex, Stress \non Population Fitness')+
+  ggtitle('Effects of Sex and Stress \non Population Fitness')+
   scale_fill_brewer(palette = "Set1")+
   scale_color_brewer(palette = "Set1")
 
-ggsave(plot = EnvSex.metaanalysis, filename = "figures/Environment_Sex_metaanalysis_plot.eps", height = 5, width = 7.5)
+ggsave(plot = EnvSex.metaanalysis, filename = "figures/Environment_Sex_metaanalysis_plot.eps", height = 7.5, width = 10)
 EnvSex.metaanalysis
 ```
 
@@ -822,7 +823,7 @@ summary(variance.model)
 
 Plotted predictions of lnCVR for various moderators: 
 
-```{r, fig.height= 5, fig.width=7.5}
+```{r, fig.height= 7.5, fig.width=10}
 
 #Generate predictions
 get.predictions.variance <- function(newdata){
@@ -859,7 +860,7 @@ var.plot <- predictions.variance %>% ggplot(aes(x = pred, y= Environment, fill =
   scale_fill_brewer(palette = "Set1")+
   scale_color_brewer(palette = "Set1")
 
-ggsave(plot = var.plot, filename = "figures/Variance_plot.eps", height = 5, width = 7.5)
+ggsave(plot = var.plot, filename = "figures/Variance_plot.eps", height = 7.5, width = 10)
 var.plot
 ```
 
@@ -889,8 +890,30 @@ Checking for biases with a funnell plot. Note that the trim and fill method does
 
 > Luke re-wrote this into a function, for neatness. You can replace 'dataset' and 'model' with whatever to save copy-pasting the code.
 
-```{r, fig.height= 7, fig.width=10}
-#Funnel plot for all outcome classes
+```{r, fig.height= 7.5, fig.width=10}
+
+#Using residuals for the funnel plot means that we need to generate residuals (intercept only)
+
+forest.model <- rma.mv(g, var.g,
+                       mods = ~ 1,
+                       random = list(~ 1 | Study.ID,
+                                       ~ 1 | Outcome),
+                       method = "REML",
+                       data = prelim.data)
+
+# Obtain residuals
+resstandards <- (rstandard.rma.mv(forest.model,
+                                   type="response"))
+
+# Obtain grand mean effect size    <- ADDED BY LUKE
+grand.mean <- as.numeric(forest.model$b)
+
+# Create new df with residuals replacing raw
+df.forest.model <- prelim.data
+df.forest.model$g <- resstandards$resid + grand.mean 
+df.forest.model$sei <- resstandards$se
+
+# Funnel plot for all outcome classes
 
 make.funnel <- function(dataset, model){
   
@@ -914,7 +937,7 @@ make.funnel <- function(dataset, model){
                      meanul95 = estimate + (1.96 * SE))
   
   ggplot(dataset, aes(x = sqrt(var.g), y = g)) +
-    geom_point(alpha = 0.4) +
+    geom_point(size=1, shape = 21, color= "grey20") +
     xlab("Standard Error") + ylab("Effect size (Hedges' g)") +
     geom_line(aes(x = se.seq, y = ll95), linetype = 'dotted', data = dfCI) + # confidence lines
     geom_line(aes(x = se.seq, y = ul95), linetype = 'dotted', data = dfCI) +
@@ -926,12 +949,17 @@ make.funnel <- function(dataset, model){
     scale_x_reverse() +
     # scale_y_continuous(breaks = seq(-1.25,2,0.25)) + #Choose values that work for you based on your data
     coord_flip() +
+    scale_fill_brewer(palette = "Set1")+
     theme_classic()
     # apatheme
   
 }
 
-#make.funnel(restricted.data, model.complete2)
+funnel.plot <- make.funnel(df.forest.model, forest.model)
+
+ggsave(plot = funnel.plot, filename = "figures/funnel_plot.eps", height = 7.5, width = 10)
+funnel.plot
+
 ```
 
 ###Other tests of publication bias suggest there is little evidence for publication bias
@@ -940,15 +968,15 @@ make.funnel <- function(dataset, model){
 
 If we see a positive trend with effect size and Journal Impact Factor it may represent publication bias whereby significant (positive) results are published more readily and in more circulated journals. Our journal impact factor dataset is not evenly distributed as several publications in Nature (JIF ~ 40) are much larger than the next highest JIF (~11). 
 
-```{r, fig.width=5, fig.height=7.5}
-prelim.data %>% ggplot(aes(x=log10(JIF), y=(g)))+
-  geom_jitter(color='darkgreen', alpha=.3, aes(size = (1/(var.g))))+
+```{r, fig.height= 7.5, fig.width=10}
+prelim.data %>% ggplot(aes(x=JIF, y=g))+
+  geom_jitter(color='darkgreen', alpha=.3, aes(size = (1/(var.g))/sum((1/(var.g)))*100))+
   geom_hline(yintercept=0, linetype = 'dotted')+
   geom_smooth(method='lm', color='black')+
-  labs(size = 'weight')
+  labs(size = 'Weight (%)', y='Effect size (Hedges g)', x= 'Journal Impact Factor')
 ```
 
-> I think it may also be interesting to plot the maximum effect size for each study and then plot the results as many studies measure a suite of traits.
+> Is this graph ok how it is?
 
 
 #### Time-lag Bias
@@ -956,54 +984,61 @@ prelim.data %>% ggplot(aes(x=log10(JIF), y=(g)))+
 
 We can also look at the time-lag bias, which suggests effect size decreases over time. Again, because one publication from 1980 is well before the next publication in the late 1990s we see a very uneven distribution.
 
-```{r, fig.width=5, fig.height=7.5}
+```{r, fig.height= 7.5, fig.width=10}
 prelim.data %>% 
   ggplot(aes(x=Year, y=g))+
-  geom_jitter(color='orange', alpha=.3, aes(size = (1/(var.g))))+
+  geom_jitter(color='darkorange', alpha=.5, aes(size = (1/(var.g))/sum((1/(var.g)))*100))+
   geom_hline(yintercept=0, linetype = 'dotted')+
   geom_smooth(method='lm', color='black')+
-  labs(size = 'weight')
+  labs(size = 'Weight (%)', y='Effect size (Hedges g)', x= 'Year')
 ```
 
 #### Blinding
 
-From these graphs, we see a small trend for larger effect sizes to be published in higher impact journals as well as for effect size to decrease over successive years. Additionally to publication bias, other forms of bias may exist within studies. We initially collected data on whether studies were blind or not. Although not enough studies were blind for us to include it as a fixed effect within the model we can test whether blinding affects the raw effect size: 
+From these graphs, we see a small trend for larger effect sizes to be published in higher impact journals as well as for effect size to decrease over successive years. Additionally to publication bias, other forms of bias may exist within studies. We initially collected data on whether studies were blind or not. Although not enough studies (n=8) used blinding for us to include it as a fixed effect within the model we can test whether blinding affects the raw effect size: 
 
-```{r, fig.width=5, fig.height=7.5}
+```{r, fig.height= 7.5, fig.width=10}
 df.forest.model %>% ggplot(aes(x=Blinding, y=g))+
-  geom_boxplot()+
-  geom_jitter(aes(color=Blinding))+
+  geom_boxplot(outlier.shape = NA)+
+  geom_jitter(aes(fill=Blinding), shape=21, color='grey20', size=1.7)+
   geom_hline(yintercept=0, linetype = 'dotted') + 
-  theme(legend.position = "none")
+  theme(legend.position = "none")+
+  scale_fill_brewer(palette = "Set2")+
+  labs(y='Effect size (Hedges g)', x= 'Blinding')
 ```
+
+
 
 ####Sample Size
 
 
 We also collected sample sizes for each of the effect sizes calculated. Because we are dealing withj different taxa some studies are not suited to have sample sizes in the 1000's. We can simply inspect the sample size ande effect sizes through the following plot:
-```{r, fig.width=5, fig.height=10}
+
+```{r, fig.height= 10, fig.width=5}
 prelim.data %>% ggplot(aes(x=n, y = g))+
-  geom_point()+
+  geom_point(fill="grey", color="grey20", shape=21)+
   scale_x_log10(breaks = c(10, 100, 1000, 10000)) + 
   #xlim(0,2100)+
   facet_grid(Taxon~., scales='free')+
   ylim(-3.5,3.5)+
-  geom_hline(yintercept=0, linetype="dashed")
+  geom_hline(yintercept=0, linetype="dashed")+
+  labs(y='Effect size (Hedges g)', x= 'Sample Size (n) [logscale]')
 ```
 
-(Promislow 1998 has one sample size of >10,000) and is not shown here. From these plots we can see that with increased sample size the effect sizes are closer to zero. Thistrend should be taken into account as meta-analytic models are wighted by 1/variance. 
+(Promislow 1998 has one sample size of >10,000) and is not shown here. From these plots we can see that with increased sample size the effect sizes are closer to zero. This trend should be taken into account as meta-analytic models are wighted by 1/variance. 
 
 
 #### Generations
 
 We recorded the number of generations of experimental exolution each study used. The number of generations proved a negligible predictor in the meta-analytic models and can be seen here: 
 
-```{r, fig.width=8, fig.height=7}
+```{r, fig.height= 7.5, fig.width=10}
 prelim.data %>% ggplot(aes(x=Generations, y=g, fill=Taxon))+
-  geom_point(shape=21, color = "grey20")+
+  geom_point(shape=21, color = "grey20", size=2)+
   ylim(-3.5,3.5)+
   geom_hline(yintercept=0, linetype="dashed") + 
-  scale_fill_brewer(palette = "Set3")
+  scale_fill_brewer(palette = "Set3")+
+  labs(y='Effect size (Hedges g)', x= 'Generations')
 ```
 
 
