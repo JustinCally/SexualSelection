@@ -97,9 +97,30 @@ After removing duplicates papers recovered from both ISI and Scopus, we read the
   + **(1: Intervention and Control)** The study experimentally manipulated the strength of sexual selection (e.g. via enforced monogamy or an altered sex ratio)
   + **(1: Outcomes)** The study measured a trait that we judged to be a potential correlate of population fitness. 
   
-This latter criterion is likely to be contentious, because there is rarely enough data justify the assumption that a particular trait is (or is not) correlated with population fitness. We therefore relied on our best judgement when deciding which studies to exclude (see Table **XXX**). The inclusion/exlusion critera as applied to each study are detailed in **Table S1**.
+This latter criterion is likely to be contentious, because there is rarely enough data justify the assumption that a particular trait is (or is not) correlated with population fitness. We therefore relied on our best judgement when deciding which studies to exclude (see **Table S1**). The inclusion/exlusion critera as applied to each study are detailed in **Table S2**.
 
-**Table S1:** An eligibility criteria was based on four features a study needed to include (discussed above), to be eligable for inclusion in the meta-analysis the study needed to satisfy all criteria. Here we applied a step-wise process to the studies that had their full-text read and excluded them when they first failed to meet the criteria. Additional notes documenting reasons behind exclusion were also taken.
+**Table S1:** We classed each of the twenty fitness related outcomes into three broad groups of direct, indirect and ambiguous based on the established link with population fitness, the directionality of the measure. Here we detailed how these outcomes were measured in the studies of this meta-analysis. In the accompanying box we provide a legend to the references cited in the table.
+
+ <br/><br/>
+```{r, warning=FALSE}
+outcome.descriptions <- read.csv('data/outcome.descriptions.csv', 
+                                 fileEncoding="UTF-8")
+kable(outcome.descriptions, "html") %>%
+  kable_styling() %>%
+  scroll_box(width = "800px", height = "500px")
+```
+  <br/><br/> 
+<input type=button class=hideshow></input>
+```{r, warning=FALSE}
+outcome.references <- read.csv('data/references.tableS1.csv', 
+                                 fileEncoding="UTF-8")
+kable(outcome.references, "html") %>%
+  kable_styling() %>%
+  scroll_box(width = "800px", height = "250px")
+```
+  <br/><br/> 
+
+**Table S2:** An eligibility criteria was based on four features a study needed to include (discussed above), to be eligable for inclusion in the meta-analysis the study needed to satisfy all criteria. Here we applied a step-wise process to the studies that had their full-text read and excluded them when they first failed to meet the criteria. Additional notes documenting reasons behind exclusion were also taken.
  <br/><br/> 
 <input type=button class=hideshow></input>
 ```{r}
@@ -122,7 +143,7 @@ A spreadsheet describing the data that was extracted from each of the included s
 
 3. If means were not reported then we extracted a summary statistic or proportion value, which we could later convert to Hedges g' using the _compute.es_ package. Summary statistics included _F_, _z_, _t_ and _chi^2^_. These conversions still required providing sample sizes for each treatment so these needed to be extractable from the study. Some summary statistics were obtained from generalized linear model summary tabels, others from straight forward ANOVAs and then some from more complex analysis such as proportional hazards statistical tests. 
 
-4. We also collected various covariates for some of the studies (**Table S2**), which are discussed later.
+4. We also collected various covariates for some of the studies (**Table S3**), which are discussed later.
 
 ______________
 
@@ -132,7 +153,7 @@ ______________
 
 >Justin Says: I think I need to clean up some of the notes and make them more readable
 
-**Table S2:** Table of effect sizes included in our meta-analysis. See the text following the table for an explanation of each column.
+**Table S3:** Table of effect sizes included in our meta-analysis. See the text following the table for an explanation of each column.
  <br/><br/> 
 <input type=button class=hideshow></input>
 ```{r}
@@ -159,27 +180,33 @@ kable(prelim.data, "html") %>%
 ```
 <br></br>
 
-**Study ID**: An ID given to the published paper the effect size is sourced from
+**Study ID**: An ID given to the published paper the effect size is sourced from (n=65).
 
-**Group ID**: An ID given to the research group that may have published several papers on the same species usuing the same or very similar experimental setup
+**Group ID**: An ID given to the research group that may have published several papers on the same species usuing the same or very similar experimental setup. [Was not use in analysis]
 
-**Species and Species ID**: Same thing
+**Species**: The species used in the experimental evolution procedure (n = 15).
+
+**Taxon**: The taxon to which the species belongs. One of the following: Beetle, fly, mouse, nematode, guppy, mite and cricket (taxa were selected arbitrarily based on the available data). 
 
 **SS Strength, Ratios and SS Density's (Column 7-9)**: Various ratios of the number of males to females and the total number of individuals kept together in an experiment [Was not used in any analysis]
 
-**Post cop and Pre cop**: Whether a study allowed Pre/Post-copulatory sexual selection (1) or not (0)
+**Post cop and Pre cop**: Whether a study allowed Pre/Post-copulatory sexual selection (1) or not (0).
 
-**Blind**: Whether the study was blind or not
+**Blinding**: A binary classification, describing whether blind protocols were used during the experiment. Papers were assumed to be not blind unless declared otherwise.
 
-**Generations** The number of generations run before fitness outcomes were measured
+**Generations**: The number of generations that the species was subject to differing levels of sexual selection, ranging from 1 to 162. 
 
 **Enforced Monogamy**: Whether the study had the low sexual selection treatment as enforced monogamy (YES) or not (NO). Not all studies compared enforced monogamy and SS+ treatments. Some used FB vs MB, where FB is the SS (low intensity). 
 
-**Sex**: Whether the fitness outcome was measured for females (F), males (M) or both (B). Studies that reported 'both' would pool results from males and females.
+**n**: Pooled sample size of the paired treatments.
+
+**Outcome**: The fitness related outcome that was measured, e.g. fecundity, survival, or mating success (see Table S1 for all 20 categories). We applied our own classifications rather than relying on those provided by the authors, because different papers sometimes used different names for the same trait. 
+
+**Outcome Class**: To help guide analysis the outcomes were classed into three categories; ambiguous, indirect and direct (see Table S1).
+
+**Sex**: A moderator variable with three levels, describing whether the effect size in question comes from a measurement of males (M), females (F), or individuals of both sexes (B).
 
 **Ambiguous**: Is the fitness outcome ambiguous (YES) or not ambigous (NO). Ambiguous outcomes may be those that may not necessarily be directional, that is to say they may be a life history trait. 
-
-**Outcome Class**: Grouped as Direct, Indirect or Ambiguous.
 
 **Environment**: In the methods of the papers included in this study it was usually stated whether additional modifications to the experimental lines were made. Briefly, this was usually a modification that made conditions more stressful such as using a novel food source or elevated mutation load, the effect sizes from these experimental lines are labelled as 'Stressed'. If it was clearly stated that there was no such modification it is labelled 'Unstressed'. However, sometimes the paper was ambiguous in what lines had added stress or the results from stressed and unstressed lines were pooled together, in this case we label it as 'Not Stated'.
 
@@ -187,16 +214,18 @@ kable(prelim.data, "html") %>%
 
 **var.g**: The within study variance associated with the effect size, g.
 
+**Positive Fitness**: Whether the measurment used in the study is beneficial for fitness (1) or not (0). Note that g has already been multiplied by this column. 
+
 **mean/sd/n.low/high**: The means, standard deviation and sample size for the low or high sexual selection treatments, used to calculate lnCVR (meta-analysis of variance). Rows without these values had hedges g' derived from summary statistics (F, z, chi-square etc.).
 
-**JIF**: Journal Impact factor at year of publication. Several impact factors were unable to be determined/found and are NA.
+**JIF**: Journal Impact factor at year of publication. Several impact factors were unable to be determined/found and are NA.We obtained the journal impact factor for each effect size at the time of publication using InCites Journal Citation Reports.
 <br></br>
 
 ### Table of sample sizes
 
 The number of effect sizes, publications, blind experiments, effect sizes in stressed conditions, male, female and both measures and different species used, with the number of effect sizes per taxon also reported. 
 
-**Table S3:** Table of effect sizes included in our meta-analysis. See the text following the data table for an explanation of each column.
+**Table S4:** Table of effect sizes included in our meta-analysis. See the text following the data table for an explanation of each column.
  <br/><br/> 
 <input type=button class=hideshow></input>
 ```{r message=FALSE, warning=FALSE}
@@ -226,12 +255,12 @@ prelim.data %>%
   pander(split.cell = 40, split.table = Inf)
 ```
  <br/><br/> 
-**Table S4:** Table of fitness outcomes included in our meta-analysis by sex.
+**Table S5:** Table of fitness outcomes included in our meta-analysis by sex.
  <br/><br/> 
 <input type=button class=hideshow></input>
 ```{r}
 Outcome_and_sex <- as.data.frame.matrix(table(prelim.data$Outcome, prelim.data$Sex))
-colnames(Outcome_and_sex) <- cbind("Both", "Male", "Female")
+colnames(Outcome_and_sex) <- cbind("Both", "Female", "Male")
 
 Outcome_and_sex %>% pander(split.cell = 40, split.table = Inf)
 
@@ -324,6 +353,50 @@ p.meta
 ```
 <br></br>
 **Figure S1:** Forest plot of raw effect sizes and their 95% confidence intervals, grouped according to environment (stressed or unstressed) and the sex of the individuals whose fitness trait was measured (male, female, or both sexes mixed together). Rows with multiple data points denote studies that provided multiple effect sizes.
+
+###Quantitative Summary Mean
+
+We can obtain a bootstrap weighted mean for the entire dataset. Although this does not take into account any moderator variables it does provide a rough guide on where most of the datapoints sit: 
+
+```{r}
+#Run function
+get.CIs.for.weighted.mean <- function(x, weights){
+  total.resamples <- 10000
+  num.chunks <- ceiling(length(x)*total.resamples / 10^7) # To be nice to RAM, let's keep these to ten million or less 
+  if(num.chunks == 1){
+    rand <- sample(length(x), length(x)*total.resamples, replace = TRUE)
+    resampled.weighted.means <- data.frame(x = x[rand], w = weights[rand], replicate = rep(1:total.resamples, each = length(x))) %>% 
+      group_by(replicate) %>% 
+      summarise(w.mean = weighted.mean(x, w)) %>% .$w.mean
+  }
+  
+  else{
+    resampled.weighted.means <- vector(mode = "list", length = 0)
+    number.of.resamples <- floor(total.resamples/num.chunks)
+    final.chunk.size <- total.resamples - number.of.resamples * (num.chunks-1)
+    for(i in 1:num.chunks){
+      if(i == num.chunks) number.of.resamples <- final.chunk.size
+      rand <- sample(length(x), length(x) * number.of.resamples, replace = TRUE)
+      resampled.weighted.means[[i]] <- data.frame(x = x[rand], w = weights[rand], replicate = rep(1:number.of.resamples, each = length(x))) %>% 
+        group_by(replicate) %>% 
+        summarise(w.mean = weighted.mean(x, w)) %>% .$w.mean
+    }
+    resampled.weighted.means <- unlist(resampled.weighted.means)
+  }
+  
+  data.frame(w.mean = median(resampled.weighted.means),
+             lowerCI = quantile(resampled.weighted.means, probs = 0.025) %>% as.numeric(),
+             upperCI = quantile(resampled.weighted.means, probs = 0.975) %>% as.numeric())
+}
+
+#Get weights
+prelim.data$Standard.weights <- (1/prelim.data$var.g)
+
+#Run function with weights
+get.CIs.for.weighted.mean(prelim.data$g, prelim.data$Standard.weights) %>% pander()
+```
+
+>Could this be used as a line in the forest plot showing the average (or as a polygon at the bottom)
 
 ___________________
 
@@ -534,7 +607,7 @@ We run a three level model where the outcome is nested within a study (Study.ID)
 ```{r}
 #run model without taxon: same random effects as above
 model.complete2 <- rma.mv(g, var.g, 
-                          mods = ~ 1 + Sex + Environment + Sex:Environment, 
+                          mods = ~ 1 + Sex * Environment, 
                           random = list(~ 1 | Study.ID, 
                                        ~ 1 | Outcome), 
                           method = "REML", 
@@ -591,8 +664,17 @@ EnvSex.metaanalysis
 **Figure S3:** Sexual selection generally increases population fitness, especially for females under stressed conditions. The benefits of sexual selection on fitness for females under stressed conditions are small-medium according to Cohen's interperetation of effect sizes. 
 
 
-
 We see that female fitness in stressed environments is greater than the other measurements. For outcomes that were measured for both female and males we see a greater uncertainty in the estimate. It is not obviously clear why this is. The 'both' outcomes are restricted to extinction rate, offspring viability, mutant frequency and reproductive success. However, the shift from 'both' being not significant in unstressed to significant in stressed may reflect the dampening of the negative correlations (sexual antagonism).
+
+Using an anova we can test to see if a female in a stressed environment gains significantly greater fitness benefits than in an unstressed environment:
+
+```{r}
+anova(model.complete2, L=c(0, 0, 1, -1, 0, 0)) 
+```
+
+```{r}
+anova(model.complete2, L=c(0, 1, 0, -1, 0, 0)) 
+```
 
 
 __________________________________
