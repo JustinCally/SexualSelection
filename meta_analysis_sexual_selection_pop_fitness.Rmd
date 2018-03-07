@@ -342,7 +342,7 @@ p.meta <- prelim.data %>%
   geom_errorbarh(aes(xmin = lowerci, 
                      xmax = upperci), height = 0.1) +
   geom_point(size = 1.5) +
-  scale_x_continuous(limits=c(-5, 5), name='Standardized Mean Difference (g)') +
+  scale_x_continuous(limits=c(-5, 5), name='Standardized Mean Difference (g) \n[positive values indicate sexual selection improves fitness components]') +
   scale_color_discrete(name = "Relationship\nto fitness") + 
   ylab('Reference') + 
   geom_vline(xintercept=0, color='black', linetype='dashed')+
@@ -352,9 +352,9 @@ ggsave(plot = p.meta, filename = "figures/Big_forest_plot.eps", height = 25, wid
 p.meta
 ```
 <br></br>
-**Figure S1:** Forest plot of raw effect sizes and their 95% confidence intervals, grouped according to environment (stressed or unstressed) and the sex of the individuals whose fitness trait was measured (male, female, or both sexes mixed together). Rows with multiple data points denote studies that provided multiple effect sizes.
+**Figure S1:** Forest plot of raw effect sizes and their 95% confidence intervals, grouped according to environment (stressed or unstressed) and the sex of the individuals whose fitness trait was measured (male, female, or both sexes mixed together). Rows with multiple data points denote studies that provided multiple effect sizes. Positive values indicate fitness benefits of sexual selection. 
 
-###Quantitative Summary Mean
+###Quantitative summary using bootstrapped means
 
 We can obtain a bootstrap weighted mean for the entire dataset. Although this does not take into account any moderator variables it does provide a rough guide on where most of the datapoints sit: 
 
@@ -396,7 +396,7 @@ prelim.data$Standard.weights <- (1/prelim.data$var.g)
 get.CIs.for.weighted.mean(prelim.data$g, prelim.data$Standard.weights) %>% pander()
 ```
 
->Could this be used as a line in the forest plot showing the average (or as a polygon at the bottom)
+>Could this be used as a line in the forest plot showing the average (or as a polygon at the bottom), or done for each outcome?
 
 ___________________
 
@@ -663,8 +663,9 @@ EnvSex.metaanalysis
 <br></br>
 **Figure S3:** Sexual selection generally increases population fitness, especially for females under stressed conditions. The benefits of sexual selection on fitness for females under stressed conditions are small-medium according to Cohen's interperetation of effect sizes. 
 
-
 We see that female fitness in stressed environments is greater than the other measurements. For outcomes that were measured for both female and males we see a greater uncertainty in the estimate. It is not obviously clear why this is. The 'both' outcomes are restricted to extinction rate, offspring viability, mutant frequency and reproductive success. However, the shift from 'both' being not significant in unstressed to significant in stressed may reflect the dampening of the negative correlations (sexual antagonism).
+
+**Comparisons of Stress vs Unstresss through anovas**
 
 Using an anova we can test to see if a female in a stressed environment gains significantly greater fitness benefits than in an unstressed environment:
 
