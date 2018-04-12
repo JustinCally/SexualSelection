@@ -315,31 +315,31 @@ prelim.data$Outcome_f = factor(prelim.data$Outcome, levels = c('Behavioural Plas
 # define upper and lower bounds
 prelim.data$lowerci <- prelim.data$g - 1.96*(sqrt(prelim.data$var.g))
 prelim.data$upperci <- prelim.data$g + 1.96*(sqrt(prelim.data$var.g))
-
-# Get author and year in one
-short.author.names <- data.frame(long = prelim.data$Authors %>% unique(),
-                                 short = prelim.data$Authors %>% unique() %>% 
-  as.character() %>% 
-  strsplit(split = ",") %>% 
-  sapply(FUN=function(x) x[1])) %>%
-  left_join(prelim.data %>% select(Authors, Year) %>% distinct(), by = c("long" = "Authors")) %>%
-  mutate(suffix = "")
-
-# Sometimes there are multiple papers with the same first author from teh same year. Name these 2010a, 2010b etc
-dups <- with(short.author.names, table(short, Year)) %>% melt()
-dups <- dups[dups$value > 1, ]
-for(i in 1:nrow(dups)){
-  short.author.names$suffix[
-    short.author.names$short == dups$short[i] &
-      short.author.names$Year == dups$Year[i]] <- letters[1:dups$value[i]]
-}
-
-# Add the AuthorYear column to the dataframe of effect sizes
-short.author.names <- short.author.names %>%
-  mutate(AuthorYear = paste(short, " ", Year, suffix, sep="")) %>%
-  select(long, AuthorYear)
-prelim.data <- prelim.data %>% 
-  left_join(short.author.names, by = c("Authors" = "long")) 
+# 
+# # Get author and year in one
+# short.author.names <- data.frame(long = prelim.data$Authors %>% unique(),
+#                                  short = prelim.data$Authors %>% unique() %>% 
+#   as.character() %>% 
+#   strsplit(split = ",") %>% 
+#   sapply(FUN=function(x) x[1])) %>%
+#   left_join(prelim.data %>% select(Authors, Year) %>% distinct(), by = c("long" = "Authors")) %>%
+#   mutate(suffix = "")
+# 
+# # Sometimes there are multiple papers with the same first author from teh same year. Name these 2010a, 2010b etc
+# dups <- with(short.author.names, table(short, Year)) %>% melt()
+# dups <- dups[dups$value > 1, ]
+# for(i in 1:nrow(dups)){
+#   short.author.names$suffix[
+#     short.author.names$short == dups$short[i] &
+#       short.author.names$Year == dups$Year[i]] <- letters[1:dups$value[i]]
+# }
+# 
+# # Add the AuthorYear column to the dataframe of effect sizes
+# short.author.names <- short.author.names %>%
+#   mutate(AuthorYear = paste(short, " ", Year, suffix, sep="")) %>%
+#   select(long, AuthorYear)
+# prelim.data <- prelim.data %>% 
+#   left_join(short.author.names, by = c("Authors" = "long")) 
 
 #Generate a plot
 p.meta <- prelim.data %>% 
@@ -361,6 +361,7 @@ p.meta
 ```
 <br></br>
 **Figure S1:** Forest plot of raw effect sizes and their 95% confidence intervals, grouped according to environment (stressed or unstressed) and the sex of the individuals whose fitness trait was measured (male, female, or both sexes mixed together). Rows with multiple data points denote studies that provided multiple effect sizes. Positive values indicate fitness benefits of sexual selection. 
+
 
 ###Quantitative summary using bootstrapped means
 
@@ -405,6 +406,44 @@ get.CIs.for.weighted.mean(prelim.data$g, prelim.data$Standard.weights) %>% pande
 ```
 
 >Could this be used as a line in the forest plot showing the average (or as a polygon at the bottom), or done for each outcome?
+
+Or we could run the models as subsets (one for each outcome)
+
+```{r}
+outcome.list <- as.list(c('Behavioural Plasticity', 'Body Size', 'Development Rate', 'Early Fecundity', 'Immunity', 'Mating Duration', 'Pesticide Resistance', 'Mutant Frequency', 'Body Condition', 'Fitness Senescence', 'Lifespan', 'Male Attractiveness', 'Mating Frequency', 'Mating Latency', 'Mating Success', 'Strength', 'Ejaculate Quality and Production', 'Extinction Rate', 'Offspring Viability', 'Reproductive Success'))
+names(outcome.list) <- c('Behavioural Plasticity', 'Body Size', 'Development Rate', 'Early Fecundity', 'Immunity', 'Mating Duration', 'Pesticide Resistance', 'Mutant Frequency', 'Body Condition', 'Fitness Senescence', 'Lifespan', 'Male Attractiveness', 'Mating Frequency', 'Mating Latency', 'Mating Success', 'Strength', 'Ejaculate Quality and Production', 'Extinction Rate', 'Offspring Viability', 'Reproductive Success')
+outcome.models <-  llply(outcome.list, function(x) rma(g, var.g, 
+                          mods = ~ 1, 
+                          method = "REML",
+                          subset = (Outcome_f == x),
+                          data = prelim.data))
+
+df.list <- as.data.frame(do.call("rbind", outcome.models)) # data frame of model results
+
+simple.frame <- subset(df.list, select=c("b", "zval", "ci.lb", "ci.ub", "k", "I2"))
+outcome.frame <- format(simple.frame, digits = 2)
+outcome.frame <- add_rownames(outcome.frame, "Outcome")
+outcome.frame$b <- as.numeric(outcome.frame$b)
+outcome.frame$ci.lb <- as.numeric(outcome.frame$ci.lb)
+outcome.frame$ci.ub <- as.numeric(outcome.frame$ci.ub)
+outcome.frame %>% pander
+```
+
+Check the results on a plot
+```{r}
+outcome.frame %>% ggplot(aes(x = b, y=Outcome)) + 
+  geom_vline(xintercept = 0, linetype = 2, colour = "grey70") + 
+  geom_errorbarh(aes(xmin = ci.lb, 
+                     xmax = ci.ub), height = 0, position = pd, show.legend = F) +
+  geom_point(position = pd, size=3, shape=21, color = "grey20") + 
+  ylab("Outcome\n")+
+  xlab("\nEffect Size (Hedges g)")+
+  xlim(-2.5, 2.5)+
+  ggtitle('Effects of Sex and Stress \non Population Fitness')
+```
+
+
+
 
 ___________________
 
