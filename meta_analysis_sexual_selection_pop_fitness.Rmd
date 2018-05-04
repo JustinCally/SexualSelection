@@ -405,7 +405,7 @@ p.meta
 # dev.off()
 ```
 <br></br>
-**Figure S1:** Forest plot of raw effect sizes and their 95% confidence intervals, grouped according to environment (stressed or unstressed) and the sex of the individuals whose fitness trait was measured (male, female, or both sexes mixed together). Rows with multiple data points denote studies that provided multiple effect sizes. Positive values indicate fitness benefits of sexual selection. 
+**Figure S1:** Forest plot of raw effect sizes and their 95% confidence intervals, grouped according to measured fitness components and the sex of the individuals whose fitness trait was measured (male, female, or both sexes mixed together). Rows with multiple data points denote studies that provided multiple effect sizes. Positive values indicate fitness benefits of sexual selection. 
 
 
 <!-- ###Quantitative summary using bootstrapped means -->
@@ -644,6 +644,7 @@ outcome.frame$k <- as.numeric(outcome.frame$k)
 outcome.frame$ci.lb <- as.numeric(outcome.frame$ci.lb)
 outcome.frame$ci.ub <- as.numeric(outcome.frame$ci.ub)
 outcome.frame$I2 <- as.numeric(outcome.frame$I2)
+outcome.frame$Class <- c("Ambiguous", "Ambiguous", "Ambiguous", "Ambiguous", "Ambiguous", "Ambiguous", "Ambiguous", "Indirect", "Indirect", "Indirect", "Indirect", "Indirect", "Indirect", "Indirect", "Indirect", "Indirect", "Direct", "Direct", "Direct")
 
 outcome.frame %>% pander(split.cell = 40, split.table = Inf)
 
@@ -1020,7 +1021,7 @@ EnvSex.metaanalysis
 <br></br>
 **Figure S3:** Sexual selection generally increases population fitness, especially for females under stressed conditions. The benefits of sexual selection on fitness for females under stressed conditions are small-medium according to Cohen's interperetation of effect sizes. Circle size is proportional to sample size.
 
-**Table S8**
+**Table S8** The predictions in the plot above use the following dataframe
 ```{r}
 colnames(predictions.complete2) <- c("Sex", "Environment", "Prediction", "SE", "CI.lb", "CI.ub", "n")
 predictions.complete2 <- format(predictions.complete2, digits = 2)
@@ -1039,13 +1040,14 @@ Using an anova we can test to see if a female in a stressed environment gains si
 anova(model.complete2, L=c(0, 0, 0, 1, 0, -1)) 
 ```
 
+Both (unstressed vs stressed)
 ```{r}
 anova(model.complete2, L=c(0, 1, 0, -1, 0, 0)) 
 ```
 
 From these anovas we see that a stressed environment leads to a significantly greater increase in fitness components for "female"" but NOT "both" sexes.
 
-We can also test if there is a difference between males and females in unstressed and stressed conditions: 
+We can also test if there is a difference between males and females in unstressed conditions: 
 
 ```{r}
 #anova where you specify the values based on the list of moderators
