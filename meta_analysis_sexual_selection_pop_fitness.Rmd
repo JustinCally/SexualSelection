@@ -1028,8 +1028,6 @@ predictions.complete2 <- format(predictions.complete2, digits = 2)
 predictions.complete2 %>% pander()
 ```
 
-
-
 We see that female fitness in stressed environments is greater than the other measurements. For outcomes that were measured for both female and males we see a greater uncertainty in the estimate. It is not obviously clear why this is. The 'both' outcomes are restricted to extinction rate, offspring viability, mutant frequency and reproductive success. However, the shift from 'both' being not significant in unstressed to significant in stressed may reflect the dampening of the negative correlations (sexual antagonism).
 
 **Comparisons of Stress vs Unstresss through anovas**
@@ -1065,6 +1063,36 @@ Or males in stressed vs unstressed:
 ```{r}
 anova(model.complete2, L=c(1, 0, 0, -1, 0, 0)) 
 ```
+__________________________________
+
+###Bayesian models using _brms_ package
+
+We can run a bayesian model using the brms package. The model has the same moderators as the REML approach used above. 
+```{r}
+library(rstan) #Note that installation requires some effort
+library(brms) 
+library(backports) #seems to be a dependency
+
+#Use brm to create a model similar to the one used in the REML approach. 
+meta.brms <- brm(g | se(sqrt(var.g), sigma = TRUE) ~ 1 + Sex * Environment 
+                + (1|Study.ID) 
+                + (1|Outcome),
+                control = list(adapt_delta = 0.95),
+                data = restricted.data)
+
+summary(meta.brms)
+```
+
+Plot summart of model
+```{r}
+plot(meta.brms)
+```
+
+Obtain marginal effects plots
+```{r}
+marginal_effects(meta.brms)
+```
+
 
 __________________________________
 ###Estimating Heterogeneity Using _I^2^_
