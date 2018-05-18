@@ -28,6 +28,7 @@ library(kableExtra)
 library(ggrepel)
 library(reshape2)
 library(RColorBrewer)
+library(ggridges)
 source("Vdodge_function.R") # nice function for ggplot
 ```
 
@@ -1068,31 +1069,164 @@ __________________________________
 ###Bayesian models using _brms_ package
 
 We can run a bayesian model using the brms package. The model has the same moderators as the REML approach used above. 
-```{r}
+```{r, warning=FALSE}
 library(rstan) #Note that installation requires some effort
 library(brms) 
 library(backports) #seems to be a dependency
+```
 
+```{r, warning = FALSE, results='hide', message=FALSE}
 #Use brm to create a model similar to the one used in the REML approach. 
-meta.brms <- brm(g | se(sqrt(var.g), sigma = TRUE) ~ 1 + Sex * Environment 
-                + (1|Study.ID) 
-                + (1|Outcome),
-                control = list(adapt_delta = 0.95),
+#Use brm to create a model similar to the one used in the REML approach. 
+meta.brms <- brm(g| se(sqrt(var.g), sigma = TRUE)  ~ 1 + Sex * Environment #response is Hedges' g and the standard error associated with it (sqrt(var.g)) with sex and environment as moderators
+                + (1|Study.ID) #group level effect #1
+                + (1|Outcome), #group level effect #2 (unrelated/crossed) with #1
+                family = "gaussian", #default
+                seed = 1,
+                cores = 4, chains = 4, iter = 4000, #Run 4 chains in parrallel for 4000 iterations (2000 are burn in)
+                control = list(adapt_delta = 0.99),
                 data = restricted.data)
+```
 
+```{r}
 summary(meta.brms)
 ```
 
-Plot summart of model
+Plot summary of the model estimates
 ```{r}
 plot(meta.brms)
 ```
 
-Obtain marginal effects plots
+We can also obtain marginal effects plots
+
+> Are these like the predictions?
+
 ```{r}
-marginal_effects(meta.brms)
+marginaleffects <- marginal_effects(meta.brms)
 ```
 
+
+Obtain fitted values: **Note that the fitted values obtained here have much smaller error than the predict values, which blow out**
+
+```{r}
+#obtain average variance of each group in the prediction
+av.var.g <- as.numeric(c(restricted.data %>% filter (Sex == 'M' & Environment == "Unstressed") %>% summarise(mean = mean(var.g)),
+              restricted.data %>% filter (Sex == 'B' & Environment == "Unstressed") %>% summarise(mean = mean(var.g)),
+              restricted.data %>% filter (Sex == 'F' & Environment == "Unstressed") %>% summarise(mean = mean(var.g)),
+              restricted.data %>% filter (Sex == 'M' & Environment == "Stressed") %>% summarise(mean = mean(var.g)),
+              restricted.data %>% filter (Sex == 'B' & Environment == "Stressed") %>% summarise(mean = mean(var.g)),
+              restricted.data %>% filter (Sex == 'F' & Environment == "Stressed") %>% summarise(mean = mean(var.g))))
+
+#Expand grid for environment and sex
+brms.newdata <- as.data.frame(expand.grid(Sex = c("M", "B", "F"),
+                           Environment = c("Unstressed", "Stressed")))
+#Add variance
+brms.newdata$var.g <- av.var.g
+
+#Add predictions
+brms.predict <- fitted(meta.brms, newdata = brms.newdata, re_formula = NA)
+brms.predict <- as.data.frame(brms.predict)
+brms.predictions <- data.frame(brms.newdata$Sex, brms.newdata$Environment, brms.predict$Estimate, brms.predict$Est.Error, brms.predict$Q2.5, brms.predict$Q97.5)
+
+#Add sample size 
+brms.predictions$n <- as.numeric(predictions.complete2$n)
+
+#Name columns
+colnames(brms.predictions) <- c("Sex", "Environment", "Estimate", "Error", "LCI", "UCI", "n")
+```
+
+Plot results for brms prediction using the same ggplot code as for the metafor model predictions
+
+```{r, fig.height=6, fig.width = 6}
+EnvSex.metaanalysis.brms <- brms.predictions %>% 
+      mutate(Sex = replace(as.character(Sex), Sex == "B", "Both"),
+         Sex = replace(Sex, Sex == "M", "Male"),
+         Sex = replace(Sex, Sex == "F", "Female")) %>%
+  ggplot(aes(x = Estimate, y= Environment, fill = Sex)) + 
+  geom_vline(xintercept = 0, linetype = 2, colour = "black") + 
+  geom_errorbarh(aes(xmin = brms.predictions$LCI, 
+                     xmax = brms.predictions$UCI,
+                     color = Sex), height = 0, position = pd, show.legend = F) +
+  geom_point(aes(size=n), position = pd, shape=21, color = "grey20") + 
+  scale_size(guide = 'none')+
+  ylab("Environment\n")+
+  xlab("\nEffect Size (Hedges' g)")+
+  scale_fill_brewer(palette = "Set1")+
+  scale_color_brewer(palette = "Set1")+
+  guides(fill = guide_legend(reverse=T, override.aes = list(size = 3)))+
+  scale_x_continuous(limits = c(-0.2, 1), breaks = c(-0.2, 0, 0.2, 0.4, 0.6, 0.8, 1))+
+  
+  theme_bw()+
+  
+  theme(panel.spacing = unit(0.5, "lines"),
+        text = element_text(size=14),
+        panel.border= element_blank(),
+        axis.line=element_line(), 
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(), 
+        legend.text = element_text(size=14), 
+        legend.title=element_text(size=14, 
+                                  face = "bold"),
+        axis.title.x = element_text(hjust = 0.5, size = 14),
+        axis.title.y = element_text(size = 14),
+        axis.text.y = element_text(angle = 90),
+        plot.title = element_text(size = 14))
+
+EnvSex.metaanalysis.brms
+```
+<br></br>
+**Figure X** Bayesian fitted values for effect size using a comprable model to the one used in the REML approach 
+
+Let's get the distribution of posterior fitted values and plot with ggridges
+
+```{r}
+#Obtain posterior fitted values and transform
+posterior_fit <- data.frame(t(posterior_linpred(meta.brms, newdata = brms.newdata, re_formula = NA)))
+
+#Add columns for Environment and Sex
+posterior_fit$Sex <- c("Male", "Both", "Female", "Male", "Both", "Female")
+posterior_fit$Environment <- c("Benign_Male", "Benign_Both", "Benign_Female", "Stressful_Male", "Stressful_Both", "Stressful_Female")
+
+#Clean up dataframe
+posterior_fit <- melt(posterior_fit, id = c("Sex", "Environment"))
+posterior_fit$variable <- NULL
+```
+
+
+```{r, fig.height=8, fig.width=8}
+posterior_fit %>% ggplot(aes(x=value, y = Environment, fill = Sex))+
+  geom_density_ridges2(alpha = 0.75)+
+  geom_vline(xintercept = 0, linetype = 2, colour = "black") + 
+    ylab("Environment\n")+
+  xlab("\nPosterior Effect Size (Hedges' g)")+
+  scale_fill_brewer(palette = "Set1")+
+  scale_color_brewer(palette = "Set1")+
+  guides(fill = guide_legend(reverse=T, override.aes = list(size = 0.5)))+
+  scale_x_continuous(limits = c(-0.5, 1.2), breaks = c(-1, -.5, 0, 0.5, 1))+
+  
+  theme_bw()+
+  
+  theme(panel.spacing = unit(0.5, "lines"),
+        text = element_text(size=14),
+        panel.border= element_blank(),
+        axis.line=element_line(), 
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(), 
+        legend.text = element_text(size=14), 
+        legend.title=element_text(size=14, 
+                                  face = "bold"),
+        axis.title.x = element_text(hjust = 0.5, size = 14),
+        axis.title.y = element_text(size = 14),
+        axis.text.y = element_text(angle = 0),
+        plot.title = element_text(size = 14))
+
+```
+<br></br>
+**Figure X** Posterior fitted values for Hedges' g using the same model as above
 
 __________________________________
 ###Estimating Heterogeneity Using _I^2^_
