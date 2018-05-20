@@ -976,11 +976,13 @@ predictions.complete2 <- left_join(predictions.complete2, countpred, by = c("Sex
 
 #And plot the results
 pd <- position_dodgev(height = 0.65)
-EnvSex.metaanalysis <- predictions.complete2 %>% 
+predictions.complete2 <- predictions.complete2 %>% 
       mutate(Sex = replace(as.character(Sex), Sex == "B", "Both"),
          Sex = replace(Sex, Sex == "M", "Male"),
          Sex = replace(Sex, Sex == "F", "Female")) %>%
-  ggplot(aes(x = pred, y= Environment, fill = Sex)) + 
+  mutate(Environment = replace(as.character(Environment), Environment == "Stressed", "Stressful"),
+         Environment = replace(Environment, Environment == "Unstressed", "Benign"))
+ EnvSex.metaanalysis <- predictions.complete2 %>% ggplot(aes(x = pred, y= Environment, fill = Sex)) + 
   geom_vline(xintercept = 0, linetype = 2, colour = "black") + 
   geom_errorbarh(aes(xmin = predictions.complete2$ci.lb, 
                      xmax = predictions.complete2$ci.ub,
@@ -1069,10 +1071,12 @@ __________________________________
 ###Bayesian models using _brms_ package
 
 We can run a bayesian model using the brms package. The model has the same moderators as the REML approach used above. 
-```{r, warning=FALSE}
+```{r, warning=FALSE, message = FALSE}
 library(rstan) #Note that installation requires some effort
 library(brms) 
 library(backports) #seems to be a dependency
+devtools::install_github("mvuorre/brmstools")
+library(brmstools) 
 ```
 
 ```{r, warning = FALSE, results='hide', message=FALSE}
@@ -1187,7 +1191,7 @@ posterior_fit <- data.frame(t(posterior_linpred(meta.brms, newdata = brms.newdat
 
 #Add columns for Environment and Sex
 posterior_fit$Sex <- c("Male", "Both", "Female", "Male", "Both", "Female")
-posterior_fit$Environment <- c("Benign_Male", "Benign_Both", "Benign_Female", "Stressful_Male", "Stressful_Both", "Stressful_Female")
+posterior_fit$Environment <- c("Benign", "Benign", "Benign", "Stressful", "Stressful", "Stressful")
 
 #Clean up dataframe
 posterior_fit <- melt(posterior_fit, id = c("Sex", "Environment"))
@@ -1195,9 +1199,11 @@ posterior_fit$variable <- NULL
 ```
 
 
-```{r, fig.height=8, fig.width=8}
-posterior_fit %>% ggplot(aes(x=value, y = Environment, fill = Sex))+
-  geom_density_ridges2(alpha = 0.75)+
+```{r, fig.height=5, fig.width=5}
+
+pd <- position_dodgev(height = 0.3)
+posterior.plot <- posterior_fit %>% ggplot()+
+  geom_density_ridges(aes(x=value, y = Environment, fill = Sex), alpha = 0.4, scale = 0.6, position = position_nudge(y = 0.15), height = 10)+
   geom_vline(xintercept = 0, linetype = 2, colour = "black") + 
     ylab("Environment\n")+
   xlab("\nPosterior Effect Size (Hedges' g)")+
@@ -1208,7 +1214,7 @@ posterior_fit %>% ggplot(aes(x=value, y = Environment, fill = Sex))+
   
   theme_bw()+
   
-  theme(panel.spacing = unit(0.5, "lines"),
+  theme(panel.spacing = unit(0.1, "lines"),
         text = element_text(size=14),
         panel.border= element_blank(),
         axis.line=element_line(), 
@@ -1224,6 +1230,23 @@ posterior_fit %>% ggplot(aes(x=value, y = Environment, fill = Sex))+
         axis.text.y = element_text(angle = 0),
         plot.title = element_text(size = 14))
 
+both.plots <- posterior.plot + 
+  geom_point(data = predictions.complete2, 
+             aes(x = pred, y = Environment, size=nn, fill = Sex), 
+             shape=21, color = "grey20", position = pd, show.legend = F) +
+  
+  geom_errorbarh(data = predictions.complete2, 
+                 aes(x= pred, xmin = predictions.complete2$ci.lb,
+                     xmax = predictions.complete2$ci.ub, y = Environment,
+                     color = Sex), 
+                 height = 0, show.legend = F, position = pd)+
+    scale_y_discrete(expand=c(0.075,0))
+  
+both.plots
+
+svg("figures/both_plot.svg", width=6, height=6)
+both.plots
+dev.off()
 ```
 <br></br>
 **Figure X** Posterior fitted values for Hedges' g using the same model as above
