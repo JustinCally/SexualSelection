@@ -165,16 +165,13 @@ ______________
 # Load the data and clean up the variable formats
 prelim.data <- read.csv('data/Preliminary data frame 22.2.18.csv')
 prelim.data$Study.ID <- prelim.data$Study.ID %>% factor()
-prelim.data$Taxon <- prelim.data$Taxon %>% factor()
 prelim.data$Group.ID <- prelim.data$Group.ID %>% factor()
-prelim.data$Authors <- prelim.data$Authors %>% factor()
-prelim.data$Environment <- prelim.data$Environment %>% factor %>% relevel(ref="Unstressed")
-prelim.data$Sex <- prelim.data$Sex %>% factor %>% relevel(ref="B")
-prelim.data$Ambiguous <- prelim.data$Ambiguous %>% factor()
-prelim.data$Species <- prelim.data$Species %>% factor()
+prelim.data$Environment <- prelim.data$Environment %>% relevel(ref="Unstressed")
+prelim.data$Sex <- prelim.data$Sex %>% relevel(ref="B")
+
 #Outcome.Class.2 is using the categories that were decided by survey. I am keeping both just to check them against each other (how much of a difference it makes)
-prelim.data$Outcome.Class <- prelim.data$Outcome.Class %>% factor() %>% relevel(ref="Indirect")
-prelim.data$Enforced.Monogamy <- prelim.data$Enforced.Monogamy %>% factor() %>% relevel(ref="NO")
+prelim.data$Outcome.Class <- prelim.data$Outcome.Class %>% relevel(ref="Indirect")
+prelim.data$Enforced.Monogamy <- prelim.data$Enforced.Monogamy %>% relevel(ref="NO")
 prelim.data$Pre.cop <- prelim.data$Pre.cop %>% factor() %>% relevel(ref="0")
 prelim.data$Post.cop <- prelim.data$Post.cop %>% factor() %>% relevel(ref="0")
 prelim.data$Blinding <- prelim.data$Blinding %>% factor()
@@ -268,7 +265,6 @@ Outcome_and_sex <- as.data.frame.matrix(table(prelim.data$Outcome, prelim.data$S
 colnames(Outcome_and_sex) <- cbind("Both", "Female", "Male")
 
 Outcome_and_sex %>% pander(split.cell = 40, split.table = Inf)
-
 ```
 <br></br>
 
@@ -780,13 +776,38 @@ We collected data from fitness components that were deemed ambiguous as well as 
 <input type=button class=hideshow></input>
 ```{r}
 model.preliminary <- rma.mv(g, var.g, 
-                         mods = ~ 1 + Sex * Environment + Taxon + Outcome.Class + Generations + Blinding, # << ----- Add big model, then cull predictors to this one
+                         mods = ~ 1 + Sex * Environment + Taxon + Outcome.Class + log(Generations) + Blinding, # << ----- Add big model, then cull predictors to this one
                          random = list(~ 1 | Study.ID, 
                                        ~ 1 | Outcome), 
                          method = "REML", 
                          data = prelim.data)
 
 summary(model.preliminary)
+
+brms.preliminary <- brm(g | se(SE)  ~ 1 + Sex * Environment + log(Generations) + Blinding 
+                + (1|Study.ID) #group level effect #1
+                + (1|Outcome)
+                + (1|Taxon), 
+                family = "gaussian", 
+                seed = 1,
+                cores = 4, chains = 4, iter = 4000, #Run 4 chains in parallel for 4000 iterations (2000 are burn in)
+                control = list(adapt_delta = 0.99, max_treedepth = 15),
+                data = prelim.data %>% mutate(SE = sqrt(var.g)))
+
+bayesplot::mcmc_areas(posterior_samples(brms.preliminary)[,1:11]) + geom_vline(xintercept = 0, linetype = 2)
+
+new.data <- prelim.data %>% 
+  mutate(SE = sqrt(var.g)) %>% 
+  select(Sex, Environment, Blinding, Generations, SE) %>% 
+  mutate(Generations = mean(log(Generations)), Blinding = "Blind", SE = 0) %>% 
+  distinct() %>% arrange(Sex, Environment)
+predictions <- data.frame(new.data, predict(brms.preliminary, newdata = new.data, re_formula = NA))
+
+pd <- position_dodge(0.2)
+predictions %>% ggplot(aes(Sex, Estimate, group = Environment)) + 
+  geom_errorbar(aes(ymin = X2.5.ile, ymax = X97.5.ile), position = pd, width = 0) +
+  geom_point(position = pd) +
+  coord_flip()
 ```
 <br></br>
 
@@ -813,6 +834,7 @@ restricted.data$Environment <- restricted.data$Environment %>% factor() %>% rele
 restricted.data$Sex <- restricted.data$Sex %>% factor() %>% relevel(ref="M")
 restricted.data$Outcome.Class <- restricted.data$Outcome.Class %>% factor() %>% relevel(ref="Indirect")
 restricted.data$Taxon <- relevel(restricted.data$Taxon, ref = "Beetle") 
+restricted.data$Outcome <- restricted.data$Outcome %>% factor()
 
 model.complete <- rma.mv(g, var.g, 
                          mods = ~ 1 + Sex * Environment + Taxon, # << ----- Add big model, then cull predictors to this one
@@ -822,6 +844,68 @@ model.complete <- rma.mv(g, var.g,
                          data = restricted.data)
 
 summary(model.complete) 
+
+brms.complete <- brm(g | se(SE)  ~ 1 + Sex * Environment + Taxon + Outcome
+                + (1|Study.ID), #group level effect #1
+                family = "gaussian", 
+                seed = 1,
+                cores = 4, chains = 4, iter = 4000, # Run 4 chains in parallel for 4000 iterations (2000 are burn in)
+                control = list(adapt_delta = 0.999, max_treedepth = 15),
+                data = restricted.data %>% mutate(SE = sqrt(var.g)))
+
+brms.complete2 <- brm(g | se(SE)  ~ 1 + Sex * Environment + log(Generations) + Blinding + 
+                + (1|Taxon) #group level effect #1
+                + (1|Outcome) #group level effect #1
+                + (1|Study.ID), #group level effect #1
+                family = "gaussian", 
+                seed = 1,
+                cores = 4, chains = 4, iter = 4000, # Run 4 chains in parallel for 4000 iterations (2000 are burn in)
+                control = list(adapt_delta = 0.9999, max_treedepth = 15),
+                data = restricted.data %>% mutate(SE = sqrt(var.g)))
+
+bayesplot::mcmc_areas(posterior_samples(brms.complete)[,1:24]) + geom_vline(xintercept = 0, linetype = 2)
+bayesplot::mcmc_areas(posterior_samples(brms.complete2) %>% select(-starts_with("r"), -lp__)) + geom_vline(xintercept = 0, linetype = 2)
+
+post <- (posterior_samples(brms.complete, 
+                           pars = c("b_Intercept", "b_SexB", "b_SexF", 
+                                    "b_EnvironmentStressed", "b_SexB:EnvironmentStressed", 
+                                    "b_SexF:EnvironmentStressed", "b_OutcomeReproductiveSuccess")) %>%
+  mutate(both_benign = b_Intercept + b_SexB + b_OutcomeReproductiveSuccess,
+         both_stressful = b_Intercept + b_SexB + b_EnvironmentStressed + `b_SexB:EnvironmentStressed` + b_OutcomeReproductiveSuccess,
+         male_benign = b_Intercept + b_OutcomeReproductiveSuccess,
+         male_stressful = b_Intercept + b_EnvironmentStressed + b_OutcomeReproductiveSuccess,
+         female_benign = b_Intercept + b_SexF + b_OutcomeReproductiveSuccess,
+         female_stressful = b_Intercept + b_SexF + b_EnvironmentStressed + `b_SexF:EnvironmentStressed` + b_OutcomeReproductiveSuccess))[,-(1:7)]
+
+post2 <- (posterior_samples(brms.complete, 
+                           pars = c("b_Intercept", "b_SexB", "b_SexF", 
+                                    "b_EnvironmentStressed", "b_SexB:EnvironmentStressed", 
+                                    "b_SexF:EnvironmentStressed")) %>%
+  mutate(both_benign = b_Intercept + b_SexB,
+         both_stressful = b_Intercept + b_SexB + `b_SexB:EnvironmentStressed`,
+         male_benign = b_Intercept,
+         male_stressful = b_Intercept + b_EnvironmentStressed ,
+         female_benign = b_Intercept + b_SexF ,
+         female_stressful = b_Intercept + b_SexF + `b_SexF:EnvironmentStressed` ))[,-(1:6)]
+
+bayesplot::mcmc_areas(post) + geom_vline(xintercept = 0, linetype = 2)
+
+new.data <- restricted.data %>% 
+  mutate(SE = sqrt(var.g)) %>% 
+  select(Sex, Environment, Blinding, Generations, SE, Taxon) %>% 
+  mutate(Generations = mean(log(Generations)), 
+         Blinding = "Blind", 
+         Taxon = "Fly",
+         Outcome = "Reproductive Success",
+         SE = 0) %>% 
+  distinct() %>% arrange(Sex, Environment)
+predictions.complete <- data.frame(new.data, fitted(brms.complete, newdata = new.data, re_formula = NA))
+
+pd <- position_dodge(0.2)
+predictions.complete %>% ggplot(aes(Sex, Estimate, group = Environment, colour = Environment)) + 
+  geom_errorbar(aes(ymin = X2.5.ile, ymax = X97.5.ile), position = pd, width = 0) +
+  geom_point(position = pd) +
+  coord_flip()
 ```
 
 The result is a model with estimates for various taxa, species, sexes and environments. To make sense of these estimates we should obtain average predictions for each moderator variable class of interest. We can do that by using a modified version version of a function used by Holman 2017. Here it alows us to cluster predictions for the different moderators of interest: Sex, environment, taxon etc. This is done by obtaining predictions using the base ``predict()`` function for the ``rma.mv()`` objects that have been previously created
