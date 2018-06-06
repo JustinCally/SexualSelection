@@ -1,5 +1,5 @@
 ---
-title: 'Effects of sexual selection on non-sexual fitness components: a meta-analysis'
+title: 'Sexual selection improves fitness: a meta-analysis'
 author: "Justin G. Cally^1^, Luke Holman^1^, Devi Stuart-Fox^1^ <br></br> <br></br> ^1^The University of Melbourne"
 subtitle: Supplementary Material
 output:
