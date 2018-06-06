@@ -279,7 +279,7 @@ ____________
 
 ### Forest plot
 
-Here we show the residual effect sizes for each outcome measured. The following forest plot is based on the residual effect sizes. The model is an intercept only model with standard random effects structure.
+Here we show the raw effect sizes for each fitness component measured. 
 
 
 ```{r, fig.height=18, fig.width=12}
