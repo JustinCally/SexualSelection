@@ -21,3 +21,12 @@ neat.R2 <- function(model){
   R2 <- bayes_R2(model) %>% round(2)
   paste(R2[1,1], " (95% CIs = ", R2[1,3], "-", R2[1,4], ")", sep = "")
 }
+
+# For adding stars to the tables when the 95% CIs don't overlap zero
+add_significance_stars2 <- function(prediction){
+  prediction$xx <- " "
+  prediction$xx[prediction[,4] < 0 & prediction[,5] < 0] <- "*"
+  prediction$xx[prediction[,4] > 0 & prediction[,5] > 0] <- "*"
+  names(prediction)[names(prediction) == "xx"] <- " "
+  prediction
+}
