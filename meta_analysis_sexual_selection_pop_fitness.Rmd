@@ -1479,8 +1479,8 @@ ____________
 We recorded the number of generations of experimental exolution each study used. The number of generations proved a negligible predictor in the meta-analytic models (estimate = 0.0019, p = 0.2341). The effect sizes are plotted against the generation at which the effect size was extracted. 
 
 ```{r, fig.height= 6, fig.width=8, warning=FALSE}
-generations.plot <- df.forest.model %>% ggplot(aes(x=Generations, y=g))+
-  geom_point(shape=21, color = "grey20", size=2, aes(fill=Taxon))+
+generations.plot <- restricted.data %>% ggplot(aes(x=Generations, y=g))+
+  geom_jitter(shape=21, color = "grey20", size=2, aes(fill=Taxon))+
   ylim(-3.5,3.5)+
   geom_hline(yintercept=0, linetype="dashed") + 
   scale_fill_brewer(palette = "Set3")+
@@ -1512,12 +1512,16 @@ generations.plot
 <br></br>
 **Figure S10:** The number of generations an experimental evolution procedure is run for does not appear to affect the magnitude or direction of the effect size from the fitness related outcome measured at that point. 
 <br></br>
+A linear model shows next to no effect of generations on effect size: 
+```{r}
+summary(lm(g ~ Generations, data = restricted.data))
+```
 
-@Kawecki_2012 reviewed the field of experimental evolution and noted that changes to variation may need longer generations to become apparent. The following graph looks at the relationship between number of generations and lnCVr
+@Kawecki_2012 reviewed the field of experimental evolution and noted that changes to variation may need longer generations to become apparent. The following graph looks at the relationship between number of generations and lnCVr:
 
 ```{r, fig.height= 7.5, fig.width=10, warning=FALSE}
 generations.plot.var <- restricted.data2 %>% ggplot(aes(x=Generations, y=lnCVr))+
-  geom_point(shape=21, color = "grey20", size=2, aes(fill=Taxon))+
+  geom_jitter(shape=21, color = "grey20", size=2, aes(fill=Taxon))+
   ylim(-3.5,3.5)+
   geom_hline(yintercept=0, linetype="dashed") + 
   scale_fill_brewer(palette = "Set3")+
@@ -1542,11 +1546,12 @@ generations.plot.var <- restricted.data2 %>% ggplot(aes(x=Generations, y=lnCVr))
 generations.plot.var
 ```
 
-**Figure S11:** Phenotypic variation (lnCVR) is not affected by the number of generations an experiment is ran.
+**Figure S11:** Phenotypic variation (lnCVR) is not affected by the number of generations an experiment is ran for.
 
 ```{r}
-summary(lm(lnCVr ~ Generations, data = restricted.data))
+summary(lm(lnCVr ~ Generations, data = restricted.data2))
 ```
+
 
 ________________
 
