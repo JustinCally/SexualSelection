@@ -150,9 +150,9 @@ kable(Eligibility.criteria, "html") %>%
 
 
 
-### Effect Size Calculation
+### Data Extraction and Effect Size Calculation
 
-A spreadsheet describing the data that was extracted from each of the included studies is included as supplementary material. It details the type of data collected for each study (arithmatic means, SD, n, F-statistic, chi-squared, proportion etc.). The rules utilised were as follows: 
+The rules utilised during the data extraction and effect size calculation were as follows:
 
 1. Arithmatic means, standard deviations/errors and sample sizes were extracted from a paper, supplementary material or a linked data repository (e.g. Data Dryad). This was possible when means and SD were reported in text or in a table. We would preferentially extract data for each experimental evolution line/replicat/family if possible and only extract data for the final reported generation (which was noted down).
 
