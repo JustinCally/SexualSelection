@@ -1,6 +1,6 @@
 ---
 title: 'Sexual selection improves population fitness: a meta-analysis'
-author: "Justin G. Cally^1^, Luke Holman^1^, Devi Stuart-Fox^1^ <br></br> <br></br> ^1^The University of Melbourne"
+author: "Justin G. Cally^1^, Devi Stuart-Fox^1^ and Luke Holman^1^ <br></br> <br></br> ^1^The University of Melbourne"
 subtitle: Supplementary Material
 bibliography: bibliography_meta_analysis.bib
 output:
@@ -53,7 +53,7 @@ library(knitr) # set up cacheing to save time when re-building the html document
 ## Supplementary Methods
 
 
-Our aim was to investigate the effects of sexual selection on population fitness by conducting a meta-analysis on studies that measured fitness related outcomes after experimentally evolving a population under varying levels of opportunity for sexual selection. Here we describe the process of the literature search, data extraction, effect size calculation, formulation of multilevel models and assessing publication bias. We used the PRISMA (Preferred Reporting Items for Systematic Reviews and Meta-Analyses) as a guide during this meta-analysis.
+Our aim was to investigate the effects of sexual selection on population fitness by conducting a meta-analysis on studies that measured fitness related outcomes after experimentally evolving a population under varying levels of opportunity for sexual selection. Here we describe the process of the literature search, data extraction, effect size calculation, formulation of multilevel models and assessing publication bias. We used the PRISMA (Preferred Reporting Items for Systematic Reviews and Meta-Analyses) as a guide during this meta-analysis. The repository used to formulate this document can be found here: https://github.com/JustinCally/SexualSelection 
 
 ### Literature Search
 
@@ -251,8 +251,8 @@ prelim.data %>%
     Effect_sizes_.Ambiguousq = (sum(prelim.data$Outcome.Class == "Ambiguous")),
     Effect_sizes_.Indirectq = (sum(prelim.data$Outcome.Class == "Indirect")),
     Effect_sizes_.Directq = (sum(prelim.data$Outcome.Class == "Direct")),
-    Effect_sizes_.Stressedq = (sum(prelim.data$Environment == "Stressed")),
-    Effect_sizes_.Unstressedq = (sum(prelim.data$Environment == "Unstressed")),         
+    Effect_sizes_.Stressfulq = (sum(prelim.data$Environment == "Stressed")),
+    Effect_sizes_.Benignq = (sum(prelim.data$Environment == "Unstressed")),         
     Effect_sizes_.Maleq = (sum(prelim.data$Sex == "M")),
     Effect_sizes_.Femaleq = (sum(prelim.data$Sex == "F")),
     Effect_sizes_.Both_sexesq = (sum(prelim.data$Sex == "B")),
@@ -386,37 +386,41 @@ ______________
 
 ###Overall effect of sexual selection on fitness 
 
-We can obtain an overall weghted grand mean and confidence intervals with a simple intercept only for both Bayesian and REML models. Notably, in both models the estimates are approximately the same, with Bayesian estimates being marginally wider. 
+We can obtain an overall weghted grand mean and confidence intervals with a simple intercept only for both Bayesian and REML models. Notably, in both models the estimates are approximately the same, with Bayesian estimates being marginally wider. The priors for ``brms`` are set from a weakly non-informative student t-distribution: ``student_t(3, 0, 10)``. Notew that narrowing the prior (e.g. standard normal distribution: ``normal(0,1)``) has negligible effects on the model results. 
 
 ```{r, warning = FALSE, results='hide', message=FALSE, error = FALSE, eval=FALSE}
 grand.mean.bayes <- brm(g | se(SE)  ~ 1 #Note that running se(SE, sigma = TRUE) gives different result due to a difference in priors
                 + (1|Study.ID)
-                + (1|Outcome), 
+                + (1|Outcome)
+                + (1|Taxon), 
                 family = "gaussian", 
                 seed = 1,
                 cores = 4, chains = 4, iter = 4000, #Run 4 chains in parallel for 4000 iterations (2000 are burn in)
                 control = list(adapt_delta = 0.9999, max_treedepth = 15),
                 data = prelim.data %>% mutate(SE = sqrt(var.g)))
 
+saveRDS(grand.mean.bayes, "data/grand.mean.bayes.rds") #Save to avoid re-running during knit
 ```
 
-
 ```{r}
+#Inspect this for details of random/group level effects
 grand.mean.bayes <- readRDS("data/grand.mean.bayes.rds")
 
 #Run REML model 
 forest.model <- rma.mv(g, var.g,
                        mods = ~ 1,
                        random = list(~ 1 | Study.ID,
-                                      ~ 1 | Outcome),
+                                      ~ 1 | Outcome,
+                                      ~ 1 | Taxon),
                        method = "REML",
                        data = prelim.data)
 
-#Manually imput bayesian results
-mean = c(forest.model$b, 0.22)
-LCI = c(forest.model$ci.lb, 0.01)
-UCI = c(forest.model$ci.ub, 0.43)
-grand.means.df <- data.frame(rbind(mean, LCI, UCI))
+#Manually imput bayesian results: brms model object difficult to extract from
+mean = c(forest.model$b, 0.23) #Values for Bayesian can be obtained from grand.mean.bayes model object
+LCI = c(forest.model$ci.lb, -0.06)
+UCI = c(forest.model$ci.ub, 0.51)
+Stat = c(forest.model$pval, 18.09) #BF can be obtained with: hypothesis(grand.mean.bayes, "Intercept > 0")
+grand.means.df <- data.frame(rbind(mean, LCI, UCI, Stat))
 colnames(grand.means.df) = c("REML", "Bayesian")
 grand.means.df %>% pander(digits = 2)
 ```
@@ -428,7 +432,8 @@ ____________________
 Instead of running individual models for each fitness component we can run a model with the fitness components as predictors. In this case we maintain all of our fitness components and include study.id as a group level effect (to account for within study correlations in effect size). Using the ``brms`` package we can run a Bayesian model and generate fitted values for each fitness component.
 ```{r, warning = FALSE, results='hide', message=FALSE, error = FALSE, eval=FALSE}
 model.fitness.components.bayes <- brm(g | se(SE)  ~ Outcome #Note that running se(SE, sigma = TRUE) gives different result due to a difference in priors
-                + (1|Study.ID), 
+                + (1|Study.ID)
+                + (1|Taxon), 
                 family = "gaussian", 
                 seed = 1,
                 cores = 4, chains = 4, iter = 4000, #Run 4 chains in parallel for 4000 iterations (2000 are burn in)
@@ -436,9 +441,11 @@ model.fitness.components.bayes <- brm(g | se(SE)  ~ Outcome #Note that running s
                 data = prelim.data %>% mutate(SE = sqrt(var.g)))
 
 make_text_summary(model.fitness.components.bayes) %>% add_significance_stars() %>% tibble::rownames_to_column("Model Parameter") %>% pander(split.cell = 40, split.table = Inf)
+
+saveRDS(model.fitness.components.bayes, "data/components.brms.rds") #Save to avoid re-running during knit
 ```
 
-**Table S6** Summary of model predictions for 20 fitness components. In the manuscript these values are presented as a text overlay on Figure 1 (Forest Plot).
+**Table S6** Summary of model predictions for 20 fitness components. In the manuscript these values are presented as a text overlay on Figure 1 (Forest Plot). Additionally, Bayes Factors (BF) are presented as the likelihood ratio that the effect size is greater than 0. Where values greater than 1 correspond to higher likelihood of the effect size being positive and values less than 1 suggest that the effect size is more likely to be negative.
 
 ```{r, warning = FALSE}
 components.brms <- readRDS(file = "data/components.brms.rds") #Avoid re-running model above
@@ -465,7 +472,19 @@ rownames(brms.predictions) <- NULL
 sample.sizes.outcomes <- as.data.frame(table(prelim.data$Outcome))
 colnames(sample.sizes.outcomes) <- c("Fitness Component", "n")
 fitness.component.predictions <- left_join(brms.predictions, sample.sizes.outcomes, by = "Fitness Component")
-fitness.component.predictions %>% add_significance_stars2() %>% pander(split.cell = 40, split.table = Inf, digits = 2)
+
+#Obtain Bayes Factor of likelihood that the outcome is greater than 0
+BF.outcome.list <-  c('Body Size', 'Development Rate', 'Early Fecundity', 'Immunity', 'Mating Duration', 'Pesticide Resistance', 'Mutant Frequency', 'Body Condition', 'Fitness Senescence', 'Lifespan', 'Male Attractiveness', 'Mating Frequency', 'Mating Latency', 'Mating Success', 'Strength', 'Ejaculate Quality and Production', 'Extinction Rate', 'Offspring Viability', 'Reproductive Success')
+#Obtain BF for all components
+Hypotheses <- list()
+BFs <- list()
+Hypotheses[["Behavioural Plasticity"]] <- hypothesis(components.brms, "Intercept > 0") #Intercept in model, need to do it by itself
+BFs[["Behavioural Plasticity"]] <- Hypotheses[["Behavioural Plasticity"]][["hypothesis"]][["Evid.Ratio"]]
+for (i in BF.outcome.list){
+Hypotheses[[i]] <- hypothesis(components.brms, paste("Intercept + Outcome",i," > 0", sep = ""))
+BFs[[i]] <- Hypotheses[[i]][["hypothesis"]][["Evid.Ratio"]]
+} #Loop for all fitness compoinents
+fitness.component.predictions %>% cbind.data.frame(as.data.frame(BFs) %>% t() %>% as.data.frame() %>% `colnames<-`("BF")) %>% add_significance_stars2() %>% pander(split.cell = 40, split.table = Inf, digits = 2)
 ```
 
 ____________________
@@ -484,7 +503,6 @@ model.preliminary <- rma.mv(g, var.g,
                          data = prelim.data)
 
 summary(model.preliminary, digits = 2)
-
 ```
 <br></br>
 Here we can also run a Bayesian model alongside the REML model (metafor). The _R^2^_ for this model is 0.36 (95% CIs = 0.33-0.4). 
