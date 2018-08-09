@@ -49,7 +49,6 @@ library(knitr) # set up cacheing to save time when re-building the html document
 `r opts_chunk$set(cache=TRUE)`
 
 
-
 ## Supplementary Methods
 
 
