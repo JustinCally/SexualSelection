@@ -484,7 +484,7 @@ Hypotheses[[i]] <- hypothesis(components.brms, paste("Intercept + Outcome",i," >
 BFs[[i]] <- Hypotheses[[i]][["hypothesis"]][["Evid.Ratio"]]
 } #Loop for all fitness compoinents
 
-fitness.component.predictions %>% cbind.data.frame(as.data.frame(BFs) %>% t() %>% as.data.frame() %>% `colnames<-`("BF")) %>% add_significance_stars2() %>% pander(split.cell = 40, split.table = Inf, digits = 2)
+fitness.component.predictions %>% cbind.data.frame(as.data.frame(BFs) %>% t() %>% as.data.frame() %>% `colnames<-`("BF")) %>% add_significance_stars2() %>% `row.names<-`(NULL) %>% pander(split.cell = 40, split.table = Inf, digits = 2)
 ```
 
 ____________________
