@@ -444,7 +444,7 @@ make_text_summary(model.fitness.components.bayes) %>% add_significance_stars() %
 saveRDS(model.fitness.components.bayes, "data/components.brms.rds") #Save to avoid re-running during knit
 ```
 
-**Table S6** Summary of model predictions for 20 fitness components. In the manuscript these values are presented as a text overlay on Figure 1 (Forest Plot). Additionally, Bayes Factors (BF) are presented as the likelihood ratio that the effect size is greater than 0. Where values greater than 1 correspond to higher likelihood of the effect size being positive and values less than 1 suggest that the effect size is more likely to be negative.
+**Table S6** Summary of model predictions for 20 fitness components. In the manuscript these values are presented as a text overlay on Figure 1 (Forest Plot) using the Bayesian values. Additionally, Bayes Factors (BF) are presented as the likelihood ratio that the effect size is greater than 0. Where values greater than 1 correspond to higher likelihood of the effect size being positive and values less than 1 suggest that the effect size is more likely to be negative. The right side of the table provides the REML estimates with SE and CIs.
 
 ```{r, warning = FALSE}
 components.brms <- readRDS(file = "data/components.brms.rds") #Avoid re-running model above
@@ -462,7 +462,7 @@ brms.predict <- as.data.frame(brms.predict)
 brms.predictions <- data.frame(brms.newdata$Outcome, brms.predict$Estimate, brms.predict$Est.Error, brms.predict$Q2.5, brms.predict$Q97.5)
 
 #Name columns
-colnames(brms.predictions) <- c("Fitness Component", "Estimate", "Error", "LCI", "UCI")
+colnames(brms.predictions) <- c("Fitness Component", "Bayes Pred.", "Bayes SE", "Bayes LCI", "Bayes UCI")
 
 outcome.list.factor <-  c('Behavioural Plasticity', 'Body Size', 'Development Rate', 'Early Fecundity', 'Immunity', 'Mating Duration', 'Pesticide Resistance', 'Mutant Frequency', 'Body Condition', 'Fitness Senescence', 'Lifespan', 'Male Attractiveness', 'Mating Frequency', 'Mating Latency', 'Mating Success', 'Strength', 'Ejaculate Quality and Production', 'Extinction Rate', 'Offspring Viability', 'Reproductive Success')
 
@@ -484,8 +484,56 @@ Hypotheses[[i]] <- hypothesis(components.brms, paste("Intercept + Outcome",i," >
 BFs[[i]] <- Hypotheses[[i]][["hypothesis"]][["Evid.Ratio"]]
 } #Loop for all fitness compoinents
 
-fitness.component.predictions %>% cbind.data.frame(as.data.frame(BFs) %>% t() %>% as.data.frame() %>% `colnames<-`("BF")) %>% add_significance_stars2() %>% `row.names<-`(NULL) %>% pander(split.cell = 40, split.table = Inf, digits = 2)
+#Now for REML
+model.fitness.components.REML <- rma.mv(g, var.g, mods = ~ 1 + Outcome,
+                         random = list(~ 1 | Study.ID,
+                                       ~ 1 | Taxon),
+                         method = "REML",
+                         data = prelim.data)
+
+get.predictions.outcomes <- function(newdata){
+  `Body Condition`<-0; `Body Size`<-0; `Development Rate`<-0; `Early Fecundity`<-0; `Ejaculate Quality and Production`<-0; `Extinction Rate`<-0; `Fitness Senescence`<-0; Immunity<-0; Lifespan<-0; `Male Attractiveness`<-0; `Mating Duration`<-0; `Mating Frequency`<-0; `Mating Latency`<-0; `Mating Success`<-0; `Mutant Frequency`<-0; `Offspring Viability`<-0; `Pesticide Resistance`<-0; `Reproductive Success`<-0; Strength<-0
+  if(newdata[1] == 'Body Size') `Body Size`<-1
+  if(newdata[1] == 'Development Rate') `Development Rate`<-1
+  if(newdata[1] == 'Early Fecundity') `Early Fecundity`<-1
+  if(newdata[1] == 'Immunity')Immunity<-1
+  if(newdata[1] == 'Mating Duration')`Mating Duration`<-1
+  if(newdata[1] == 'Pesticide Resistance')`Pesticide Resistance`<-1
+  if(newdata[1] == 'Mutant Frequency')`Mutant Frequency`<-1
+  if(newdata[1] == 'Body Condition')`Body Condition`<-1
+  if(newdata[1] == 'Fitness Senescence')`Fitness Senescence`<-1
+  if(newdata[1] == 'Lifespan')Lifespan<-1
+  if(newdata[1] == 'Male Attractiveness')`Male Attractiveness`<-1
+  if(newdata[1] == 'Mating Frequency')`Mating Frequency`<-1
+  if(newdata[1] == 'Mating Latency')`Mating Latency`<-1
+  if(newdata[1] == 'Mating Success')`Mating Success`<-1
+  if(newdata[1] == 'Strength')Strength<-1
+  if(newdata[1] == 'Ejaculate Quality and Production')`Ejaculate Quality and Production`<-1
+  if(newdata[1] == 'Extinction Rate')`Extinction Rate`<-1
+  if(newdata[1] == 'Offspring Viability')`Offspring Viability`<-1
+  if(newdata[1] == 'Reproductive Success')`Reproductive Success`<-1
+    
+  predict(model.fitness.components.REML, newmods=c(`Body Condition`, `Body Size`, `Development Rate`, `Early Fecundity`, `Ejaculate Quality and Production`, `Extinction Rate`, `Fitness Senescence`, Immunity, Lifespan, `Male Attractiveness`, `Mating Duration`, `Mating Frequency`, `Mating Latency`, `Mating Success`, `Mutant Frequency`, `Offspring Viability`, `Pesticide Resistance`, `Reproductive Success`, Strength))
+}
+# Get the predictions for each combination of moderators
+predictions.outcomes <- as.data.frame(expand.grid(Outcome = outcome.list.factor))
+predictions.outcomes <- cbind(predictions.outcomes, do.call("rbind", apply(predictions.outcomes, 1, get.predictions.outcomes))) %>%
+  select(Outcome, pred, se, ci.lb, ci.ub) 
+for(i in 2:5) predictions.complete[,i] <- unlist(predictions.complete[,i])
+
+colnames(predictions.outcomes) <- c("Fitness Component", "REML Prediction", "REML SE", "REML LCI", "REML UCI")
+predictions.outcomes <- format(predictions.outcomes, digits = 2)
+
+fitness.component.predictions <- fitness.component.predictions %>% cbind.data.frame(as.data.frame(BFs) %>% t() %>% as.data.frame() %>% `colnames<-`("BF")) %>% `row.names<-`(NULL) %>% format(digits = 2)
+
+left_join(fitness.component.predictions, predictions.outcomes, by = "Fitness Component") %>% pander(split.table = Inf, digits = 2)
+
 ```
+
+```{r}
+
+```
+
 
 ____________________
 
@@ -646,8 +694,8 @@ Taxon.metaanlysis <- predictions.complete %>%
   xlab("\nModel Prediction (Hedges g)")+
   xlim(-1, 2)+
   ggtitle('Effects of Sex and Stress on \nPopulation Fitness for Each Taxon')+
-  scale_fill_manual(values = c("Male" = "#e41a1c", "Female" = "#377eb8", "Both" = "#4daf4a"))+
-  scale_color_manual(values = c("Male" = "#e41a1c", "Female" = "#377eb8", "Both" = "#4daf4a"))+
+  scale_fill_manual(values = c("Male" = "#ff7f00", "Female" = "#984ea3", "Both" = "#4daf4a"))+
+  scale_color_manual(values = c("Male" = "#ff7f00", "Female" = "#984ea3", "Both" = "#4daf4a"))+
   guides(fill = guide_legend(reverse=T, override.aes = list(size = 4.5)))+
   
     theme_bw()+
@@ -855,7 +903,6 @@ Using predictions from both REML and Bayesian models we can obtain a figure that
 
 ```{r, fig.height=6, fig.width=6, warning=FALSE, message=FALSE, error = FALSE}
 #Generate predictions without taxon utilising the previously described function
-
 get.predictions.complete2 <- function(newdata){
   B<-0; F<-0; Stressed<-0; interaction1<-0; interaction2<-0; interaction3<-0
   if(newdata[1] == "B") B<-1 
@@ -893,8 +940,10 @@ posterior.plot <- post %>% mutate(Sex = factor(Sex, levels = c("Male", "Both", "
   geom_vline(xintercept = 0, linetype = 2, colour = "black") + 
     ylab("Environment")+
   xlab("\nEffect Size (Hedges' g)")+
-  scale_fill_manual(values = c("Male" = "#e41a1c", "Female" = "#377eb8", "Both" = "#4daf4a"))+
-  scale_color_manual(values = c("Male" = "#e41a1c", "Female" = "#377eb8", "Both" = "#4daf4a"))+
+  # scale_fill_manual(values = c("Male" = "#e41a1c", "Female" = "#377eb8", "Both" = "#4daf4a"))+
+  # scale_color_manual(values = c("Male" = "#e41a1c", "Female" = "#377eb8", "Both" = "#4daf4a"))+
+  scale_fill_manual(values = c("Male" = "#ff7f00", "Female" = "#984ea3", "Both" = "#4daf4a"))+
+  scale_color_manual(values = c("Male" = "#ff7f00", "Female" = "#984ea3", "Both" = "#4daf4a"))+
   scale_x_continuous(limits = c(-0.75, 1.5), breaks = c(-1, -.5, 0, 0.5, 1, 1.5))+
   
   theme_bw()+
@@ -1124,8 +1173,8 @@ var.plot.posterior <- post.variance %>% mutate(Sex = factor(Sex, levels = c("Mal
   ylab("Environment\n")+
   xlab("\nPhenotypic Variance (lnCVR)")+
   scale_x_continuous(limits = c(-2.1, 1.2), breaks = c(-2, -1.5, -1, -0.5, 0, 0.5, 1))+
-  scale_fill_manual(values = c("Male" = "#e41a1c", "Female" = "#377eb8", "Both" = "#4daf4a"))+
-  scale_color_manual(values = c("Male" = "#e41a1c", "Female" = "#377eb8", "Both" = "#4daf4a"))+
+  scale_fill_manual(values = c("Male" = "#ff7f00", "Female" = "#984ea3", "Both" = "#4daf4a"))+
+  scale_color_manual(values = c("Male" = "#ff7f00", "Female" = "#984ea3", "Both" = "#4daf4a"))+
   
   theme_bw()+
   
