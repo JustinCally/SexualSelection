@@ -1,6 +1,6 @@
 ---
 title: 'Sexual selection improves population fitness: a meta-analysis'
-author: "Justin G. Cally^1^, Devi Stuart-Fox^1^ and Luke Holman^1^ <br></br> <br></br> ^1^The University of Melbourne"
+author: #"Justin G. Cally^1^, Devi Stuart-Fox^1^ and Luke Holman^1^ <br></br> <br></br> ^1^The University of Melbourne"
 subtitle: Supplementary Material
 bibliography: bibliography_meta_analysis.bib
 output:
@@ -38,6 +38,7 @@ library(bayesplot)
 #devtools::install_github("mvuorre/brmstools")
 library(brmstools)
 library(metaAidR)
+library(cowplot)
 source("I2_function.R") #Adapted function for obtaining I2 with CIs
 source("Vdodge_function.R") # nice function for ggplot
 source("Tidy_functions_for_brms.R") #Tidy functions for making model tables for brms
@@ -52,7 +53,7 @@ library(knitr) # set up cacheing to save time when re-building the html document
 ## Supplementary Methods
 
 
-Our aim was to investigate the effects of sexual selection on population fitness by conducting a meta-analysis on studies that measured fitness related outcomes after experimentally evolving a population under varying levels of opportunity for sexual selection. Here we describe the process of the literature search, data extraction, effect size calculation, formulation of multilevel models and assessing publication bias. We used the PRISMA (Preferred Reporting Items for Systematic Reviews and Meta-Analyses) as a guide during this meta-analysis. The repository used to formulate this document can be found here: https://github.com/JustinCally/SexualSelection 
+Our aim was to investigate the effects of sexual selection on population fitness by conducting a meta-analysis on studies that measured fitness related outcomes after experimentally evolving a population under varying levels of opportunity for sexual selection. Here we describe the process of the literature search, data extraction, effect size calculation, formulation of multilevel models and assessing publication bias. We used the PRISMA (Preferred Reporting Items for Systematic Reviews and Meta-Analyses) as a guide during this meta-analysis. The repository used to formulate this document can be found here: **hidden for double-blid peer review** 
 
 ### Literature Search
 
@@ -519,7 +520,7 @@ get.predictions.outcomes <- function(newdata){
 predictions.outcomes <- as.data.frame(expand.grid(Outcome = outcome.list.factor))
 predictions.outcomes <- cbind(predictions.outcomes, do.call("rbind", apply(predictions.outcomes, 1, get.predictions.outcomes))) %>%
   select(Outcome, pred, se, ci.lb, ci.ub) 
-for(i in 2:5) predictions.complete[,i] <- unlist(predictions.complete[,i])
+for(i in 2:5) predictions.outcomes[,i] <- unlist(predictions.outcomes[,i])
 
 colnames(predictions.outcomes) <- c("Fitness Component", "REML Prediction", "REML SE", "REML LCI", "REML UCI")
 predictions.outcomes <- format(predictions.outcomes, digits = 2)
@@ -530,9 +531,6 @@ left_join(fitness.component.predictions, predictions.outcomes, by = "Fitness Com
 
 ```
 
-```{r}
-
-```
 
 
 ____________________
@@ -1227,7 +1225,7 @@ both.var.plots
 **Table S14** The REML predictions in the plot above use the following dataframe.
 ```{r}
 predictions.variance <- format(predictions.variance, digits = 2)
-predictions.variance %>% pander()
+predictions.variance %>% pander(digits = 2)
 ```
 
 ____________________
