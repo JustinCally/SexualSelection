@@ -27,7 +27,6 @@ abstract: Sexual selection has manifold ecological and evolutionary consequences
 library(knitr)
 library(kableExtra)
 library(dplyr)
-
 ```
 
 Sexual selection, defined as selection resulting from competition for mates or their gametes[@RN139], is a ubiquitous evolutionary force that has profoundly shaped the natural world. As far back as Darwin[@RN310], researchers have theorised that sexual selection can change the average absolute fitness of individuals in a population (henceforth termed ‘population fitness’[@RN269; @RN268]). However, opinion is divided over whether the net effect on population fitness is positive or negative[@RN42; @RN25; @RN116; @RN95]. _Prima facie_, one might predict that sexual selection would have no effect on population fitness, since it does not matter which individuals of the faster-reproducing sex (typically males) succeed in mating, so long as some do[@RN142]. However, when genotypes with high mating or fertilisation success also have superior breeding values for traits that affect population fitness (e.g. survival, parental care, female fecundity, or success in interspecific competition), sexual selection is predicted to elevate population fitness by causing a correlated response in these other traits[@RN95]. In essence, the demographically-limiting sex (typically females) benefits from a gene pool that has been purged of harmful alleles through sexual selection on the non-limiting sex (typically males), with the benefit to population fitness potentially large[@RN94; @RN198; @RN58].  
@@ -78,9 +77,11 @@ knitr::include_graphics("Figures/ForestPlot_edit3.pdf") #Not relative path
 knitr::include_graphics("Figures/environment_variance_edit5.pdf") #Not relative path
 ```
 
-```{r, echo = FALSE, fig.cap="Tests of publication bias are mixed and suggest publication bias may be present. (**a**) Inspection and statistical tests of the funnel plot reveal large amounts of heterogeneity in the dataset with asymmetry from increased low-powered, large effect studies. (**b**) No significant correlation exists between journal impact factor and effect size, (**c**) additionally there is no significant correlation between effect size and year of publication when testing for the time-lag bias. For (**b**) and (**c**) circle size is proportional to the weight (%) of the study, which is inversely proportional to the variance of the effect size."}
+```{r, echo = FALSE, fig.cap= "Tests of publication bias are mixed and suggest publication bias may be present. (**a**) Inspection and statistical tests of the funnel plot reveal large amounts of heterogeneity in the dataset with asymmetry from increased low-powered, large effect studies. (**b**) No significant correlation exists between journal impact factor and effect size, (**c**) additionally there is no significant correlation between effect size and year of publication when testing for the time-lag bias. For (**b**) and (**c**) circle size is proportional to the weight (%) of the study, which is inversely proportional to the variance of the effect size."}
 knitr::include_graphics("Figures/publicationbias.pdf") #Not relative path
 ```
+
+<!-- Appears to be a problem having two captions -->
 \newpage
 
 **Table 1:**Results for the multilevel meta-analysis model testing the effects of sexual selection in different environments and between sexes. Moderator variables whose 95% confidence intervals do not cross zero are shown in bold.
