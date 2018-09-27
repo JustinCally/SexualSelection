@@ -5,10 +5,10 @@ author:
 - 
 - #'\textsuperscript{*}\textit{justin.g.cally@gmail.com}'
 output:
+  pdf_document: default
+  html_document: default
   word_document:
       pandoc_args: ["--smart"]
-  html_document: default
-  pdf_document: default
 bibliography: Bibliography/Bibliography.bib
 csl: Bibliography/NComms.csl
 header-includes: \usepackage{microtype} \usepackage[all]{hypcap} \usepackage{amsmath}
@@ -18,7 +18,7 @@ header-includes: \usepackage{microtype} \usepackage[all]{hypcap} \usepackage{ams
   \postdate{\par\end{flushleft}} \usepackage{fancyhdr} \pagestyle{fancy} \fancyhead[LO,LE]{\textsl{\leftmark}}
   \rhead[]{Sexual selection improves fitness} \usepackage{titlefoot}
   \usepackage{amssymb} \usepackage{rotating} \usepackage{lineno} \linenumbers \usepackage{setspace}\onehalfspacing
-abstract: Sexual selection has manifold ecological and evolutionary consequences, making its net effect on population fitness difficult to predict from first principles. Instead, one can empirically determine whether sexual selection increases or decreases population fitness by  manipulating the opportunity for sexual selection in replicate populations, allow evolution to proceed, and then compare the evolved average fitness between the treatment groups. Here, we synthesise 459 effect sizes from 65 pertinent experimental evolution studies using meta-analysis. We find that sexual selection tends to elevate the mean and reduce the variance for many fitness traits, especially in females, and for populations evolving under stressful conditions. We conclude that the beneficial population-level consequences of sexual selection typically outweigh the harmful ones, and that the effects of sexual selection on total selection, genetic variance, and/or evolvability can differ markedly between sexes and environments. We discuss the implications of these results for conservation and evolutionary biology. \vspace{5mm} \par\noindent \textbf{Keywords:} Adaptation, Gender load, Monogamy, Mutation load, Sexual conflict. \vspace{5mm} \par\noindent \textbf{Word count:} XXXX in main text.
+abstract: Sexual selection has manifold ecological and evolutionary consequences, making its net effect on population fitness difficult to predict from first principles. Instead, one can empirically determine whether sexual selection increases or decreases population fitness by  manipulating the opportunity for sexual selection in replicate populations, allow evolution to proceed, and then compare the evolved average fitness between the treatment groups. Here, we synthesise 459 effect sizes from 65 pertinent experimental evolution studies using meta-analysis. We find that sexual selection tends to elevate the mean and reduce the variance for many fitness traits, especially in females, and for populations evolving under stressful conditions. We conclude that the beneficial population-level consequences of sexual selection typically outweigh the harmful ones, and that the effects of sexual selection on total selection, genetic variance, and/or evolvability can differ markedly between sexes and environments. We discuss the implications of these results for conservation and evolutionary biology. \vspace{5mm} \par\noindent \textbf{Keywords:} Adaptation, Gender load, Monogamy, Mutation load, Sexual conflict. \vspace{5mm} \par\noindent \textbf{Word count:} 4,370 in main text.
 ---
 <!-- \maketitle\unmarkedfntext{\textsuperscript{§}School of BioSciences, The University of Melbourne, Victoria, Australia.} -->
 
@@ -183,8 +183,8 @@ We tested for publication bias via funnel plots, using Egger’s test to quantif
 
 The code and data used to perform this meta-analysis is available as Electronic Supplementary Material and on Github (**link hidden for double bind review**). The repository (**link hidden for double bind review**) provides complete data tables of effect sizes, variance and sample sizes needed to reproduce our results.  
 
-#Acknowledgements
-We are very grateful to Paco Garcia-Gonzalez for sharing a collection of literature that helped to guide our study, and to Tim Connallon for comments on the manuscript.
+<!-- #Acknowledgements -->
+<!-- We are very grateful to Paco Garcia-Gonzalez for sharing a collection of literature that helped to guide our study, and to Tim Connallon for comments on the manuscript. -->
 
 \newpage
 # References

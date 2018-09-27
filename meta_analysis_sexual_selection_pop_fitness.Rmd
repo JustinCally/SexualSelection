@@ -4,6 +4,7 @@ author: #"Justin G. Cally^1^, Devi Stuart-Fox^1^ and Luke Holman^1^ <br></br> <b
 subtitle: Supplementary Material
 bibliography: bibliography_meta_analysis.bib
 output:
+  pdf_document: default
   html_document:
     toc: true # table of content true
     toc_float: true # make 
@@ -11,7 +12,6 @@ output:
     number_sections: false  ## if you want number sections at each table header
     theme: yeti # lovely fonts and colours
     code_folding: hide # awesome buttons to show/hide the code
-  pdf_document: default
 ---
 
 ```{r, warning=FALSE, message=FALSE, results='hide'}
