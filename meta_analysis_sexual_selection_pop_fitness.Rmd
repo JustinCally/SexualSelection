@@ -1395,7 +1395,7 @@ In addition to publication bias, other forms of bias may exist within studies. W
 
 ```{r, fig.height= 6, fig.width=8}
 blind.plot <- df.forest.model %>% ggplot(aes(x=Blinding, y=g))+
-  geom_jitter(aes(fill=Blinding, size = 1/var.g), shape=21, color='grey20')+
+  geom_jitter(aes(fill=Blinding, size = ((1/var.g)/27708.14)*100), shape=21, color='grey20')+ #total 1/var.g
   geom_boxplot(outlier.shape = NA, fill = NA)+
   geom_hline(yintercept=0, linetype = 'dotted') + 
   scale_fill_brewer(palette = "Set2")+
