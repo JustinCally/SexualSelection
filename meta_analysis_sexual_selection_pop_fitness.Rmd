@@ -1,6 +1,6 @@
 ---
 title: 'Sexual selection improves population fitness: a meta-analysis'
-author: #"Justin G. Cally^1^, Devi Stuart-Fox^1^ and Luke Holman^1^ <br></br> <br></br> ^1^The University of Melbourne"
+author: "Justin G. Cally^1^, Devi Stuart-Fox^1^ and Luke Holman^1^ <br></br> <br></br> ^1^The University of Melbourne"
 subtitle: Supplementary Material
 bibliography: bibliography_meta_analysis.bib
 output:
@@ -53,7 +53,7 @@ library(knitr) # set up cacheing to save time when re-building the html document
 ## Supplementary Methods
 
 
-Our aim was to investigate the effects of sexual selection on population fitness by conducting a meta-analysis on studies that measured fitness related outcomes after experimentally evolving a population under varying levels of opportunity for sexual selection. Here we describe the process of the literature search, data extraction, effect size calculation, formulation of multilevel models and assessing publication bias. We used the PRISMA (Preferred Reporting Items for Systematic Reviews and Meta-Analyses) as a guide during this meta-analysis. The repository used to formulate this document can be found here: **hidden for double-blind peer review** 
+Our aim was to investigate the effects of sexual selection on population fitness by conducting a meta-analysis on studies that measured fitness related outcomes after experimentally evolving a population under varying levels of opportunity for sexual selection. Here we describe the process of the literature search, data extraction, effect size calculation, formulation of multilevel models and assessing publication bias. We used the PRISMA (Preferred Reporting Items for Systematic Reviews and Meta-Analyses) as a guide during this meta-analysis. The repository used to formulate this document can be found here: https://github.com/JustinCally/SexualSelection 
 
 ### Literature Search
 
