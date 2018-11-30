@@ -32,6 +32,9 @@ abstract: Sexual selection has manifold ecological and evolutionary consequences
 library(knitr)
 library(kableExtra)
 library(dplyr)
+library(brms)
+
+source("../Tidy_functions_for_brms.R") #Tidy functions for making model tables for brms
 ```
 \phantomsection
 
@@ -39,7 +42,7 @@ library(dplyr)
 
 Sexual selection, defined as selection resulting from competition for mates or their gametes [@RN139], is a ubiquitous evolutionary force that has profoundly shaped the natural world. As far back as Darwin [@RN310], researchers have theorised that sexual selection can change the average absolute fitness of individuals in a population, henceforth termed ‘population fitness’ [@RN269; @RN268]. However, opinion is divided over whether the net effect on population fitness is positive or negative [@RN42; @RN25; @RN116; @RN95]. _Prima facie_, one might predict that sexual selection would have no effect on population fitness, since it does not matter which individuals of the faster-reproducing sex (typically males) succeed in mating, so long as some do [@RN142]. However, when genotypes with high mating or fertilisation success also have superior breeding values for traits that affect population fitness (*e.g.*, survival, parental care, female fecundity, or success in interspecific competition), sexual selection is predicted to elevate population fitness by causing a correlated response in these other traits [@RN95]. In essence, the demographically-limiting sex (typically females) benefits from a gene pool that has been purged of harmful alleles through sexual selection on the non-limiting sex (typically males). Theoretically, the benefit to population fitness could be large [@RN94; @RN198; @RN58].  
 
-Conversely, sexual selection can decrease population fitness if male sexually-selected traits are negatively genetically correlated with female fitness, producing intralocus \hl{sexual conflict} [@RN187; @RN146; @RN237; @RN147; @Harano_2010; @Plesnar_2014]. Additionally, sexual selection frequently favours phenotypes that reduce population fitness but benefit the individuals expressing them, such as harassment or infanticide by mate-seeking males [@RN6; @RN267; @RN37], as well as investment in costly sexual signals and weaponry at the expense of parental care: \textit{inter}locus sexual conflict [@RN314; @RN276; @RN315]. Given these conflicting theoretical expectations and empirical results, it remains unclear whether sexual selection tends to have a net benefit or cost to population fitness [@RN42; @RN25; @RN116; @RN95].  
+Conversely, sexual selection can decrease population fitness if male sexually-selected traits are negatively genetically correlated with female fitness, producing intralocus **sexual conflict** [@RN187; @RN146; @RN237; @RN147; @Harano_2010; @Plesnar_2014]. Additionally, sexual selection frequently favours phenotypes that reduce population fitness but benefit the individuals expressing them, such as harassment or infanticide by mate-seeking males [@RN6; @RN267; @RN37], as well as investment in costly sexual signals and weaponry at the expense of parental care: \textit{inter}locus sexual conflict [@RN314; @RN276; @RN315]. Given these conflicting theoretical expectations and empirical results, it remains unclear whether sexual selection tends to have a net benefit or cost to population fitness [@RN42; @RN25; @RN116; @RN95].  
 
 Researchers have investigated the population-level consequences of sexual selection using a range of approaches including macro-evolutionary studies [@RN56; @RN51; @RN55], analysis of the fossil record [@RN270], quantitative genetics [@RN187; @RN200; @RN115; @RN254; @RN257] and especially experimental evolution. In particular, many experimental evolution studies have manipulated the intensity of sexual selection in captive populations, allowed evolution to proceed, and then measured population fitness components such as lifespan, reproductive success, population extinction rate and mutation load. This approach facilitates direct measurement of the net effect of sexual selection on population fitness, at least in the specific populations and ecological conditions under study.  
 
@@ -52,17 +55,17 @@ Here, we synthesise the empirical literature on sexual selection and population 
 
 ##The effect size dataset
 
-We retrieved 459 effect sizes from 65 studies. 94 effect sizes were collected from populations evolving under stressful conditions, while 335 were measured for those evolving in benign conditions. 189 of the effect sizes came from measurements made on males, 219 on females, and the remaining 51 from measurements of a mixed-sex sample of individuals. Most effect sizes in our dataset came from studies that manipulated sexual selection by completely removing it in one treatment via enforced random monogamy ($n$ = 241); other effect sizes ($n$ = 218) derived from alternative manipulations, such as changing the adult sex ratio. In total, we obtained effect sizes for 20 different fitness traits, with reproductive success ($n$ = 156) and offspring viability ($n$ = 56) being the most commonly-measured traits. We classified 216 effect sizes as direct measures of fitness, 147 as indirect, and the remaining 96 effect sizes as ambiguous (see Methods, \autoref{forest_plot} and \href{https://justincally.github.io/SexualSelection/#inclusionexclusion_criteria}{Table S1}). Specifically, direct measures were components of reproduction or long-term viability (*e.g.*, reproductive success, offspring viability, and extinction rate), indirect measures were traits often used as a proxy of fitness but that do not directly measure aspects of success in reproduction or population viability (*e.g.*, lifespan, mating success and ejaculate quality/production); and ambiguous measures were those reported to have an unclear or variable association with fitness (*e.g.*, body size, mating duration, and early fecundity). \href{https://justincally.github.io/SexualSelection/#tables_of_sample_sizes}{Tables S4-S5} give a detailed description of our dataset.\phantomsection
+We retrieved 459 effect sizes from 65 studies. 92 effect sizes were collected from populations evolving under stressful conditions, while 337 were measured for those evolving in benign conditions. 189 of the effect sizes came from measurements made on males, 219 on females, and the remaining 51 from measurements of a mixed-sex sample of individuals. Most effect sizes in our dataset came from studies that manipulated sexual selection by completely removing it in one treatment via enforced random monogamy ($n$ = 241); other effect sizes ($n$ = 218) derived from alternative manipulations, such as changing the adult sex ratio. In total, we obtained effect sizes for 20 different fitness traits, with reproductive success ($n$ = 156) and offspring viability ($n$ = 56) being the most commonly-measured traits. We classified 216 effect sizes as direct measures of fitness, 141 as indirect, and the remaining 102 effect sizes as ambiguous (see Methods, \autoref{forest_plot} and \href{https://justincally.github.io/SexualSelection/#inclusionexclusion_criteria}{Table S1}). Specifically, direct measures were components of reproduction or long-term viability (*e.g.*, reproductive success, offspring viability, and extinction rate), indirect measures were traits often used as a proxy of fitness but that do not directly measure aspects of success in reproduction or population viability (*e.g.*, lifespan, mating success and ejaculate quality/production); and ambiguous measures were those reported to have an unclear or variable association with fitness (*e.g.*, body size, mating duration, and early fecundity). \href{https://justincally.github.io/SexualSelection/#tables_of_sample_sizes}{Tables S4-S5} give a detailed description of our dataset.\phantomsection
 
 \subsection{Sexual selection is associated with higher mean values for most fitness \\components}
 
-The grand mean for all effect sizes (\hl{direct, indirect and ambiguous}) was positive (REML $\beta$ = 0.23, 95% CIs: 0.01 to 0.44, $p$ = 0.038; Bayesian $\beta$ = 0.23, 95% CIs: -0.06 to 0.51, $BF_{>0}$ = 18), indicating that sexual selection typically had a net positive effect on the majority of populations and fitness components so far studied. Moreover, the effect sizes associated with the manipulation of sexual selection varied between different fitness traits. Sexual selection had a beneficial effect on most fitness traits, including all of the fitness traits that we classified as being ‘direct’ measurements of population fitness: extinction rate (REML $\beta$ = 0.37, 95% CIs: 0.01 to 0.73; Bayesian $\beta$ = 0.37, 95% CIs: -0.02 to 0.79, $BF_{>0}$ = 30.13; $n$ = 4), offspring viability (REML $\beta$ = 0.20, 95% CIs: 0.042 to 0.36; Bayesian $\beta$ = 0.21, 95% CIs: -0.04 to 0.47, $BF_{>0}$ = 24.89; $n$ = 56) and reproductive success (REML $\beta$ = 0.17, 95% CIs: 0.013 to 0.32; Bayesian $\beta$ = 0.18, 95% CIs: -0.06 to 0.44, $BF_{>0}$ = 15.53; $n$ = 156; \autoref{forest_plot}; \href{https://justincally.github.io/SexualSelection/#effect_of_sexual_selection_for_different_fitness_components}{Table S6}). Sexual selection significantly reduced two fitness components, namely immunity (REML $\beta$ = -0.49, 95% CIs: -0.72 to -0.26; Bayesian $\beta$ = -0.49, 95% CIs: -0.78 to -0.19, $BF_{>0}$ = 0.0054; $n$ = 35) and body condition (REML $\beta$ = -1.3, 95% CIs: -1.9 to -0.67; Bayesian $\beta$ = -1.3, 95% CIs: -1.9 to -0.63, $BF_{>0}$ = 0.00025, $n$ = 1). \autoref{forest_plot} presents Bayesian estimates for each fitness component and \href{https://justincally.github.io/SexualSelection/#effect_of_sexual_selection_for_different_fitness_components}{Table S6} contains both Bayesian and REML estimates, with sample sizes and test statistics.  \phantomsection
+The grand mean for all effect sizes (**direct, indirect and ambiguous**) was positive (REML $\beta$ = 0.25, 95% CIs: 0.06 to 0.43, $p$ = 0.008; Bayesian $\beta$ = 0.25, 95% CIs: -0.02 to 0.52, $BF_{>0}$ = 32), indicating that sexual selection typically had a net positive effect on the majority of populations and fitness components so far studied. Moreover, the effect sizes associated with the manipulation of sexual selection varied between different fitness traits. Sexual selection had a beneficial effect on most fitness traits, but varied across the three relationships to fitness \autoref{forest_plot}; \href{https://justincally.github.io/SexualSelection/#effect_of_sexual_selection_for_different_fitness_components}{Table S6}). **Sexual selection elevated fitness for traits that shared an ambiguous relationship to fitness (REML $\beta$ = 0.23, 95% CIs: 0.12 to 0.35; Bayesian $\beta$ = 0.23, 95% CIs: 0.03 to 0.41, $BF_{>0}$ = 55, $n$ = 102) and an indirect relationship to fitness (REML $\beta$ = 0.25, 95% CIs: 0.13 to 0.36; Bayesian $\beta$ = 0.24, 95% CIs: 0.04 to 0.42, $BF_{>0}$ = 68, $n$ = 141). Additionally, sexual selection elevated fitness components directly related to fitness, albeit at a lower magnitude (REML $\beta$ = 0.13, 95% CIs: 0.02 to 0.24; Bayesian $\beta$ = 0.13, 95% CIs: -0.07 to 0.3, $BF_{>0}$ = 14, $n$ = 216). An extensive forest plot with predicted effect sizes for each fitness component is presented in Figure S1 and further detailed in model prediction and individual meta-analyses in** \href{https://justincally.github.io/SexualSelection/#effect_of_sexual_selection_for_different_fitness_components}{Table S8 and S9}. Sexual selection significantly reduced two fitness components, namely immunity (REML $\beta$ = -0.42, 95% CIs: -0.64 to -0.20; Bayesian $\beta$ = -0.43, 95% CIs: -0.70 to -0.16, $BF_{>0}$ = 0.0021; $n$ = 35) and body condition (REML $\beta$ = -1.2, 95% CIs: -1.8 to -0.63; Bayesian $\beta$ = -1.2, 95% CIs: -1.8 to -0.61, $BF_{>0}$ = 0.00013, $n$ = 1).  \phantomsection
 
 ##The roles of environmental stress and sex
 
-We found that the sex of the individuals measured (male, female, or a mixture), and the conditions under which the population evolved (stressful or benign) interacted to affect fitness (\hyperlink{page.13}{Table 1, 2}). Sexual selection significantly improved female fitness, and the beneficial effect of sexual selection was significantly stronger for females from populations evolving under stressful conditions (*e.g.* a food source to which they were not well-adapted) than under benign conditions (\autoref{env_sex}a, \hyperlink{page.13}{Table 2}). Sexual selection had a positive but non-significant effect on male fitness, and in contrast to females, fitness benefits were significantly weaker in stressful than benign environments (\autoref{env_sex}a, \hyperlink{page.13}{Table 2}). Consistent with the different consequences of sexual selection for female and male fitness, the mean effect size in mixed-sex samples was non-significantly positive, and there was no significant difference between benign versus stressful conditions (\autoref{env_sex}a, \hyperlink{page.13}{Table 2}). Overall, our results indicate that the positive effect of sexual selection on fitness is greater for females than males, and the difference between the sexes is magnified in stressful environments.  
+We found that the sex of the individuals measured (male, female, or a mixture), and the conditions under which the population evolved (stressful or benign) interacted to affect fitness (\hyperlink{page.18}{Table 1, 2}). Sexual selection significantly improved female fitness, and the beneficial effect of sexual selection was significantly stronger for females from populations evolving under stressful conditions (*e.g.* a food source to which they were not well-adapted) than under benign conditions (\autoref{env_sex}a, \hyperlink{page.18}{Table 2}). Sexual selection had a positive but non-significant effect on male fitness, and in contrast to females, fitness benefits were significantly weaker in stressful than benign environments (\autoref{env_sex}a, \hyperlink{page.18}{Table 2}). Consistent with the different consequences of sexual selection for female and male fitness, the mean effect size in mixed-sex samples was non-significantly positive, **with a small but significant difference** between benign versus stressful conditions (\autoref{env_sex}a, \hyperlink{page.13}{Table 2}). Overall, our results indicate that the positive effect of sexual selection on fitness is greater for females than males, and the difference between the sexes is magnified in stressful environments. **When the lnRR (log Response Ratio) effect size was used to conduct the meta-analysis, the results corroborate those of Hedges' g in that sexual selection elevates population fitness, with its effect magnified for females evolving in stressful environments (Figure S4 and Table S16).** 
 
-Other moderator variables that we examined had minimal impacts on effect size (\href{https://justincally.github.io/SexualSelection/#meta-analyses_including_many_moderator_variables}{Figure S2, Table S7}). Specifically, effect size did not depend on whether or not the study was conducted blind (\href{https://justincally.github.io/SexualSelection/#other_moderators}{Figure S9}), nor on the number of generations for which the experimental evolution study was run (\href{https://justincally.github.io/SexualSelection/#other_moderators}{Figure S10, S11}).  
+Other moderator variables that we examined had minimal impacts on effect size (\href{https://justincally.github.io/SexualSelection/#meta-analyses_including_many_moderator_variables}{Figure S2, Table S10}). Specifically, effect size did not depend on whether or not the study was conducted blind (\href{https://justincally.github.io/SexualSelection/#other_moderators}{Figure S9}), nor on the number of generations for which the experimental evolution study was run (\href{https://justincally.github.io/SexualSelection/#other_moderators}{Figure S10, S11}).  
 
 The effect size estimates we recovered were highly heterogeneous ($I^2$ = 94.9%, 95% CIs: 93-96%), reflecting the large differences in experimental procedures, study species, and fitness components included in our meta-analysis [@RN208]. Most of the observed heterogeneity stemmed from between-study differences ($I^2_{study}$ = 61.5%, 95% CIs: 42.9-78.9%), with variation between fitness components accounting for comparatively less heterogeneity ($I^2_{fitness\:components}$ = 33.5%, 95% CIs: 15.8-52.7%). The effect of taxon varied between REML and Bayesian models: the REML model suggested no effect ($I^2_{taxon}$ = 0), while the Bayesian model implied a non-zero effect ($\sigma^2$ = 0.145 [0.006-0.517]; \href{https://justincally.github.io/SexualSelection/#bayesian_model:_effects_of_environment_and_sex}{Table S10}). Variation among taxa is explored further in the ESM (\href{https://justincally.github.io/SexualSelection/#restricted_analysis_to_just_the_higher-quality_data}{Figure S3, Table S8}).  \phantomsection
 
@@ -76,52 +79,10 @@ As in the meta-analysis of trait means, there was high heterogeneity in the esti
 
 The funnel plot of effect sizes was asymmetrical, suggesting that some publication bias might be present (\autoref{publication_bias}a; Egger’s test: *z* = 6.2, $p$ < 0.0001). Specifically, there was a moderate excess of low-powered studies in which sexual selection had a more positive effect on the fitness component than average, implying that low-powered studies are more likely to be published if they report statistically significant fitness benefits of sexual selection. There was no significant relationship between effect size and journal impact factor (\autoref{publication_bias}b; $t_{437}$ = 1.2, $p$ = 0.25) or year of publication (\autoref{publication_bias}c; $t_{437}$ = -1.0, $p$ = 0.31); thus, we found no evidence that effect size dictates the likelihood of publication in high-profile journals, or that effect sizes have diminished as the field has matured [@RN216; @RN217]. 
 
-![Forest plot showing the effect of manipulation of sexual selection, for 20 fitness components from 65 studies. Effect sizes ($n$ = 459) varied between fitness components, and were more often positive than negative. Predicted average values are presented alongside each fitness component; those in bold have 95% confidence intervals that do not cross zero. The estimates presented here are Bayesian predictions, which were slightly more conservative than the REML predictions (Table S6).\label{forest_plot}](Figures/ForestPlot_edit3.pdf)
-
-![(**a**) Sexual selection tends to increase the population mean values of fitness traits, especially for female traits and for populations living under stressful conditions. (**b**) Under stressful conditions, sexual selection tends to reduce the phenotypic variance in fitness traits, especially for traits measured in females or mixed-sex individuals. The points with error bars show the mean effect sizes and their 95% CIs, determined from a meta-regression fit using restricted maximum likelihood (REML); the point sizes are proportional to the number of effect sizes (see Table S12 and S14). Results from Bayesian meta-regression are shown as posterior prediction density curves, with vertical lines indicating the median.\label{env_sex}](Figures/environment_variance_edit5.pdf)
-
-![Tests of publication bias are mixed and suggest publication bias may be present. (**a**) Inspection and statistical tests of the funnel plot reveal large amounts of heterogeneity in the dataset with asymmetry from increased low-powered, large effect studies. (**b**) No significant correlation exists between journal impact factor and effect size, (**c**) additionally there is no significant correlation between effect size and year of publication when testing for the time-lag bias. For (**b**) and (**c**) point size is proportional to the precision of the effect size (*i.e.* the inverse of its variance).\label{publication_bias}](Figures/publicationbias.pdf)
-
 <!-- Appears to be a problem having two captions -->
+
 \newpage
-\nolinenumbers
 
-**Table 1:** Results for the multilevel meta-analysis model testing the effects of sexual selection in different environments and between sexes. Moderator variables whose 95% confidence intervals do not cross zero are shown in bold.
-
-```{r, echo = F}
-options(knitr.kable.NA = ' ')
-
-table1 <- read.csv('table1.csv') %>% 
-  mutate(
-    Estimate = cell_spec(Estimate, "latex", bold = ifelse(LCI*UCI > 0, T, F)),
-    Parameters = cell_spec(Parameters, "latex", bold = ifelse(LCI*UCI > 0, T, F))
-  )
-
-kable(table1, format = "latex", booktabs = T, digits = 2, escape = F) %>% 
-  kable_styling(latex_options = c("scale_down", "striped"), full_width = F) %>%
-  row_spec(0, bold = TRUE) %>%
-  group_rows("REML Model", 1, 6) %>%
-  group_rows("Bayesian Model", 7, 12)
-```
- 
-\vspace{0.75 cm}
-
-**Table 2:** Hypothesis tests using restricted maximum likelihood (REML) or Bayesian methods, illustrating how sex and environmental stress interact to modulate effect size. Tests whose 95% confidence intervals do not cross zero are shown in bold.
-
-```{r, echo = F}
-options(knitr.kable.NA = ' ')
-
-table2 <- read.csv('table2.csv') %>% rename('Statistical Approach' = Statistical.Approach) %>%
-  mutate(
-    Estimate = cell_spec(Estimate, "latex", bold = ifelse(LCI*UCI > 0, T, F)),
-    `Statistical Approach` = cell_spec(`Statistical Approach`, "latex", bold = ifelse(LCI*UCI > 0, T, F))
-  )
-
-kable(table2, format = "latex", booktabs = T, digits = 2, escape = F) %>% 
-  kable_styling(latex_options = c("scale_down"), full_width = F) %>%
-  row_spec(0, bold = TRUE) %>%
-  collapse_rows(columns = 1:2, latex_hline = "major")
-```
 
 \newpage
 \phantomsection
@@ -153,8 +114,6 @@ We searched *ISI Web of Science* and *Scopus* on 9^th^ June 2017 for peer-review
 After removing duplicates, we read the titles and abstracts of the remaining 1,015 papers and removed those that did not fit our inclusion criteria (typically because they did not present primary experimental evolution data). This left 130 papers, for which we read the full text and applied the inclusion criteria outlined in the PRISMA (Preferred Reporting Items for Systematic Reviews and Meta-Analyses) diagram (\autoref{prisma_flow}). Briefly, we included studies that 1) were conducted in a dioecious animal species, 2) experimentally manipulated the strength of sexual selection (*e.g.*, via experimentally-enforced random monogamy or an altered sex ratio) for at least one generation, and 3) measured a trait that we judged to be a potential correlate of population fitness. This third criterion is the most subjective, because there is rarely enough data to determine whether a particular trait is (or is not) correlated with population fitness. We therefore relied on our best judgement when deciding what outcomes were correlated with population fitness. We categorised the fitness outcomes into three categories: ambiguous, indirect and direct (detailed in \href{https://justincally.github.io/SexualSelection/#inclusionexclusion_criteria}{Table S1}). Briefly, ambiguous measures of fitness were those that are reported to have an unclear or variable association with fitness (*e.g.*, body size, mating duration and early fecundity). Indirect fitness components were those that are often used as a proxy of fitness but do not directly measure aspects of success in reproduction or population viability (*e.g.*, lifespan, mating success and ejaculate quality/production). Finally, direct measures of fitness (reproductive success, offspring viability and extinction rate) are those that measure fitness through components of reproduction or long-term viability. The ESM describes why specific papers recovered in the literature search were included or excluded (\href{https://justincally.github.io/SexualSelection/#inclusionexclusion_criteria}{Table S2}).  
 
 Of the 130 papers subjected to detailed screening, 62 were excluded based on the PRISMA criteria (\autoref{prisma_flow}). Additionally, three papers presented insufficient information to calculate effect size. In these cases, we contacted the authors and attempted to obtain the missing data, with partial success. The final meta-analysis covered data from 65 papers.   
-
-![Flow of inclusion and exclusion of studies identified during the literature search, presented as a PRISMA diagram with number of published papers in brackets.\label{prisma_flow}](Figures/PRISMA\ Chart.pdf)
 
 \phantomsection
 
@@ -197,4 +156,79 @@ We are very grateful to Paco Garcia-Gonzalez for sharing a collection of literat
 
 # References
 <div id="refs"></div>  
+
+\newpage
+\phantomsection
+\nolinenumbers
+
+#Tables and Figures
+
+
+
+**Table 1:** Results for the multilevel meta-analysis model testing the effects of sexual selection in different environments and between sexes. Moderator variables whose 95% confidence intervals do not cross zero are shown in bold.
+
+```{r, echo = F}
+model.complete2 <- readRDS('../data/model.complete2.rds')
+brms.complete2 <- readRDS('../data/brms.complete2.rds')
+
+table1 <- data.frame(round(as.numeric(model.complete2[["beta"]]), digits = 2))  %>% rename(Estimate = 1)
+table1$SE <- as.numeric(model.complete2[["se"]])
+table1$LCI <- as.numeric(model.complete2[["ci.lb"]])
+table1$UCI <- as.numeric(model.complete2[["ci.ub"]])
+table1$z <- as.numeric(model.complete2[["zval"]])
+table1$p <- as.numeric(model.complete2[["pval"]])
+
+brms.model.table <- make_text_summary(brms.complete2) %>% add_significance_stars()
+brms.model.table$z <- NA
+brms.model.table$p <- NA
+brms.model.table <- brms.model.table[1:6,]
+
+table1 <- rbind(table1, brms.model.table %>% select(Estimate, SE = Est.Error, LCI = Q2.5, UCI = Q97.5, z, p)) %>% tibble::rownames_to_column("Parameters")
+table1$Parameters <- c("Intercept", "Both Sexes", "Female Sex", "Stressed Environment", "Both Sexes x Stressed Environment", "Female Sex x Stressed Environment", "Intercept", "Both Sexes", "Female Sex", "Stressed Environment", "Both Sexes x Stressed Environment", "Female Sex x Stressed Environment")
+
+options(knitr.kable.NA = ' ')
+
+table1 <- table1 %>% 
+  mutate(
+    Estimate = cell_spec(Estimate, "latex", bold = ifelse(LCI*UCI > 0, T, F)),
+    Parameters = cell_spec(Parameters, "latex", bold = ifelse(LCI*UCI > 0, T, F))
+  )
+
+kable(table1, format = "latex", booktabs = T, digits = 2, escape = F) %>% 
+  kable_styling(latex_options = c("scale_down", "striped"), full_width = F) %>%
+  row_spec(0, bold = TRUE) %>%
+  group_rows("REML Model", 1, 6) %>%
+  group_rows("Bayesian Model", 7, 12)
+```
+ 
+\vspace{0.75 cm}
+
+**Table 2:** Hypothesis tests using restricted maximum likelihood (REML) or Bayesian methods, illustrating how sex and environmental stress interact to modulate effect size. Tests whose 95% confidence intervals do not cross zero are shown in bold.
+
+```{r, echo = F}
+options(knitr.kable.NA = ' ')
+
+table2 <- read.csv('table2.csv') %>% rename('Statistical Approach' = Statistical.Approach) %>%
+  mutate(
+    Estimate = cell_spec(Estimate, "latex", bold = ifelse(LCI*UCI > 0, T, F)),
+    `Statistical Approach` = cell_spec(`Statistical Approach`, "latex", bold = ifelse(LCI*UCI > 0, T, F))
+  )
+
+kable(table2, format = "latex", booktabs = T, digits = 2, escape = F) %>% 
+  kable_styling(latex_options = c("scale_down"), full_width = F) %>%
+  row_spec(0, bold = TRUE) %>%
+  collapse_rows(columns = 1:2, latex_hline = "major")
+```
+
+
+
+\newpage
+
+![The effect sizes used in this meta-analysis ($n$ = 459) were grouped into either direct, indirect or ambiguous measures of fitness. Overall, effect sizes were more often positive than negative. Predicted average values are presented as a diamond for each fitness-relationship category. The estimates presented here are from REML models with the grand mean across all effect sizes ($\beta$ = 0.25) shown as the blue dotted line. Predictions from both Bayesian and REML models can be found in Table S7).\label{forest_plot}](Figures/forest.plot.class.pdf)
+
+![(**a**) Sexual selection tends to increase the population mean values of fitness traits, especially for female traits and for populations living under stressful conditions. (**b**) Under stressful conditions, sexual selection tends to reduce the phenotypic variance in fitness traits, especially for traits measured in females or mixed-sex individuals. The points with error bars show the mean effect sizes and their 95% CIs, determined from a meta-regression fit using restricted maximum likelihood (REML); the point sizes are proportional to the number of effect sizes (see Table S12 and S14). Results from Bayesian meta-regression are shown as posterior prediction density curves, with vertical lines indicating the median.\label{env_sex}](Figures/environment_variance_edit5.pdf)
+
+![Tests of publication bias are mixed and suggest publication bias may be present. (**a**) Inspection and statistical tests of the funnel plot reveal large amounts of heterogeneity in the dataset with asymmetry from increased low-powered, large effect studies. (**b**) No significant correlation exists between journal impact factor and effect size, (**c**) additionally there is no significant correlation between effect size and year of publication when testing for the time-lag bias. For (**b**) and (**c**) point size is proportional to the precision of the effect size (*i.e.* the inverse of its variance).\label{publication_bias}](Figures/publicationbias.pdf)
+
+![Flow of inclusion and exclusion of studies identified during the literature search, presented as a PRISMA diagram with number of published papers in brackets.\label{prisma_flow}](Figures/PRISMA\ Chart.pdf)
 
