@@ -410,7 +410,6 @@ left_join(fitness.class.predictions, predictions.class, by = "Relationship to Fi
 
 ```
 
-From this data we can generate a forest plot with the following: 
 
 ```{r, include = FALSE}
 pd <- position_dodge(0.3)
@@ -522,10 +521,10 @@ p.meta <- full_dataset %>%
         legend.title=element_text(size=12, 
                                   face = "bold"),
         axis.title.x = element_text(hjust = 0.5, size = 14))
+
+knitr::include_graphics(path = "figures/ForestPlot_size_reduced.png") 
 ```
-   
-<img src="figures/ForestPlot_size_reduced.pdf" alt=" "  width="1650" height="2100">
-  
+
 <br></br>
 
 **Figure S1:** Forest plot of raw effect sizes and their 95% confidence intervals, grouped according to measured fitness components and the sex of the individuals whose fitness trait was measured (male, female, or both sexes mixed together). Rows with multiple data points denote studies that provided multiple effect sizes. Positive values indicate fitness benefits of sexual selection.  
@@ -1253,7 +1252,7 @@ Using an adapted function from https://github.com/daniel1noble/metaAidR we can o
 ```{r}
 I2(model.complete2, strict_dataset$var.g) %>% pander(digits = 3)
 ```
-These values indicate that 61.5 % of total heterogeneity is due to the **between study** heterogeneity and 33.5 % for **between outcome** heterogeneity between different outcomes. The total _I^2^_  is 95 %, a reasonably high _I^2^_ value. However this is relatively common in Ecology and Evolution total. 
+These values indicate that 57.4 % of total heterogeneity is due to the **between study** heterogeneity and 37.4 % for **between outcome** heterogeneity between different outcomes. The total _I^2^_  is 94.7 %, a reasonably high _I^2^_ value. However this is relatively common in Ecology and Evolution total [@Senior_I2_2016]. 
 
 ____________________
 
@@ -1748,10 +1747,10 @@ ____________________
 
 ###Estimating lnCVR Heterogeneity Using _I^2^_
 
-Similar to the meta-analysis on Hedges' g we can obtain _I^2^_ for lnCVR REML model. In this case (compared to Hedges' g) we see Taxon has more of a variable effect on overall _I^2^_ estimates, although the overall _I^2^_ remains relatively similar (95.4 %). 
+Similar to the meta-analysis on Hedges' g we can obtain _I^2^_ for lnCVR REML model. In this case (compared to Hedges' g) we see Taxon has more of a variable effect on overall _I^2^_ estimates and the total _I^2^_ is larger.
 
 ```{r}
-I2(variance.model, strict_dataset$var.g) %>% pander(digits = 3)
+I2(variance.model, na.omit(strict_dataset$var.lnCVr)) %>% pander(digits = 3)
 ```
 _________
 

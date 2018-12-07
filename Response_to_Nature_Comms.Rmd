@@ -1,7 +1,10 @@
 ---
-title: "Sexual selection improves population fitness: a meta-analysis"
-subtitle: "Response to Decision Letter"
-output: pdf_document
+title: 'Sexual selection improves population fitness: a meta-analysis'
+output:
+  pdf_document: default
+  word_document: default
+subtitle: Response to Decision Letter
+bibliography: Manuscripts/Bibliography/Bibliography.bib
 ---
 
 ```{r, warning=FALSE, message=FALSE, results='hide', echo = FALSE}
@@ -30,6 +33,7 @@ library(brmstools)
 library(metaAidR) # install.packages("metaAidR")
 library(cowplot)
 library(gridExtra)
+library(janitor)
 #setwd("~/Documents/Uni/metaanalysis/SexualSelection")
 source("I2_function.R") #Adapted function for obtaining I2 with CIs
 source("Vdodge_function.R") # nice function for ggplot
@@ -62,27 +66,27 @@ Many thanks for your time and this valuable feedback.
 
 >*Firstly, it seems that several male traits like to be under sexual selection, but not related to population fitness were included. I don’t think this is correct given the question being asked (i.e. whether sexual selection increases population fitness). I think traits which are directly under sexual selection (eg. attractiveness, reproductive success) should not be pooled with traits which may respond to manipulation of sexual selection indirectly (eg. male development time, survival) and can affect population fitness. Distinguishing between both types of trait could actually be revealing – e.g. could expose trade-offs between sexually selected traits and fitness components unrelated to reproductive competition (see eg. Radwan et al. 2015 Evol Biol), a thus potentially explain lower effect of sexual selection on (pooled) male traits than on female traits.*
 
-The reviewer is correct that several traits are likely under trade-offs with other traits as sexual selection not only affects mean fitness but alters life history traits (*i.e.* sexual selection may increase male body size or attractiveness, but decrease development rate). In essence this is why our meta-analysis sought to investigate the *net* effect of sexual selection on population fitness across many traits, rather than one that may be traded off in a given direction. Importantly, to account for the variable and uncertain relationships certain traits have with fitness (as raised by the reviewer). We provide a table on how each trait is measured and their relationship with fitness. Given that this information was in the Supplementary Material we have **revised the manuscript to clarify the distinctions more thoroughly**. 
+The reviewer is correct that several traits are likely under trade-offs with other traits as sexual selection not only affects mean fitness but alters life history traits (*i.e.* sexual selection may increase male body size or attractiveness, but decrease development rate). In essence this is why our meta-analysis sought to investigate the *net* effect of sexual selection on population fitness across many traits, rather than one that may be traded off in a given direction. Importantly, to account for the variable and uncertain relationships certain traits have with fitness (as raised by the reviewer). We provide a table (Table S1) on how each trait is measured and their relationship with fitness. Given that this information was in the Supplementary Material we have **revised the manuscript to clarify the distinctions more thoroughly... Probably need to check this again**.
 
-Additionally, the reviewers comment that male attractiveness may not be related to population fitness is correct. Because male attractiveness may be positively or negatively correlated with average fitness (although in many condition-dependent traits a positive association is assumed) we have re-classified *Male Attractiveness* as ambiguously related to fitness, rather than indirect. All subsequent models, statistics and figures now take into account this re-classification. However, given the small sample size for male attractiveness effect sizes (n = 6), we find only marginal changes in the results and no key changes in the key findings of the study.
+Additionally, the reviewers comment that male attractiveness may not be related to population fitness is correct. Because male attractiveness may be positively or negatively correlated with average fitness (although in many condition-dependent traits a positive association is assumed) we have re-classified *Male Attractiveness* as ambiguously related to fitness, rather than indirect. All subsequent models, statistics and figures now take into account this re-classification. However, given the small sample size for male attractiveness effect sizes (*n* = 6), we find only marginal changes in the results and no key changes in the key findings of the study.
 
 
 >*Secondly, looking at Figure 1, one notices apparent anomalies, for example significantly positive slope for male attractiveness, based on studies with average effect size close to zero. I think this (and few others) surprising estimates may result from fitting random terms across all trait types (fitted as a fixed factor, second model); I guess fitting interaction (random slopes) would not be feasible for some categories including few data points, but some of them could easily be pooled in wider categories.*
 
 The reviewer raises questions of the analysis that produce seemingly suprising results. We agree that some of *significant* predictions in Figure 1 (whereby 95 % CIs do not overlap zero) appear surprising based on the distribution on effect sizes. In regards to the trait "male attractiveness", the 95 % CIs do not overlap zero. This is the case even though the higher weighted studies are very close to zero. However, this seeming anomoly can be explained by various reasons. 
 
-Firstly, althought the effect size prediction for the trait has 95 % CIs not overlapping zero, the overall magnitude of the effect size is small (see Table exerpt), and the Bayes Factor (an estimate of the likelihood that the effect size is actually positive) is also small. The full table for all predicted effect sizes used in Figure S1 can be seen in **S8**. Below we provide the exerpt of this table and forest plot for "Male attractiveness".  
+Firstly, although the effect size prediction for the trait has 95 % CIs not overlapping zero, the overall magnitude of the effect size is small (see Table exerpt), and the Bayes Factor (an estimate of the likelihood that the effect size is actually positive) is also small. The full table for all predicted effect sizes used in Figure S1 can be seen in **S8**. Below we provide the exerpt of this table and forest plot for "Male attractiveness".  
 
-Secondly, the effect size predictions were made using a single model that incorperated all 459 effect sizes, thus model predictions for each trait have narrower confidence intervals as the fitted values do not incorperate measurement error. In regards to our analysis, this means that the predictions that appear in Figure 1 are sourced from using ``fitted.brmsfit`` as opposed to ``predict.brmsfit``. Additionally, some meta-analyses investigating the effect of a variable on more than one outcome model each outcome (in this case the *fitness component*) seperately. Arguably, this method provides more variable model estimates as models will always have lower power due to reduced sample sizes and the incorperation of measurement error in the predictions. We have added a table to the Supplementary Material where models are independently conducted on all fitness components where n > 3 (**Table S9**).  
+Secondly, the effect size predictions were made using a single model that incorperated all 459 effect sizes, thus model predictions for each trait have narrower confidence intervals as the fitted values do not incorperate measurement error. In regards to our R code and analysis, this means that the predictions that appeared in Figure 1 are sourced from using ``fitted.brmsfit`` as opposed to ``predict.brmsfit``. In order to clarify this seeming anomaly in model predictions, some meta-analyses investigating the effect of a variable on more than one outcome model each outcome (in this case the *fitness component*) separately. Arguably, this method provides more variable model estimates as models will always have lower power due to reduced sample sizes and the incorporation of measurement error in the predictions. We have added a table to the Supplementary Material where models are independently conducted on all fitness components where n > 3 (**Table S9**). This may be of particular value for researchers using our meta-analysis as a research tool, whereby they are interested in the effect sizes from only a single trait (as opposed to our focus on population fitness as a whole).  
 
-Given, the confusion with regards to Figure 1 as it originally appeared within the manuscript we have altered the figure to a generalized forest plot by grouping the effect sizes from each of the fitness classes (ambiguous, indirect and direct). The previous Figure 1 has now been moved to the Supplementry Material with corresponding tables.  
+Given, the confusion with regards to Figure 1 as it originally appeared within the manuscript we have altered the figure to a generalized forest plot by grouping the effect sizes from each of the fitness classes (ambiguous, indirect and direct). The previous Figure 1 has now been moved to the Supplementary Material with corresponding tables.  
 
 ```{r}
 left_join(fitness.component.predictions, predictions.outcomes, by = "Fitness Component")  %>% filter(`Fitness Component` == "Male Attractiveness") %>% pander(split.table = Inf, digits = 2)
 ```
 
 
-```{r, fig.height=3}
+```{r, fig.height=2.5, fig.width=6}
 pd <- position_dodgev(0.6)
 
 p.meta.male.attract <- full_dataset %>% 
@@ -104,13 +108,13 @@ p.meta.male.attract <- full_dataset %>%
                      color = Outcome.Class,
                      group = "identity"),
                show.legend = FALSE,
-               position = position_dodge2(width = 0.2, preserve = "single")) +
+               position = position_dodge2(width = 0.5, preserve = "single")) +
   
   geom_point(aes(shape = Sex,
                  fill = Outcome.Class),
              size = 1.75, 
              color = "grey20",
-             position = position_dodge2(width = 0.2),
+             position = position_dodge2(width = 0.5),
              show.legend = F) +
   
   coord_flip()+
@@ -168,23 +172,24 @@ p.meta.male.attract <- full_dataset %>%
 
 p.meta.male.attract
 ```
-
-
+  
+When the effect sizes (n = 6) for male attractiveness are viewed isolated from others, one can see that the large effect size (Nelson 2013) shifts the overall predicted effect size to be marginally positive.  
+  
+  
 >*Thirdly, type of trait measured explained 35% variance, but the authors do not explore this any further. However, examination of Fig. 1 suggest that some indirect/ambiguous fitness measures account for much of this heterogeneity and they generally have higher average effect sizes that direct measures (except for immunity). I’d like to see if the authors recover their main result if they only direct measures.*
 
+**Add more in discussion about the variability amongst traits and why some might be subject to trade offs (e.g. immunity): We do kind of talk about this and an earlier draft had some of Jaceks work with regards to sexual conflict maintaing genetic variance through trade-offs. Should we add this back in?**
 
-**Add section in discussion about the variability amongst traits and why some might be subject to trade offs (e.g. immunity).**
+The reviewer provides an accurate shortcoming of discussion on the observed heterogeneity between fitness components. The sixth paragraph of our discussion is raises some potential reasons why heterogeneity may be high within our meta-analysis. Additionally, it may please the reviewer to find an addition to our Supplementary Material (Table S9), now conducts independent meta-analyses and obtains $I^2$ for each of these traits. Even when metanalyses are conducted on a single trait, heterogeneity ($I^2$) is still high > 90 %.  
 
-The reviewer provides an accurate shortcoming of discussion on the observed heterogeneity between fitness components. The sixth paragraph of our discussion is raises some potential reasons why heterogeneity may be high within our meta-analysis. Additionally, it may please the reviewer to find an addition to our Supplementary Material (Table S9), now conducts independent meta-analyses and obtains $I^2$ for each of these traits. Even when metanalyses are conducted on a single trait, heterogeneity ($I^2$) is still high > 90 %.
-
-In regards to conducting a meta-analysis on just direct fitnesss components, the reviewer provides a valid question of our use of direct **and** indirect fitness components for the meta-analysis investigating the effects of sex and stress. Based on the question we asked we were interested in the effect of sexual selection on many components of fitness. 
+In regards to conducting a meta-analysis on just direct fitness components, the reviewer provides a valid question of our use of direct **and** indirect fitness components for the meta-analysis investigating the effects of sex and stress. Based on the question we asked we were interested in the effect of sexual selection on many components of fitness.  
 
 Nevertheless, we conducted our analysis using just direct fitness measures. We find the same key associations; that sexual selection generally elevates fitness, especially for females, with the effect magnified in stressful environments. Below we present the findings. 
 **should we put this in the supp?**
 
 Additionally, in order to further distinguish the effects of sexual selection on ambiguous, indirect and direct fitness components, we have structured the second paragraph of the results to more consistently reflect our classification system.  
 
-```{r, warning=FALSE, message=FALSE, error = FALSE, fig.align='center', fig.width = 10}
+```{r, warning=FALSE, message=FALSE, error = FALSE, fig.align='center', fig.width = 10, fig.height=6}
 model.direct.only <- rma.mv(g, V = var.g, 
                           mods = ~ 1 + Sex * Environment, 
                           random = list(~ 1 | Study.ID, 
@@ -336,7 +341,7 @@ predictions.direct %>% pander(caption = "Model using only direct measures of fit
 
 Leave this for Luke
 
-Good sugggestion!
+Good suggestion!
 
 >*Perhaps the effect on females is indeed direct, and results from stress imposed by polygamous treatment, which magnifies direct, hard selection on females? This would be an important finding, and perhaps the authors could test it with their dataset by contrasting middle-class-neighborhood-like studies from those which allowed for female evolution. But if correct, this explanation is not exactly the effect of sexual selection, but rather enhanced selection of females due to enhanced (male induced) stress, so the interpretation of results should change.*
 
@@ -345,7 +350,8 @@ Not too sure what he means.
 
 Answer
 
-**Other comments:**  
+**Other comments:**   
+
 >*l. 30 – reviews on sexual conflict are OK to cite here, but there are empirical papers actually demonstrating correlation between male sexual selected traits (Harano et al. 2011; Plesnar et al. 2014) which should also be cited.*
 
 Thank you, we now cite those papers as suggested in line 31. Additionally, they are especially pertenant to experimental evolution studies using species such as the bulb mite (*Rhizoglyphus robini*)[@Plesnar_2014] and flour beetles (*Gnatocerus cornutus*)[@Harano_2010].
@@ -360,7 +366,7 @@ It is correct that we did not use the number of generations in our main analysis
 
 >*Fig. S1 is not referred to in the main texts, is it different from Fig. 2, except that the latter contains predicted average values for fitness components?*
 
-**No difference... kind of there for documentation on how we created it (transparency). What do you think we should do about this Luke?**
+**No difference... kind of there for documentation on how we created it (transparency). We now get rid of the forest plot in the manuscript. However our supp info has a few plots that are in the manuscript. I think it is good to show the code we used to create it... for reproducibility**
 
 ________________________________________________________
 
@@ -380,48 +386,49 @@ Many thanks for your time and attention, and for the valuable feedback.
 
 >*I recommend that the authors use lnRR for their effect size for mean comparison as well as Hedge's $g$ to see the robustness of their conclusions for the mean.*
 
-Reviewer 2 has rightly pointed out that the use of Hedge's *g* has been critisized for its ability to account for heterogeneity between the control and treatment groups **CITE**. We extended our meta-analysis by including the log response ratio (lnRR) as well as a modified version of Hedge's g that attempts to account for this heterogeneity, this modified statistic (**CITE**) can be derived from the ``metafor`` package for meta-analysis, where it is named SMDH (standardized mean difference with heteroscedastic population variances in the two groups). There are several key findings from the use of lnRR and SMDH: 
+Reviewer 2 has rightly pointed out that the use of Hedge's *g* has been critisized for its ability to account for heterogeneity between the control and treatment groups [Osenberg_1997]. We extended our meta-analysis by including the log response ratio (*lnRR*) as well as a modified version of Hedge's g that attempts to account for this heterogeneity, this modified statistic [@bonett2009meta] can be derived from the ``metafor`` package for meta-analysis [@RN212], where it is named SMDH (standardized mean difference with heteroscedastic population variances in the two groups). There are several key findings from the use of lnRR and SMDH: 
 
-*Firstly*, Hedge's g and SMDH are highly correlated. This suggests that unequal variance between the treatment and control groups (heteroscedasticity) is unlikely to impact the effect size of Hedge's g
+*Firstly*, Hedge's g and SMDH are highly correlated (in means and variance). This suggests that unequal variance between the treatment and control groups (heteroscedasticity) is unlikely to impact the effect size of Hedges' g.
 
-```{r, warning=F}
+```{r, warning=FALSE, message = FALSE, error=FALSE}
 #This function writes in the correlation value
 panel.cor <- function(x, y, digits=2, prefix="", cex.cor, ...)
 {
   usr <- par("usr"); on.exit(par(usr))
-  par(usr = c(0, 1, 0, 1))
-  r <- abs(cor(x, y, use="pairwise.complete.obs"))
+  par(usr = c(-2.5, 2.5, -2.5, 2.5))
+  r <- cor(x, y, use="pairwise.complete.obs")
   txt <- format(c(r, 0.123456789), digits=digits)[1]
   txt <- paste0(prefix, txt)
   if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
-  text(0.5, 0.5, txt, cex = cex.cor * r)
+  text(0, 0, txt, cex = cex.cor * 2*r)
 }
 
 es.correlation.df <- lnRR.data %>% left_join(SMD.data %>% rename(`Hedge's g` = SMD)) %>% left_join(SMDH.data)
 
 pairs(es.correlation.df %>% select(`Hedge's g`, lnRR, SMDH), lower.panel=panel.smooth, upper.panel=panel.cor)
+# pairs(es.correlation.df %>% select(SMD_var, SMDH_var), lower.panel=panel.smooth, upper.panel=panel.cor)
 ```
 
-*Secondly*, The calculation of lnRR and SMDH can only be calculated for effect sizes where the study reported means, standard deviations and sample sizes (352 out of 459). This is a limitation as in our analysis we investigate the effects of sex and stress on a further restricted dataset (direct and indirect fitness traits only). Specifically, fewer effect sizes from stressful conditions are able to be calculated; making Hedge's g an advantageous effect size in comparison to lnRR.  
+*Secondly*, The calculation of lnRR and SMDH can only be calculated for effect sizes where the study reported means, standard deviations and sample sizes (352 out of 459). This is a limitation as in our analysis we investigate the effects of sex and stress on a further restricted dataset (direct and indirect fitness traits only). Specifically, fewer effect sizes from stressful conditions are able to be calculated; making Hedges' g an advantageous effect size in comparison to lnRR.  
 
-```{r}
+```{r, warning=FALSE, message = FALSE, error=FALSE}
 predictions.complete2 %>% select(Sex, Environment, `Hedge's g sample size` = n) %>% 
-  left_join(predictions.lnRR %>% select(Sex, Environment, `lnRR sample size` = n), by = c("Sex", "Environment")) %>% pander()
+  left_join(predictions.lnRR %>% select(Sex, Environment, `lnRR sample size` = n), by = c("Sex", "Environment")) %>%
+  adorn_totals("row") %>% pander()
 ```
 
-*Thirdly*, if we conduct a meta-analysis using lnRR as the effect size we obtain very similar results with all major conclusions unchanged (keeping in mind that lnRR and Hedge's are on different scales):  
+*Thirdly*, if we conduct a meta-analysis using lnRR as the effect size we obtain very similar results with all major conclusions unchanged, keeping in mind that lnRR and Hedge's are on different scales; (further model results can be found within the Supplementary Material):  
 + The effect of sexual selection on population fitness is generally positive.
-+ This effect is magnified for females in stressful environments with a significantly positive interaction term (stress*females)
++ This effect is magnified for females in stressful environments with a significantly positive interaction term (stress*females).  
 
-
-```{r, warning = F, fig.width=7, fig.height = 3.5, message = F}
+```{r, warning=FALSE, message=FALSE, error = FALSE, fig.align='center', fig.width = 10, fig.height=6}
 grid.arrange(both.plots + 
                guides(fill = FALSE) + 
-               ggtitle("Comparison between Hedge's g and lnRR effect sizes \n\n"), 
-             lnRR.plots + ggtitle("\n\n"), nrow = 1, widths = c(3,4))
+               ggtitle("Comparison between Hedge's g \nand lnRR effect sizes \n"), 
+             lnRR.plots + ggtitle("\n\n") + xlim(-0.5,0.75), nrow = 1, widths = c(3,4))
 ```
 
-*Fourthly*, Hedges' g appears more normally distributed than lnRR, which to some extent may come as a surprise as **some literature** says lnRR should usually be more normal. A normal distribution of the response variable is anticipated to increase model fit.
+*Fourthly*, Hedges' g appears more normally distributed than lnRR, which to some extent may come as a surprise as *lnRR* should usually be more normally distributed around zero. However, given that our meta-analysis combines multiple traits, with different scales of magnitude lnRR may lead to some erroneous and biased effect sizes. Specifically, @Lajeunesse_2015 showed that *lnRR* is problematic when quantifying the outcome of studies with small sample sizes, and can yield unsuitable variance estimates when the parameter scale of the study are close to zero. The more normal distribution of the Hedges' *g* is anticipated to increase model fit.  
 
 ```{r}
 grid.arrange(ggplot(data = lnRR.data, aes(x = lnRR))+
@@ -442,19 +449,21 @@ ggplot(full_dataset, aes(sample = g)) +
   labs(x = 'theoretical quantiles', y = "Hedges' g sample"))
 ```
   
-For these reasons we have decided to use Hedge's g as the main effect size throughout the manuscript but reference and provide equivelant statistical analysis for lnRR in the supplementary material.  
+The lnRR is a commonly used effect size when the trait of interest has a natural zero point. Given that we did not extract the data with this in mind, it may be a further limitation of *lnRR*.
+
+For these reasons we have decided to use Hedges' *g* as the main effect size throughout the manuscript but reference and provide equivelant statistical analysis for *lnRR* in the supplementary material.  
 
 >*2 --- The authors may consider also doing another set of meta-analyses using lnVR (log variability ratio - proposed in Nakagawa et al. 2015).*
 
 >Nakagawa, S., R. Poulin, K. Mengersen, K. Reinhold, L. Engqvist, M. Lagisz, and A. M. Senior. 2015. Meta-analysis of variation: ecological and evolutionary applications and beyond. \textit{Methods in Ecology and Evolution} 6:143-152.
 
->*As one can see in Figure 2, the mean results (Hedges' $g$) are a mirror image of the variance results (this makes sense CV controls for means). I would like to see what the absolute change in variances. Probably the authors can put the analysis using lnVR in the supplement. The results of this analysis can be discussed. Also, the mean-variance relationship between mean and variance (sd) should be verified (e.g. plot log mean and log sd or log variance).*
+>*As one can see in Figure 2, the mean results (Hedges' $g$) are a mirror image of the variance results (this makes sense CV controls for means). I would like to see what the absolute change in variances. Probably the authors can put the analysis using lnVR in the supplement. The results of this analysis can be discussed. Also, the mean-variance relationship between mean and variance (sd) should be verified (e.g. plot log mean and log sd or log variance).*  
 
-The reviewer suggestions have been included in our meta-analysis in order to validate our conclusions. Several key points arise from the meta-analysis of variation: 
+The reviewer suggestions have been included in our meta-analysis as Supplementary Material in order to maintain transparency in our conclusions. Several key points arise from the meta-analysis of variation:  
 
-*Firstly*, as the reviewer suggested we justify the use of lnCVR my assessing the mean-variance relationship. Given this finding the use of lnCVR is preferenced over lnVR, as lnVR does not account for the mean-variance relationship.  
+*Firstly*, as the reviewer suggested we justify the use of *lnCVR* my assessing the mean-variance relationship. The major limitation of lnVR is that it does not account for the mean-variance relationship and that is why lnCVR was suggested as the favourable correction [@RN177]. Given this finding the use of *lnCVR* is preferenced over *lnVR*, as *lnVR* does not account for the mean-variance relationship.  
 
-```{r, warning = F, message=F, fig.width=6, fig.height=3}
+```{r, warning=FALSE, message=FALSE, error = FALSE, fig.align='center', fig.width = 8, fig.height=3.75}
 grid.arrange(full_dataset %>% ggplot(aes(x = mean.low, y = sd.low))+
   geom_point()+
   scale_x_log10()+
@@ -472,51 +481,53 @@ grid.arrange(full_dataset %>% ggplot(aes(x = mean.low, y = sd.low))+
   geom_smooth(method = "lm", colour = "red"), nrow = 1)
 ```
 
-*Secondly*, We conducted both Bayesian and REML meta-analyses for lnVR, which we present in the supplementary material and briefly discuss in the manuscript. We found a similar trend for the meta-analysis of variance using lnCVR and the meta-analysis of variance using lnVR, These are: 
+*Secondly*, We conducted both Bayesian and REML meta-analyses for *lnVR*, which we present in the supplementary material and briefly discuss in the manuscript. We found a similar trend for the meta-analysis of variance using *lnCVR* and the meta-analysis of variance using *lnVR*, These are:  
 
-+  In stressful environments sexual selection leads to a decrease in the variance for females, relative to benign environments
++  In stressful environments sexual selection leads to a decrease in the variance for females, relative to benign environments.  
 +  Sexual selection reduces variance in females compared to males.  
 
-However, when using lnVR, the variability of fitness traits for males under sexual selection increased, lnVR for females in stressful environments was not statistically different from zero, and sexual selection in benign environments increased phenotypic variance for females.  
+However, when using *lnVR*, the variability of fitness traits for males under sexual selection increased, *lnVR* for females in stressful environments was not statistically different from zero, and sexual selection in benign environments increased phenotypic variance for females. Model results and predictions (from the REML model) can be cound within the Supplementary Material.   
 
-```{r, warning = F, fig.width=7, fig.height = 3.5, message = F}
+```{r, warning=FALSE, message=FALSE, error = FALSE, fig.align='center', fig.width = 10, fig.height=6}
 grid.arrange(both.var.plots + 
                guides(fill = FALSE) + 
-               ggtitle("Comparison between lnCVR and lnVR effect sizes \n\n"), 
-             both.lnVR.plots + ggtitle("\n\n"), nrow = 1)
+               ggtitle("Comparison between lnCVR \nand lnVR effect sizes \n"), 
+             both.lnVR.plots + ggtitle("\n\n"), nrow = 1, widths = c(3,4))
 ```
+  
+  
+>*3 --- $I^2$ needs to be explained. $I^2$ is proposed originally here:*
 
-**3 --- $I^2$ needs to be explained. $I^2$ is proposed originally here:**
+>Higgins, J., and S. Thompson. 2002. Quantifying heterogeneity in a meta-analysis. \textit{Statistics in Medicine} 21:1539 - 1558.
 
-**Higgins, J., and S. Thompson. 2002. Quantifying heterogeneity in a meta-analysis. \textit{Statistics in Medicine} 21:1539 - 1558.**
+>*But later expanded in here for mixed models (hierarchical models)*
 
-**But later expanded in here for mixed models (hierarchical models)**
+>Nakagawa, S., and E. S. A. Santos. 2012. Methodological issues and advances in biological meta-analysis. \textit{Evolutionary Ecology} 26:1253-1274.
 
-**Nakagawa, S., and E. S. A. Santos. 2012. Methodological issues and advances in biological meta-analysis. \textit{Evolutionary Ecology} 26:1253-1274.**
+>*This is what the authors use. Also, it will be good to put the degree in I^2 in the context. To do this see this paper:*
 
-**This is what the authors use. Also, it will be good to put the degree in I^2 in the context. To do this see this paper:**
+>Senior, A. M., C. E. Grueber, T. Kamiya, M. Lagisz, K. O'Dwyer, E. S. A. Santos, and S. Nakagawa. 2016. Heterogeneity in ecological and evolutionary meta-analyses: its magnitude and implications. \textit{Ecology} 97:3293-3299.
 
-**Senior, A. M., C. E. Grueber, T. Kamiya, M. Lagisz, K. O'Dwyer, E. S. A. Santos, and S. Nakagawa. 2016. Heterogeneity in ecological and evolutionary meta-analyses: its magnitude and implications. \textit{Ecology} 97:3293-3299.**
+We value the reviewers feedback and have incorperated all the suggestions within a paragraph within the methods of our manuscript.  
 
-Answer
+>*4 --- Publication tests have been conducted on, I think, "meta-analytic" residuals results as suggested in Nakagawa and Santos 2012. One could use such residuals to conduct the trim and fill method and see how much the mean could move (see Nakagawa and Santos 2012). One should remember the funnel asymmetry could be caused by the presece of heterogeniety. See:*
 
-**4 --- Publication tests have been conducted on, I think, "meta-analytic" residuals results as suggested in Nakagawa and Santos 2012. One could use such residuals to conduct the trim and fill method and see how much the mean could move (see Nakagawa and Santos 2012). One should remember the funnel asymmetry could be caused by the presece of heterogeniety. See:**
+>Egger, M., G. Smith, M. Schneider, and C. Minder. 1997. Bias in metaanalysis detected by a simple, graphical test. \textit{Br Med J} 315:629 - 634.
 
-**Egger, M., G. Smith, M. Schneider, and C. Minder. 1997. Bias in metaanalysis detected by a simple, graphical test. \textit{Br Med J} 315:629 - 634.**
+**No in-buit functionality for trim-and-fill for rma.mv in metafor... could figure out a way to do it I suppose, not sure if worth it**
 
-Answer
+>*5 --- Figure 3 - are these grey envelopes 95% CI?*
 
-**5 --- Figure 3 - are these grey envelopes 95% CI?**
+Yes they are, we have now included this information in the figure caption. Thank you for highlighting this.  
 
-Answer
+>*6 --- the title - do the authors include "a systematic review" - so "a systematic reveiw and meta-analysis" - these two things are diferent - see:*
 
-**6 --- the title - do the authors include "a systematic review" - so "a systematic reveiw and meta-analysis" - these two things are diferent - see:**
+>Nakagawa, S., and R. Poulin. 2012. Meta-analytic insights into evolutionary ecology: an introduction and synthesis. \textit{Evolutionary Ecology} 26:1085-1099.
 
-**Nakagawa, S., and R. Poulin. 2012. Meta-analytic insights into evolutionary ecology: an introduction and synthesis. \textit{Evolutionary Ecology} 26:1085-1099.**
+Our study does not involve a systematic review. The scope of a systematic review was larger than this meta-analysis entailed. However, we did use a systematic literature search strategy and PRISMA framework of inclusion/exclusion. **I think thewre is some unsureness here on what counts as a systematic review... I remember in medicine a meta-analysis MUST be part of a systematic review, but I guess ecology and evolution is more flexible**.
 
-Our mstudy does not involve a systematic review.
 
-**Hope my comments are useful.**
+>*Hope my comments are useful.*
 
 They were extremely useful, many thanks!
 
@@ -567,3 +578,6 @@ Answer
 **Tables 1, 2 Please check – the parameter estimates for ‘Female sex’ and test for ‘Female > Male’ are bolded inconsistently between the REML and Bayesian models where these estimates are identical.**
 
 Answer
+
+# References
+<div id="refs"></div>  
