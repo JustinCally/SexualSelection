@@ -48,9 +48,11 @@ knitr::opts_chunk$set(echo = FALSE)
 
 Dear Dr. Jones and colleagues,
 
-Many thanks for your time, and for the very helpful comments on our manuscript. We have considerably reworked the manuscript in light of the many insightful comments and suggestions provided by the reviewers. Please see below for a detailed list of responses to each of the reviewers' points. We also attach a revised manuscript and a revised copy of the supplementary material, as well as a copy of the revised manuscript in which the significant changes and additions have been highlighted. Please let us know if we can do anything further to assist you.
+Many thanks for your time, and for the very helpful comments on our manuscript. We have considerably reworked the manuscript in light of the many insightful comments and suggestions provided by the reviewers. Please see below for a detailed list of responses to each of the reviewers' points. 
 
-In addition to the changes suggested by reviewers, the peer-review process highlighted some human errors on our behalf in the dataset with respect to effect size calculation, these were issues to a select few effect sizes. As such, we have thoroughly rechecked our dataset and re-ran the analyses. Ultimately the corrections to the dataset have altered our conclusions.
+We also attach a revised manuscript and a revised copy of the supplementary material, as well as a copy of the revised manuscript in which the significant changes and additions have been highlighted. Please let us know if we can do anything further to assist you.
+
+Finally, in addition to the changes suggested by reviewers, we discovered a small number of errors in our original analysis, related to how effect sizes were calculated from certain primary studies in our meta-analysis. As such, we have thoroughly rechecked our dataset and re-ran the analyses with all errors corrected. **XXXXXXXXX**
 
 Yours Sincerely,
 
@@ -354,19 +356,19 @@ Answer
 
 >*l. 30 – reviews on sexual conflict are OK to cite here, but there are empirical papers actually demonstrating correlation between male sexual selected traits (Harano et al. 2011; Plesnar et al. 2014) which should also be cited.*
 
-Thank you, we now cite those papers as suggested in line 31. Additionally, they are especially pertenant to experimental evolution studies using species such as the bulb mite (*Rhizoglyphus robini*)[@Plesnar_2014] and flour beetles (*Gnatocerus cornutus*)[@Harano_2010].
+Thank you, we have added citations of those papers as suggested. 
 
 >*l. 151 – the authors discuss beneficial effects of sexual selection on direct fitness measures such as reproductive success or offspring viability, but estimates for both of these measures actually overlapped zero! Perhaps joint analysis of direct fitness measures, as I suggested above, could support this conclusion, but currently this is an overstatement.*
 
-The reviewer is correct in that the 95 % CI overlap zero for the three direct fitness components (extinction rate, offspring viability and reproductive success) have 95 % CI overlapping zero. Additionally, our analysis reveals that the predicted effect size for direct fitness components has 95 % CIs that overlap zero for Bayesian, but not REML models (REML $\beta$ = 0.13, 95% CIs: 0.022 to 0.24; Bayesian $\beta$ = 0.13, 95% CIs: -0.068 to 0.30, $BF_{>0}$ = 4.9). In this respect we have tapered and clarified our statement that we find some evidence that sexual selection increases mean values of traits directly related to fitness. However, we retain our statement that sexual selection generally elevates the mean of fitness components directly related to fitness as a two-way 95 % confidence limit is an arbitrary cut-off and the Bayes Factors suggest that their is a high likelihood that the effect size for direct fitness components is greater than zero. 
+Thank you for catching this -- we have tempered our conclusions in the relevant section of the Discussion, since the results provide only moderate evidence for a positive effect of sexual selection on these traits.
 
 >*In the discussion the authors say they included the number of experimental evolution generations, but I could not find this information in methods.*
 
-It is correct that we did not use the number of generations in our main analysis. The manuscript (Methods section) states that the number of generations. In the supplementary material we investigate the role of number of generations (the lineage is evolved for) has on fitness in the section *Meta-analyses including many moderator variables* as well as in Figure S12 and S13. Generations (specifically, log-Generations) had minimal effect on the effect sizes and was removed for the models that appeared in the main text.
+This information could be found in the supplementary material in the section *Meta-analyses including many moderator variables* as well as in Figure S12 and S13. Generations (specifically, log-Generations) had minimal effect on the effect sizes and so was removed for the "minimum adequate models" that we presented in the main text. **We now clarify this in the main text JUSTIN, MAYBE REFERENCE THOSE FIGURES WHEN SAYING IT'S NON-SIG OR SOMETHING LIKE THAT**.
 
 >*Fig. S1 is not referred to in the main texts, is it different from Fig. 2, except that the latter contains predicted average values for fitness components?*
 
-**No difference... kind of there for documentation on how we created it (transparency). We now get rid of the forest plot in the manuscript. However our supp info has a few plots that are in the manuscript. I think it is good to show the code we used to create it... for reproducibility**
+Our supplementary material does indeed contain all of our main figures, in order to show the data and code used to generate them. We have now made sure that e.g. Figure 2 in the HTML supplement is correctly labelled as Figure 2, to make it clear that it is not a different figure. **A JOB FOR JUSTIN HERE**
 
 ________________________________________________________
 
@@ -386,9 +388,9 @@ Many thanks for your time and attention, and for the valuable feedback.
 
 >*I recommend that the authors use lnRR for their effect size for mean comparison as well as Hedge's $g$ to see the robustness of their conclusions for the mean.*
 
-Reviewer 2 has rightly pointed out that the use of Hedge's *g* has been critisized for its ability to account for heterogeneity between the control and treatment groups [Osenberg_1997]. We extended our meta-analysis by including the log response ratio (*lnRR*) as well as a modified version of Hedge's g that attempts to account for this heterogeneity, this modified statistic [@bonett2009meta] can be derived from the ``metafor`` package for meta-analysis [@RN212], where it is named SMDH (standardized mean difference with heteroscedastic population variances in the two groups). There are several key findings from the use of lnRR and SMDH: 
+Reviewer 2 is correct that Hedges' *g* is imperfect, and so we extended our meta-analysis to include two alternative measures of effect size. Firstly, we present the log response ratio (*lnRR*) as suggested by this reviewer. Secondly, we present a modified version of Hedges' *g* that attempts to account for this heterogeneity issue [@bonett2009meta], named SMDH (standardized mean difference with heteroscedastic population variances in the two groups). There are several key findings from our new analyses using lnRR and SMDH: 
 
-*Firstly*, Hedge's g and SMDH are highly correlated (in means and variance). This suggests that unequal variance between the treatment and control groups (heteroscedasticity) is unlikely to impact the effect size of Hedges' g.
+*Firstly*, Hedges' *g* and SMDH are highly correlated (in means and variance). This suggests that unequal variance between the treatment and control groups (heteroscedasticity) in the primary studies we examined is probably too small to greatly influence Hedges' *g*, which is interesting for the interpretation of earlier meta-analyses using Hedges' *g*.
 
 ```{r, warning=FALSE, message = FALSE, error=FALSE}
 #This function writes in the correlation value
@@ -409,7 +411,7 @@ pairs(es.correlation.df %>% select(`Hedge's g`, lnRR, SMDH), lower.panel=panel.s
 # pairs(es.correlation.df %>% select(SMD_var, SMDH_var), lower.panel=panel.smooth, upper.panel=panel.cor)
 ```
 
-*Secondly*, The calculation of lnRR and SMDH can only be calculated for effect sizes where the study reported means, standard deviations and sample sizes (352 out of 459). This is a limitation as in our analysis we investigate the effects of sex and stress on a further restricted dataset (direct and indirect fitness traits only). Specifically, fewer effect sizes from stressful conditions are able to be calculated; making Hedges' g an advantageous effect size in comparison to lnRR.  
+*Secondly*, we note that lnRR and SMDH can only be calculated in cases where the primary study reported means, standard deviations and sample sizes (352 out of 459). This is a limitation, as we must discard roughly 25% of the data in order to use lnRR and SMDH, and so we think it is worthwhile to focus primarily on Hedges' *g* despite its minor limitations in the main manuscript, and use lnRR and SMDH for sensitivity analysis (to verify that the results are qualitatively the same as those produced by Hedges' *g*).
 
 ```{r, warning=FALSE, message = FALSE, error=FALSE}
 predictions.complete2 %>% select(Sex, Environment, `Hedge's g sample size` = n) %>% 
@@ -417,7 +419,7 @@ predictions.complete2 %>% select(Sex, Environment, `Hedge's g sample size` = n) 
   adorn_totals("row") %>% pander()
 ```
 
-*Thirdly*, if we conduct a meta-analysis using lnRR as the effect size we obtain very similar results with all major conclusions unchanged, keeping in mind that lnRR and Hedge's are on different scales; (further model results can be found within the Supplementary Material):  
+*Thirdly*, if we conduct a meta-analysis using lnRR as the effect size we obtain very similar results with all our main conclusions unchanged, keeping in mind that lnRR and Hedge's are on different scales (see the revised Supplementary Material). Specifically,
 + The effect of sexual selection on population fitness is generally positive.
 + This effect is magnified for females in stressful environments with a significantly positive interaction term (stress*females).  
 
@@ -428,7 +430,7 @@ grid.arrange(both.plots +
              lnRR.plots + ggtitle("\n\n") + xlim(-0.5,0.75), nrow = 1, widths = c(3,4))
 ```
 
-*Fourthly*, Hedges' g appears more normally distributed than lnRR, which to some extent may come as a surprise as *lnRR* should usually be more normally distributed around zero. However, given that our meta-analysis combines multiple traits, with different scales of magnitude lnRR may lead to some erroneous and biased effect sizes. Specifically, @Lajeunesse_2015 showed that *lnRR* is problematic when quantifying the outcome of studies with small sample sizes, and can yield unsuitable variance estimates when the parameter scale of the study are close to zero. The more normal distribution of the Hedges' *g* is anticipated to increase model fit.  
+*Fourthly*, the distribution of the lnRR effect sizes is non-normal (notably moreso than the distribution of Hedges' *g*), perhaps because one can get extreme values when taking a ratio (e.g. when the denominator is close to zero). Accordingly, @Lajeunesse_2015 showed that *lnRR* is problematic when quantifying the outcome of primary studies with small sample sizes, and can yield unsuitable variance estimates when the parameter scale of the study are close to zero. So, Hedges' *g* has the possible practical advantage of increasing model fit in our meta-analysis.  
 
 ```{r}
 grid.arrange(ggplot(data = lnRR.data, aes(x = lnRR))+
@@ -449,9 +451,6 @@ ggplot(full_dataset, aes(sample = g)) +
   labs(x = 'theoretical quantiles', y = "Hedges' g sample"))
 ```
   
-The lnRR is a commonly used effect size when the trait of interest has a natural zero point. Given that we did not extract the data with this in mind, it may be a further limitation of *lnRR*.
-
-For these reasons we have decided to use Hedges' *g* as the main effect size throughout the manuscript but reference and provide equivelant statistical analysis for *lnRR* in the supplementary material.  
 
 >*2 --- The authors may consider also doing another set of meta-analyses using lnVR (log variability ratio - proposed in Nakagawa et al. 2015).*
 
@@ -459,9 +458,9 @@ For these reasons we have decided to use Hedges' *g* as the main effect size thr
 
 >*As one can see in Figure 2, the mean results (Hedges' $g$) are a mirror image of the variance results (this makes sense CV controls for means). I would like to see what the absolute change in variances. Probably the authors can put the analysis using lnVR in the supplement. The results of this analysis can be discussed. Also, the mean-variance relationship between mean and variance (sd) should be verified (e.g. plot log mean and log sd or log variance).*  
 
-The reviewer suggestions have been included in our meta-analysis as Supplementary Material in order to maintain transparency in our conclusions. Several key points arise from the meta-analysis of variation:  
+Many thanks -- we have now also present a meta-analysis of variation using lnVR in addition to one using lnCVR. We have the following comments on this new analysis:
 
-*Firstly*, as the reviewer suggested we justify the use of *lnCVR* my assessing the mean-variance relationship. The major limitation of lnVR is that it does not account for the mean-variance relationship and that is why lnCVR was suggested as the favourable correction [@RN177]. Given this finding the use of *lnCVR* is preferenced over *lnVR*, as *lnVR* does not account for the mean-variance relationship.  
+*Firstly*, as the reviewer suggested, we now justify our use of lnCVR as opposed to lnVR, by assessing the mean-variance relationship in our data. The major limitation of lnVR is that it does not account for the mean-variance relationship; indeed this is why lnCVR was suggested as the favourable correction [@RN177]. We indeed found a strong positive correlation between mean and variance, suggesting our original use of lnCVR was justified.
 
 ```{r, warning=FALSE, message=FALSE, error = FALSE, fig.align='center', fig.width = 8, fig.height=3.75}
 grid.arrange(full_dataset %>% ggplot(aes(x = mean.low, y = sd.low))+
@@ -481,7 +480,7 @@ grid.arrange(full_dataset %>% ggplot(aes(x = mean.low, y = sd.low))+
   geom_smooth(method = "lm", colour = "red"), nrow = 1)
 ```
 
-*Secondly*, We conducted both Bayesian and REML meta-analyses for *lnVR*, which we present in the supplementary material and briefly discuss in the manuscript. We found a similar trend for the meta-analysis of variance using *lnCVR* and the meta-analysis of variance using *lnVR*, These are:  
+*Secondly*, We conducted new Bayesian and REML meta-analyses for *lnVR*, which we present in the supplementary material and briefly discuss in the manuscript. We found a similar trend for the meta-analysis of variance using *lnCVR* and the meta-analysis of variance using *lnVR*, These are:  
 
 +  In stressful environments sexual selection leads to a decrease in the variance for females, relative to benign environments.  
 +  Sexual selection reduces variance in females compared to males.  
@@ -508,23 +507,23 @@ grid.arrange(both.var.plots +
 
 >Senior, A. M., C. E. Grueber, T. Kamiya, M. Lagisz, K. O'Dwyer, E. S. A. Santos, and S. Nakagawa. 2016. Heterogeneity in ecological and evolutionary meta-analyses: its magnitude and implications. \textit{Ecology} 97:3293-3299.
 
-We value the reviewers feedback and have incorperated all the suggestions within a paragraph within the methods of our manuscript.  
+Many thanks for this feedback -- we have incorporated all the suggestions within a paragraph in the Methods section.
 
 >*4 --- Publication tests have been conducted on, I think, "meta-analytic" residuals results as suggested in Nakagawa and Santos 2012. One could use such residuals to conduct the trim and fill method and see how much the mean could move (see Nakagawa and Santos 2012). One should remember the funnel asymmetry could be caused by the presece of heterogeniety. See:*
 
 >Egger, M., G. Smith, M. Schneider, and C. Minder. 1997. Bias in metaanalysis detected by a simple, graphical test. \textit{Br Med J} 315:629 - 634.
 
-**No in-buit functionality for trim-and-fill for rma.mv in metafor... could figure out a way to do it I suppose, not sure if worth it**
+Thanks -- we now remind the reader that funnel plot asymmetry is not decisive evidence for publicaiton bias, because it can also result from unexplained heterogeneity in the original effect sizes. We have elected not to implement trim-and-fill since the method seems to have fallen into disfavour among many readers, and because we are unsure how to correctly implement it using the REML- and Bayesian methods we used. NB that there is no method for trim-and-fill in mixed meta-analysis in the popular R package `metafor` (which we used), suggesting the method is not simple to implement. 
 
 >*5 --- Figure 3 - are these grey envelopes 95% CI?*
 
-Yes they are, we have now included this information in the figure caption. Thank you for highlighting this.  
+Yes, and we have now included this information in the figure caption. Thank you for highlighting this.  
 
 >*6 --- the title - do the authors include "a systematic review" - so "a systematic reveiw and meta-analysis" - these two things are diferent - see:*
 
 >Nakagawa, S., and R. Poulin. 2012. Meta-analytic insights into evolutionary ecology: an introduction and synthesis. \textit{Evolutionary Ecology} 26:1085-1099.
 
-Our study does not involve a systematic review. The scope of a systematic review was larger than this meta-analysis entailed. However, we did use a systematic literature search strategy and PRISMA framework of inclusion/exclusion. **I think thewre is some unsureness here on what counts as a systematic review... I remember in medicine a meta-analysis MUST be part of a systematic review, but I guess ecology and evolution is more flexible**.
+We think that the scope of a true systematic review (in the sense used by e.g. Cochrane reviews) is larger than our study entails. However, we did use a systematic literature search strategy and PRISMA framework of inclusion/exclusion. With this in mind, we have left our paper's title as "meta-analysis" rather than calling it a systematic review.
 
 
 >*Hope my comments are useful.*
@@ -542,8 +541,6 @@ ________________________________________________________
 Many thanks for your time and attention, and for the valuable feedback.
 
 **The results of this meta-analysis broadly concur with current theoretical predictions, and are likely to interest a wide readership. Across all studies, environment types and fitness measures there was a small positive effect of sexual selection on mean population fitness, although effect sizes varied with the fitness measure used. The positive effect of sexual selection on fitness was strongest for females in stressful environments, who also showed reduced variance in fitness under sexual selection.**
-
-Answer
 
 **The authors discuss these findings thoughtfully, although they focus more on the (weaker) effects found for ‘direct’ measures of fitness while somewhat neglecting the effects seen for ‘indirect’ fitness measures (e.g. of attractiveness, mating latency, lifespan, ejaculate traits). These potentially deserve more consideration, especially as many appear to be male-limited traits or measured mainly in males, that would appear to have a direct bearing on male mating success (if an indirect link to overall fitness), yet despite this the overall effect of sexual selection on male fitness is not significant.**
 
