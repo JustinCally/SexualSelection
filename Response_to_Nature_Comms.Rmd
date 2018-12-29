@@ -50,8 +50,6 @@ Dear Dr. Jones and colleagues,
 
 Many thanks for your time, and for the very helpful comments on our manuscript. We have made many changes in light of the three reviewers' detailed feedback, and we feel that the manuscript has been greatly improved. Please see the letter below for our detailed responses to each of the reviewers' points. In addition to the revised manuscript and revised supplementary material, we attach a copy of the revised manuscript in which the significant changes and additions have been highlighted. 
 
-Finally, while working on the revisions we discovered a small number of errors, namely that we had miscalculated effect size from certain types of primary data. As such, we have thoroughly rechecked our dataset and re-ran all analyses with the errors corrected. **XXXXXXXXX**
-
 Yours Sincerely,
 
 Justin Cally and co-authors
@@ -66,14 +64,19 @@ Many thanks for your time and for you very helpful feedback.
 
 >*Firstly, it seems that several male traits like to be under sexual selection, but not related to population fitness were included. I don’t think this is correct given the question being asked (i.e. whether sexual selection increases population fitness). I think traits which are directly under sexual selection (eg. attractiveness, reproductive success) should not be pooled with traits which may respond to manipulation of sexual selection indirectly (eg. male development time, survival) and can affect population fitness. Distinguishing between both types of trait could actually be revealing – e.g. could expose trade-offs between sexually selected traits and fitness components unrelated to reproductive competition (see eg. Radwan et al. 2015 Evol Biol), a thus potentially explain lower effect of sexual selection on (pooled) male traits than on female traits.*
 
-We completely agree that male attractiveness does not affect population fitness directly, and it is important that this is reflected in the meta-analysis. In the study, we took this belief into account.  Specifically, we recorded effect size estimates relating to attractiveness (for completeness, and because it is possible that attractiveness is genetically correlated with traits that *do* affect population fitness). However, we classified male attractiveness as having an "indirect" relationship with population fitness (we did the same for other traits too, such as body condition and life span; see Table S1 for a full breakdown). However on reflection, we think that attractiveness is even more tenuously linked to population fitness, and so we have re-classified it as "ambiguous", along with traits like "Immunity" and "Development rate". Our main analysis excludes all of the ambiguous traits, and so our main results are now not derived from any effect sizes relating to male attractiveness. The exclusion of the n = 6 attractiveness effect sizes did not qualitatively change the results. 
+We completely agree that male attractiveness does not affect population fitness directly, and it is important to separate this trait from the "true" measures of population fitness in the meta-analysis. We do this more carefully in the revised meta-analysis. Specifically, in the original study, we classified male attractiveness as having an "indirect" relationship with population fitness (this is also how we classified traits such as body condition and life span; see Table S1 for a full breakdown). However on reflection, we think that attractiveness is only tenuously linked to population fitness, and so we have re-classified its relationship with population fitness as "ambiguous", along with traits like "Immunity" and "Development rate". Our main analysis excludes all of the ambiguous traits, and so our main results are now not derived from any effect sizes relating to male attractiveness. The exclusion of the n = 6 attractiveness effect sizes did not qualitatively change the results. 
+
+**Additionally, we have split the trait "Reproductive success" into "Female reproductive success" and "Male reproductive success", in recognition of the facts that these two fitness components are maximised very differently, and are likely to have differentially related to population fitness.**
+
+Effect on the results... 
 
 >*Secondly, looking at Figure 1, one notices apparent anomalies, for example significantly positive slope for male attractiveness, based on studies with average effect size close to zero. I think this (and few others) surprising estimates may result from fitting random terms across all trait types (fitted as a fixed factor, second model); I guess fitting interaction (random slopes) would not be feasible for some categories including few data points, but some of them could easily be pooled in wider categories.*
 
 For reference, we here present the result for male attractiveness that the reviewer mentioned. The table shows the estimate from the meta-analysis, and the figure shows the n = 6 effect sizes that underlie it, with the mean effect size plotted as vertical lines.
 
 ```{r}
-left_join(fitness.component.predictions, predictions.outcomes, by = "Fitness Component")  %>% filter(`Fitness Component` == "Male Attractiveness") %>% pander(split.table = Inf, digits = 2)
+left_join(fitness.component.predictions, predictions.outcomes, by = "Fitness Component") %>% 
+  filter(`Fitness Component` == "Male Attractiveness") %>% pander(split.table = Inf, digits = 2)
 ```
 
 
@@ -164,32 +167,25 @@ p.meta.male.attract <- full_dataset %>%
 p.meta.male.attract
 ```
 
-We agree that alone, these 6 studies do not provide strong evidence the mean is positive, though note that the very precisely measured effect sizes are mostly positive. However the model of the full dataset contains many other effect sizes, with are primarily positive, and so
+We agree that alone, these 6 studies do not provide strong evidence the mean is positive, although we note that some of the precisely measured effect sizes, and one of the imprecise ones, are positive, so this borderline significant result is not too anomalous. 
 
-The reviewer raises questions of the analysis that produce seemingly suprising results. We agree that some of *significant* predictions in Figure 1 (whereby 95 % CIs do not overlap zero) appear surprising based on the distribution on effect sizes. In regards to the trait "male attractiveness", the 95 % CIs do not overlap zero. This is the case even though the higher weighted studies are very close to zero. However, this seeming anomoly can be explained by various reasons. 
-
-Firstly, although the effect size prediction for the trait has 95 % CIs not overlapping zero, the overall magnitude of the effect size is small (see Table exerpt), and the Bayes Factor (an estimate of the likelihood that the effect size is actually positive) is also small. The full table for all predicted effect sizes used in Figure S1 can be seen in **S8**. Below we provide the exerpt of this table and forest plot for "Male attractiveness".  
-
-Secondly, the effect size predictions were made using a single model that incorperated all 459 effect sizes, thus model predictions for each trait have narrower confidence intervals as the fitted values do not incorperate measurement error. In regards to our R code and analysis, this means that the predictions that appeared in Figure 1 are sourced from using ``fitted.brmsfit`` as opposed to ``predict.brmsfit``. In order to clarify this seeming anomaly in model predictions, some meta-analyses investigating the effect of a variable on more than one outcome model each outcome (in this case the *fitness component*) separately. Arguably, this method provides more variable model estimates as models will always have lower power due to reduced sample sizes and the incorporation of measurement error in the predictions. We have added a table to the Supplementary Material where models are independently conducted on all fitness components where n > 3 (**Table S9**). This may be of particular value for researchers using our meta-analysis as a research tool, whereby they are interested in the effect sizes from only a single trait (as opposed to our focus on population fitness as a whole).  
-
-Given, the confusion with regards to Figure 1 as it originally appeared within the manuscript we have altered the figure to a generalized forest plot by grouping the effect sizes from each of the fitness classes (ambiguous, indirect and direct). The previous Figure 1 has now been moved to the Supplementary Material with corresponding tables.  
-
-  
-When the effect sizes (n = 6) for male attractiveness are viewed isolated from others, one can see that the large effect size (Nelson 2013) shifts the overall predicted effect size to be marginally positive.  
-  
+Secondly, the effect size predictions were made using a single model that incorporated hundreds of other effect sizes, which allows the model is allowed to 'share information' between the different fitness measures. For example, if the overall mean effect size is positive, then smaller subsets of the dataset (like the attractiveness subset, with n = 6 studies) will tend to be made slightly more positive. That is, in the absence of precise information about the true average effect size for studies of attractiveness, the model uses some information provided by the global average. 
   
 >*Thirdly, type of trait measured explained 35% variance, but the authors do not explore this any further. However, examination of Fig. 1 suggest that some indirect/ambiguous fitness measures account for much of this heterogeneity and they generally have higher average effect sizes that direct measures (except for immunity). I’d like to see if the authors recover their main result if they only direct measures.*
 
-**Add more in discussion about the variability amongst traits and why some might be subject to trade offs (e.g. immunity): We do kind of talk about this and an earlier draft had some of Jaceks work with regards to sexual conflict maintaing genetic variance through trade-offs. Should we add this back in?**
+In the revision, we have now replaced our main analysis in light of this comment, and reassuringly we obtained qualitatively the same result. In the original, we culled the dataset to only include the "direct" and "indirect" measures of popualtion fitness (this decision was taken to maximise the use of the data). In the revision, we have eliminated the "indirect" measures, leaving n = **XX** "direct" effect sizes in our main analysis. To facilitate easy comparison, we present the new and old results below: one can see that nothing has changed (in terms of statistical significance). To avoid reader fatigue in our manuscript (since we already chop and change the dataset in many different ways), we have changed this analysis to include only the "direct" measures, i.e. the graph on the right, and the table below, rather than presenting both versions.
 
-The reviewer provides an accurate shortcoming of discussion on the observed heterogeneity between fitness components. The sixth paragraph of our discussion is raises some potential reasons why heterogeneity may be high within our meta-analysis. Additionally, it may please the reviewer to find an addition to our Supplementary Material (Table S9), now conducts independent meta-analyses and obtains $I^2$ for each of these traits. Even when metanalyses are conducted on a single trait, heterogeneity ($I^2$) is still high > 90 %.  
 
-In regards to conducting a meta-analysis on just direct fitness components, the reviewer provides a valid question of our use of direct **and** indirect fitness components for the meta-analysis investigating the effects of sex and stress. Based on the question we asked we were interested in the effect of sexual selection on many components of fitness.  
+<!-- **Add more in discussion about the variability amongst traits and why some might be subject to trade offs (e.g. immunity): We do kind of talk about this and an earlier draft had some of Jaceks work with regards to sexual conflict maintaining genetic variance through trade-offs. Should we add this back in?** -->
 
-Nevertheless, we conducted our analysis using just direct fitness measures. We find the same key associations; that sexual selection generally elevates fitness, especially for females, with the effect magnified in stressful environments. Below we present the findings. 
-**should we put this in the supp?**
+<!-- The reviewer provides an accurate shortcoming of discussion on the observed heterogeneity between fitness components. The sixth paragraph of our discussion is raises some potential reasons why heterogeneity may be high within our meta-analysis. Additionally, it may please the reviewer to find an addition to our Supplementary Material (Table S9), now conducts independent meta-analyses and obtains $I^2$ for each of these traits. Even when metanalyses are conducted on a single trait, heterogeneity ($I^2$) is still high > 90 %.   -->
 
-Additionally, in order to further distinguish the effects of sexual selection on ambiguous, indirect and direct fitness components, we have structured the second paragraph of the results to more consistently reflect our classification system.  
+<!-- In regards to conducting a meta-analysis on just direct fitness components, the reviewer provides a valid question of our use of direct **and** indirect fitness components for the meta-analysis investigating the effects of sex and stress. Based on the question we asked we were interested in the effect of sexual selection on many components of fitness.   -->
+
+<!-- Nevertheless, we conducted our analysis using just direct fitness measures. We find the same key associations; that sexual selection generally elevates fitness, especially for females, with the effect magnified in stressful environments. Below we present the findings.  -->
+<!-- **should we put this in the supp?** -->
+
+<!-- Additionally, in order to further distinguish the effects of sexual selection on ambiguous, indirect and direct fitness components, we have structured the second paragraph of the results to more consistently reflect our classification system.   -->
 
 ```{r, warning=FALSE, message=FALSE, error = FALSE, fig.align='center', fig.width = 10, fig.height=6}
 model.direct.only <- rma.mv(g, V = var.g, 
@@ -343,15 +339,12 @@ predictions.direct %>% pander(caption = "Model using only direct measures of fit
 
 We agree that this section could have been much clearer, and have made some changes in light of this comment to clarify what we meant. We believe that experiments that manipuate sexual selection on males will alter female fitness traits, even in species where females experience no sexual selection, because of mechanisms such as intra- and inter-locus sexual conflict. That is, evolution in males will almost always have pleiotropic consequences for females, or change how males males affect females (i.e. sexual selection on males causes of evolution of males' indirect genetic effects on females).
 
-Consider for example the classic Holland and Rice-style experiment, where one removes sexual selection by enforcing random monogamy in a species like _Drosophila_ with 'traditional sex roles'. The males in these experiments are predicted to evolve to be less harmful to females, and they are also predicted to evolve a more female-like overall phenotype, due to the removal of selection on male-specific functions involved in sexual selection. Both of these male adaptations are expected to cause a genetically-based change in female traits: the former as a result of inter-locus coevolution (e.g. female resistance should evolve in response to decreased male harm), and the latter as a result of pleiotropy between the sexes. We thus might predict that females would adapt even more than males if female traits have more genetic variation, or if selection is 'harder' on females than males. These explanations are speculative and _post hoc_, and so in the revision we are careful to identify them as such. This result is arguably opposite to what one would predict, since the removal of sexual selection on males appears to be a more drastic change for males than for females, and we now spell this out as well.
+Consider for example the classic Holland and Rice-style experiment, where one removes sexual selection by enforcing random monogamy in a species with 'traditional sex roles', such as _Drosophila_. Males are predicted to evolve to be less harmful to females in these experiments, and they are also predicted to evolve a more female-like overall phenotype, due to the removal of selection on male-specific functions involved in sexual selection. Both of these male adaptations are expected to cause a genetically-based change in female traits: the former as a result of inter-locus coevolution (e.g. female resistance should evolve in response to the reduction in male-induced harm), and the latter as a result of pleiotropy between the sexes. We thus might predict that females would adapt even more than males if female traits have more genetic variation, or if selection is 'harder' on females than males. These explanations are speculative and _post hoc_, and so in the revision we are careful to identify them as such. Our result is arguably opposite to what one would predict, because naively one would expect sexual selection to have greater effects on the phenotype of males, and we now spell this out as well.
 
 
 >*Perhaps the effect on females is indeed direct, and results from stress imposed by polygamous treatment, which magnifies direct, hard selection on females? This would be an important finding, and perhaps the authors could test it with their dataset by contrasting middle-class-neighborhood-like studies from those which allowed for female evolution. But if correct, this explanation is not exactly the effect of sexual selection, but rather enhanced selection of females due to enhanced (male induced) stress, so the interpretation of results should change.*
 
-
-Not too sure what he means.
-
-Answer
+Unfortunately, too few studies have manipulated sexual selection (independently of _all_ selection) using the middle class neighborhood design for a reliable test. However we did collect data on how sexual selection was manipulated: many studies imposed random monogamy, but other studies instead manipulated the adult sex ratio (e.g. 3 males 1 female, 2 of each, or 3 females 1 male). In the revised manuscript we now included "manipulation type" as a two-level moderator. We find no effect of manipulation type on effect size, suggestion that both ways of removing sexual selection had a similar effect on population fitness traits. **See the revised Table SX.**
 
 **Other comments:**   
 
@@ -389,9 +382,9 @@ Many thanks for your time and attention, and for the valuable feedback.
 
 >*I recommend that the authors use lnRR for their effect size for mean comparison as well as Hedge's $g$ to see the robustness of their conclusions for the mean.*
 
-Reviewer 2 is correct that Hedges' *g* is imperfect, and so we extended our meta-analysis to include two alternative measures of effect size. Firstly, we present the log response ratio (*lnRR*) as suggested by this reviewer. Secondly, we present a modified version of Hedges' *g* that attempts to account for this heterogeneity issue [@bonett2009meta], named SMDH (standardized mean difference with heteroscedastic population variances in the two groups). There are several key findings from our new analyses using lnRR and SMDH: 
+After reading htose references, we agree that Hedges' *g* is imperfect, and so we checked the robustness of our meta-analysis using two alternative measures of effect size. Firstly, we present the log response ratio (*lnRR*) as suggested by this reviewer. Secondly, we present a modified version of Hedges' *g* that attempts to account for this heterogeneity issue [@bonett2009meta], named SMDH (standardized mean difference with heteroscedastic population variances in the two groups). There are several key findings from our new analyses using lnRR and SMDH: 
 
-*Firstly*, Hedges' *g* and SMDH are highly correlated (in means and variance). This suggests that unequal variance between the treatment and control groups (heteroscedasticity) in the primary studies we examined is probably too small to greatly influence Hedges' *g*, which is interesting for the interpretation of earlier meta-analyses using Hedges' *g*.
+*Firstly*, we found that Hedges' *g* and SMDH are highly correlated (in means and variance). This suggests that unequal variance between the treatment and control groups (heteroscedasticity) in the primary studies we examined is probably too small to greatly influence Hedges' *g*, which is interesting for the interpretation of earlier meta-analyses using Hedges' *g*.
 
 ```{r, warning=FALSE, message = FALSE, error=FALSE}
 #This function writes in the correlation value
@@ -412,7 +405,7 @@ pairs(es.correlation.df %>% select(`Hedge's g`, lnRR, SMDH), lower.panel=panel.s
 # pairs(es.correlation.df %>% select(SMD_var, SMDH_var), lower.panel=panel.smooth, upper.panel=panel.cor)
 ```
 
-*Secondly*, we note that lnRR and SMDH can only be calculated in cases where the primary study reported means, standard deviations and sample sizes (352 out of 459). This is a limitation, as we must discard roughly 25% of the data in order to use lnRR and SMDH, and so we think it is worthwhile to focus primarily on Hedges' *g* despite its minor limitations in the main manuscript, and use lnRR and SMDH for sensitivity analysis (to verify that the results are qualitatively the same as those produced by Hedges' *g*).
+*Secondly*, we note that lnRR and SMDH can only be calculated in cases where the primary study reported means, standard deviations and sample sizes (352 out of 459 primary effect sizes). This is a limitation of lnRR and SMDH, as we must discard roughly 25% of the data in order to use them instead of Hedges' *g*. We therefore think it is best to focus primarily on Hedges' *g* despite its minor limitations, and to use lnRR and SMDH for sensitivity analysis in the online supplementary material.
 
 ```{r, warning=FALSE, message = FALSE, error=FALSE}
 predictions.complete2 %>% select(Sex, Environment, `Hedge's g sample size` = n) %>% 
@@ -461,7 +454,7 @@ ggplot(full_dataset, aes(sample = g)) +
 
 Many thanks -- we have now also present a meta-analysis of variation using lnVR in addition to one using lnCVR. We have the following comments on this new analysis:
 
-*Firstly*, as the reviewer suggested, we now justify our use of lnCVR as opposed to lnVR, by assessing the mean-variance relationship in our data. The major limitation of lnVR is that it does not account for the mean-variance relationship; indeed this is why lnCVR has been recommended over lnVR [@RN177]. We indeed found a strong positive correlation between mean and variance, suggesting our original use of lnCVR was justified.
+*Firstly*, as the reviewer suggested, we now justify our use of lnCVR as opposed to lnVR, by assessing the mean-variance relationship in our data. The major limitation of lnVR is that it does not account for the mean-variance relationship; indeed this is why lnCVR has been recommended over lnVR [@RN177]. We indeed found a strong positive correlation between mean and variance, suggesting that we should indeed lnCVR and not lnVR.
 
 ```{r, warning=FALSE, message=FALSE, error = FALSE, fig.align='center', fig.width = 8, fig.height=3.75}
 grid.arrange(full_dataset %>% ggplot(aes(x = mean.low, y = sd.low))+
@@ -481,12 +474,7 @@ grid.arrange(full_dataset %>% ggplot(aes(x = mean.low, y = sd.low))+
   geom_smooth(method = "lm", colour = "red"), nrow = 1)
 ```
 
-*Secondly*, We conducted new Bayesian and REML meta-analyses for *lnVR*, which we present in the supplementary material and briefly discuss in the manuscript. We found a similar trend for the meta-analysis of variance using *lnCVR* and the meta-analysis of variance using *lnVR*, These are:  
-
-+  In stressful environments sexual selection leads to a decrease in the variance for females, relative to benign environments.  
-+  Sexual selection reduces variance in females compared to males.  
-
-However, when using *lnVR*, the variability of fitness traits for males under sexual selection increased, *lnVR* for females in stressful environments was not statistically different from zero, and sexual selection in benign environments increased phenotypic variance for females. Model results and predictions (from the REML model) can be cound in the Supplementary Material.   
+Although we think that *lnVR* is not preferable due to this positive relationship, we ran our meta-analyses using *lnVR* in the interests of completeness. **We present this new result in the supplementary material and briefly discuss it in the manuscript**. To summarise, we found very similar patterns, although the statistical significance of one of the results disappeared; see the following figure:
 
 ```{r, warning=FALSE, message=FALSE, error = FALSE, fig.align='center', fig.width = 10, fig.height=6}
 grid.arrange(both.var.plots + 
@@ -508,7 +496,7 @@ grid.arrange(both.var.plots +
 
 >Senior, A. M., C. E. Grueber, T. Kamiya, M. Lagisz, K. O'Dwyer, E. S. A. Santos, and S. Nakagawa. 2016. Heterogeneity in ecological and evolutionary meta-analyses: its magnitude and implications. \textit{Ecology} 97:3293-3299.
 
-Many thanks for this feedback -- we have incorporated all the suggestions within a paragraph in the Methods section.
+Many thanks for this feedback -- we have **incorporated all these suggestions in the Methods section**.
 
 >*4 --- Publication tests have been conducted on, I think, "meta-analytic" residuals results as suggested in Nakagawa and Santos 2012. One could use such residuals to conduct the trim and fill method and see how much the mean could move (see Nakagawa and Santos 2012). One should remember the funnel asymmetry could be caused by the presece of heterogeniety. See:*
 
@@ -540,41 +528,40 @@ ________________________________________________________
 
 Many thanks for your time and attention, and for the valuable feedback.
 
-**The results of this meta-analysis broadly concur with current theoretical predictions, and are likely to interest a wide readership. Across all studies, environment types and fitness measures there was a small positive effect of sexual selection on mean population fitness, although effect sizes varied with the fitness measure used. The positive effect of sexual selection on fitness was strongest for females in stressful environments, who also showed reduced variance in fitness under sexual selection.**
+>*The results of this meta-analysis broadly concur with current theoretical predictions, and are likely to interest a wide readership. Across all studies, environment types and fitness measures there was a small positive effect of sexual selection on mean population fitness, although effect sizes varied with the fitness measure used. The positive effect of sexual selection on fitness was strongest for females in stressful environments, who also showed reduced variance in fitness under sexual selection.*
 
-**The authors discuss these findings thoughtfully, although they focus more on the (weaker) effects found for ‘direct’ measures of fitness while somewhat neglecting the effects seen for ‘indirect’ fitness measures (e.g. of attractiveness, mating latency, lifespan, ejaculate traits). These potentially deserve more consideration, especially as many appear to be male-limited traits or measured mainly in males, that would appear to have a direct bearing on male mating success (if an indirect link to overall fitness), yet despite this the overall effect of sexual selection on male fitness is not significant.**
+>*The authors discuss these findings thoughtfully, although they focus more on the (weaker) effects found for ‘direct’ measures of fitness while somewhat neglecting the effects seen for ‘indirect’ fitness measures (e.g. of attractiveness, mating latency, lifespan, ejaculate traits). These potentially deserve more consideration, especially as many appear to be male-limited traits or measured mainly in males, that would appear to have a direct bearing on male mating success (if an indirect link to overall fitness), yet despite this the overall effect of sexual selection on male fitness is not significant.*
 
-Need to answer this in a similar line to Jaceks comments.
+Please see our earlier response to Prof. Radwan: we do not consider male mating success (and related traits) to be correlates of population fitness, which is why the results differ between our strict analysis and the one that includes all the traits. Additionally, we chose to spend more time writing about the "direct" effects because our main focus is on population fitness. We agree that our secondary results are interesting as well, but we wanted to keep the manuscript focused and concise. Also, there is no theoretical controversy over how sexual selection should affect traits like male mating success; by contrast, the relationship between sexual selection and population fitness is contentious.
 
-**I have only a few more specific comments:**
+>*I have only a few more specific comments:*
 
-**Does your approach consider variation in the intensity of sexual selection exclusively on males? This is worth noting (e.g. statements such as that on line 98-99 might be amended to “Sexual selection on males significantly improved female fitness.”)**
+>*Does your approach consider variation in the intensity of sexual selection exclusively on males? This is worth noting (e.g. statements such as that on line 98-99 might be amended to “Sexual selection on males significantly improved female fitness.”)*
 
-Answer
+>*Experiments manipulating the sex ratio to alter sexual selection might simultaneously decrease sexual selection on males while increasing sexual selection on females. Would this be classified as reduced sexual selection in your analyses? I don’t think you included this aspect of study design as a moderator variable in any of your analyses – given that close to half of the effects you include come from “alternative manipulations” (line 70) perhaps you could test whether this affects effect size?*
 
-**Experiments manipulating the sex ratio to alter sexual selection might simultaneously decrease sexual selection on males while increasing sexual selection on females. Would this be classified as reduced sexual selection in your analyses? I don’t think you included this aspect of study design as a moderator variable in any of your analyses – given that close to half of the effects you include come from “alternative manipulations” (line 70) perhaps you could test whether this affects effect size?**
+Some of the studies used the enforced monogamy design (as in Holland and Rice 2002), where one compares monogamous family groups with polyandrous ones (i.e. multiple males and one female), and so these manipulate sexual selection on males only, and eliminate sexual selection on females. Others instead manipulated the adult sex ratio (e.g. 3 males 1 female, 2 of each, or 3 females 1 male); these studies manipulate sexual selection on both sexes simultaneously. For the latter type, we considered the strength of sexual selection on males to be variable of interest, though it is confounded with the strength of sexual seleciton on females. To test if there was any difference in the effect sizes induced by these two types of manipulation, we now include "manipulation type" as a moderator variable: there was no effect (see above comment to Reviewer 1). **We now also stress that we consider sexual selection on males, as suggested.**
 
-Answer
 
-**It seems possible that sexual selection on females, and not only on males, could affect population fitness – potentially even more directly than sexual selection on males. And might differing extents of sexual selection in each sex interact with the differences you saw in fitness measured in males vs. females?**
+>*It seems possible that sexual selection on females, and not only on males, could affect population fitness – potentially even more directly than sexual selection on males. And might differing extents of sexual selection in each sex interact with the differences you saw in fitness measured in males vs. females?*
 
-Answer
+It is possible that sexual selection on females on affects population fitness, although to our knowledge no-one has considered or modelled this before. Also, we are not a aware of any experiments that have manipulated the opportunity for sexual selection on females independently of any other factors (e.g. sexual selection on males; see above comment). So, we have opted not to discuss or analyse this further, as we think the data do not yet allow for a robust test.
 
-**L111-118 It seems a little odd that there is no residual heterogeneity in your $I^2$ estimates. From the supplemental information it is not entirely clear to me how you have adapted the function that is under development in “metaAidR”, but can you double check that you have appropriately incorporated the residual variance into these estimates?**
+>*L111-118 It seems a little odd that there is no residual heterogeneity in your $I^2$ estimates. From the supplemental information it is not entirely clear to me how you have adapted the function that is under development in “metaAidR”, but can you double check that you have appropriately incorporated the residual variance into these estimates?*
 
-Answer
+**Check this please Justin - I could not see what you changed in the R script**
 
-**L307-311 Please clarify here that lnCVR was calculated as the ratio $ln(CVfitness_{SS}/CVfitness_{no SS})$**
+>*L307-311 Please clarify here that lnCVR was calculated as the ratio $ln(CVfitness_{SS}/CVfitness_{no SS})$*
 
-Answer
+**We now clarify this as suggested.**
 
-**Fig. 3 Please explain the dashed red and black lines in the figure caption.**
+>*Fig. 3 Please explain the dashed red and black lines in the figure caption.*
 
-Answer
+**We now clarify this as suggested.**
 
-**Tables 1, 2 Please check – the parameter estimates for ‘Female sex’ and test for ‘Female > Male’ are bolded inconsistently between the REML and Bayesian models where these estimates are identical.**
+>*Tables 1, 2 Please check – the parameter estimates for ‘Female sex’ and test for ‘Female > Male’ are bolded inconsistently between the REML and Bayesian models where these estimates are identical.*
 
-Answer
+**Please check and answer this Justin**
 
 # References
 <div id="refs"></div>  

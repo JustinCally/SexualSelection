@@ -51,10 +51,11 @@ source("Tidy_functions_for_brms.R") #Tidy functions for making model tables for 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(cache=TRUE, warning = F) # set up cacheing to save time when re-building the html document
+knitr::opts_chunk$set(warning=FALSE, message=FALSE) # Suppress warnings in the HTML output
+
 ```
 
 ## Supplementary Methods
-
 
 Our aim was to investigate the effects of sexual selection on population fitness by conducting a meta-analysis on studies that measured fitness related outcomes after experimentally evolving a population under varying levels of opportunity for sexual selection. Here we describe the process of the literature search, data extraction, effect size calculation, formulation of multilevel models and assessing publication bias. We used the PRISMA (Preferred Reporting Items for Systematic Reviews and Meta-Analyses) as a guide during this meta-analysis. The repository used to formulate this document can be found here: https://github.com/JustinCally/SexualSelection 
 
@@ -187,9 +188,9 @@ kable(full_dataset, "html") %>%
 ```
 <br></br>
 
-**Study ID**: An ID given to the published paper the effect size is sourced from (n=65).
+**Study ID**: An ID given to the published paper the effect size is sourced from (n = 69).
 
-**Group ID**: An ID given to the research group that may have published several papers on the same species usuing the same or very similar experimental setup. [Was not use in analysis]
+**Group ID**: An ID given to the research group that may have published several papers on the same species usuing the same or very similar experimental setup. [Was not used in analysis]
 
 **Species**: The species used in the experimental evolution procedure (n = 15).
 
@@ -631,7 +632,7 @@ fitness.component.predictions <- fitness.component.predictions %>% cbind.data.fr
 left_join(fitness.component.predictions, predictions.outcomes, by = "Fitness Component") %>% pander(split.table = Inf, digits = 2)
 ```
 
-**Table S9** In some instances it may be beneficial to the reader to obtain average effect sizes of each fitness trait **entirely independent** of other traits. For this reason we present a summary of independent model estimates for 16 fitness components with a sample size greater than 3 effect sizes (n>3). Unlike above where estimates were generated based on predictions from a single model, here we run individual meta-analyses for each fitness related trait. Independent models generally reduce the power and significance of some of the estimates with 'Extinction rate' and 'Ejaculate quality and production' the only two traits with p-values < 0.05.  
+**Table S9** In some instances it may be beneficial to the reader to obtain average effect sizes of each fitness trait **entirely independently** of other traits. For this reason we present a summary of independent model estimates for 16 fitness components with a sample size greater than 3 effect sizes (n>3). Unlike above where estimates were generated based on predictions from a single model, here we run individual meta-analyses for each fitness related trait. Independent models generally reduce the power and significance of some of the estimates with 'Extinction rate' and 'Ejaculate quality and production' the only two traits with p-values < 0.05.  
 
 ```{r, warning = FALSE}
 outcome.list <- as.list(c('Behavioural Plasticity', 'Body Size', 'Development Rate', 'Early Fecundity', 'Immunity', 'Male Attractiveness', 'Mating Duration', 'Pesticide Resistance', 'Mutant Frequency', 'Fitness Senescence', 'Lifespan', 'Mating Frequency', 'Mating Latency', 'Mating Success', 'Strength', 'Ejaculate Quality and Production', 'Extinction Rate', 'Offspring Viability', 'Reproductive Success'))
@@ -897,20 +898,27 @@ From these models we can see that the moderators `Blinding` and `Generations` ha
 
 ____________________
 
-### Restricted analysis to just the higher-quality data
+### Restricted analysis of just the higher-quality data
 
 The models and plots above all use the full dataset (called `full_dataset` in the R code). However, some of the variables included in that dataset are not clearly related to population fitness (these were scored as "Ambiguous" in the "Outcome.Class" column), or it was unclear whether the environmental conditions could be termed "Stressful" or "Benign". To check whether our findings are robust to the inclusion of the ambiguous results, and to properly evaluate the effects of environmental stress, we next restricted the dataset to exclude these unclear cases (called `strict_dataset` in the R code). We also focus on the model containing the fixed effects Sex, Environment, Taxon and the interaction between sex and environment, as these are key to our research question. 
 
+<!-- Note to Justin: here, I changed to just the 'direct' measures, and added the "Enforced Monogamy" predictor. You'll need to add the Bayesian equivalent, and alter the code for the figure etc. I think it's better this way, and the results don't appear to change in any major way -->
+
 ```{r, message=FALSE, error = FALSE, warning=FALSE}
+# strict_dataset <- full_dataset %>% 
+#   filter(Outcome.Class != "Ambiguous" & Environment != "Not Stated")  %>% 
+#   mutate(Sex = relevel(Sex, ref = "M"),
+#          Environment = relevel(factor(Environment), ref = "Unstressed"),
+#          Taxon = relevel(factor(Taxon), ref = "Beetle"))
+
 strict_dataset <- full_dataset %>% 
-  filter(Outcome.Class != "Ambiguous" & Environment != "Not Stated")  %>% 
+  filter(Outcome.Class == "Direct" & Environment != "Not Stated")  %>% 
   mutate(Sex = relevel(Sex, ref = "M"),
-         Environment = relevel(Environment, ref = "Unstressed"),
-         Taxon = relevel(Taxon, ref = "Beetle"),
-         Outcome.Class = relevel(factor(Outcome.Class), ref = "Indirect"))
+         Environment = relevel(factor(Environment), ref = "Unstressed"),
+         Taxon = relevel(factor(Taxon), ref = "Beetle"))
 
 model.complete <- rma.mv(g, V = var.g, 
-                         mods = ~ 1 + Sex * Environment + Taxon, 
+                         mods = ~ 1 + Sex * Environment + Taxon + Enforced.Monogamy, 
                          random = list(~ 1 | Study.ID, 
                                        ~ 1 | Outcome), 
                          method = "REML", 
@@ -918,6 +926,21 @@ model.complete <- rma.mv(g, V = var.g,
 
 summary(model.complete, digits = 2)
 ```
+
+<!-- Bayesian equivalent is something like: -->
+
+<!-- ```{r} -->
+<!-- model.complete.bayesian <- brm(g | se(SE)  ~ 1 + Sex * Environment * Taxon + Enforced.Monogamy -->
+<!--                   + (1|Study.ID)  -->
+<!--                   + (1|Outcome),  -->
+<!--                   family = "gaussian",  -->
+<!--                   seed = 1, -->
+<!--                   cores = 1, chains = 4, iter = 4000,  -->
+<!--                   control = list(adapt_delta = 0.9999, max_treedepth = 15), -->
+<!--                   data = strict_dataset %>% mutate(SE = sqrt(var.g))) -->
+<!-- ``` -->
+
+
 
 The result is a model with estimates for various taxa, species, sexes and environments. We again write a function to predict the average effect size for each sub-group in the data.
 
@@ -936,7 +959,7 @@ get.predictions.complete <- function(newdata){
   if(newdata[1] == "B" & newdata[2] == "Stressed") interaction1<-1
   if(newdata[1] == "F" & newdata[2] == "Stressed") interaction2<-1
 
-  predict(model.complete, newmods=c(B, F, Stressed, Cricket, Fly, Guppy, Mite, Mouse, interaction1=interaction1, interaction2=interaction2))
+  predict(model.complete, newmods=c(B, F, Stressed, Cricket, Fly, Guppy, Mite, Mouse, 1, interaction1, interaction2))
 }
 # Get the predictions for each combination of moderators
 predictions.complete <- as.data.frame(expand.grid(Sex = c("M", "B", "F"),
@@ -1021,14 +1044,14 @@ ____________
 
 ### REML: Effects of Environment and Sex
 
-Here we ask two key questions: Does sexual selection benefit populations in stressful environments more than benign environments? **AND** Do the benefits of sexual selection differ between the sexes? The only difference to the previous model is that `Taxon` is now treated as a random effect.
+Here we ask two key questions: Does sexual selection benefit populations in stressful environments more than benign environments? **AND** Do the benefits of sexual selection differ between the sexes? The only difference to the previous model is that `Taxon` is now treated as a random effect. Note that this analysis again uses the strict dataset, containing only "direct" fitness measures and those where we were able to score the presence/absence of environmental stress.
 
 ```{r}
 model.complete2 <- rma.mv(g, V = var.g, 
                           mods = ~ 1 + Sex * Environment, 
                           random = list(~ 1 | Study.ID, 
-                                       ~ 1 | Outcome,
-                                       ~ 1 | Taxon), 
+                                        ~ 1 | Outcome,
+                                        ~ 1 | Taxon), 
                           method = "REML", 
                           data = strict_dataset)
 saveRDS(model.complete2, 'data/model.complete2.rds')
@@ -1249,7 +1272,7 @@ ____________________
 
 Using an adapted function from https://github.com/daniel1noble/metaAidR we can obtain confidence intervals for total _I^2^_ and the individual components of the random effects. There are different methods to obtain estimates of _I^2^_. Here we obtain an overall value of _I^2^_ that is weighted based on variance and where estimates of heterogeneity are sourced from sigma^2^ of the respective models. The values are based on the REML models. 
 
-```{r}
+```{r warning=FALSE}
 I2(model.complete2, strict_dataset$var.g) %>% pander(digits = 3)
 ```
 These values indicate that 57.4 % of total heterogeneity is due to the **between study** heterogeneity and 37.4 % for **between outcome** heterogeneity between different outcomes. The total _I^2^_  is 94.7 %, a reasonably high _I^2^_ value. However this is relatively common in Ecology and Evolution total [@Senior_I2_2016]. 
