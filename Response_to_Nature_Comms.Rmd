@@ -341,9 +341,10 @@ predictions.direct %>% pander(caption = "Model using only direct measures of fit
 
 >*Another major problem I have with the manuscript concerns interpretation of the very intriguing finding that the response to manipulation of sexual selection was stronger for female traits compared to male traits. I’m confused by the authors’ explanation: do they assume sexual selection acted directly on females, and not only indirectly, via males? Only then things like mother to daughter heritability, or hard selection on females, should matter.*
 
-Leave this for Luke
+We agree that this section could have been much clearer, and have made some changes in light of this comment to clarify what we meant. We believe that experiments that manipuate sexual selection on males will alter female fitness traits, even in species where females experience no sexual selection, because of mechanisms such as intra- and inter-locus sexual conflict. That is, evolution in males will almost always have pleiotropic consequences for females, or change how males males affect females (i.e. sexual selection on males causes of evolution of males' indirect genetic effects on females).
 
-Good suggestion!
+Consider for example the classic Holland and Rice-style experiment, where one removes sexual selection by enforcing random monogamy in a species like _Drosophila_ with 'traditional sex roles'. The males in these experiments are predicted to evolve to be less harmful to females, and they are also predicted to evolve a more female-like overall phenotype, due to the removal of selection on male-specific functions involved in sexual selection. Both of these male adaptations are expected to cause a genetically-based change in female traits: the former as a result of inter-locus coevolution (e.g. female resistance should evolve in response to decreased male harm), and the latter as a result of pleiotropy between the sexes. We thus might predict that females would adapt even more than males if female traits have more genetic variation, or if selection is 'harder' on females than males. These explanations are speculative and _post hoc_, and so in the revision we are careful to identify them as such. This result is arguably opposite to what one would predict, since the removal of sexual selection on males appears to be a more drastic change for males than for females, and we now spell this out as well.
+
 
 >*Perhaps the effect on females is indeed direct, and results from stress imposed by polygamous treatment, which magnifies direct, hard selection on females? This would be an important finding, and perhaps the authors could test it with their dataset by contrasting middle-class-neighborhood-like studies from those which allowed for female evolution. But if correct, this explanation is not exactly the effect of sexual selection, but rather enhanced selection of females due to enhanced (male induced) stress, so the interpretation of results should change.*
 
@@ -360,15 +361,15 @@ Thank you, we have added citations of those papers as suggested.
 
 >*l. 151 – the authors discuss beneficial effects of sexual selection on direct fitness measures such as reproductive success or offspring viability, but estimates for both of these measures actually overlapped zero! Perhaps joint analysis of direct fitness measures, as I suggested above, could support this conclusion, but currently this is an overstatement.*
 
-Thank you for catching this -- we have tempered our conclusions in the relevant section of the Discussion, since the results provide only moderate evidence for a positive effect of sexual selection on these traits.
+Thank you for catching this -- we have tempered our conclusions in the relevant section of the Discussion, since the results provide only moderate evidence for a positive effect.
 
 >*In the discussion the authors say they included the number of experimental evolution generations, but I could not find this information in methods.*
 
-This information could be found in the supplementary material in the section *Meta-analyses including many moderator variables* as well as in Figure S12 and S13. Generations (specifically, log-Generations) had minimal effect on the effect sizes and so was removed for the "minimum adequate models" that we presented in the main text. **We now clarify this in the main text JUSTIN, MAYBE REFERENCE THOSE FIGURES WHEN SAYING IT'S NON-SIG OR SOMETHING LIKE THAT**.
+For relevant results, please see the section of the results that reads "Other moderator variables that we examined had minimal impacts on effect size (Figure S2, Table S10). Specifically, effect size did not depend on whether or not the study was conducted blind (Figure S9), nor on the number of generations for which the experimental evolution study was run (Figure S10, S11)." In the methods, we wrote "Additionally, we collected details for each effect size on: sex (male, female or a mixed sample of both), taxon (flies, beetles, mice, nematodes, mites, crickets and guppies), blinding of researchers to treatments and number of generations a treatment group underwent experimentally evolution."
 
 >*Fig. S1 is not referred to in the main texts, is it different from Fig. 2, except that the latter contains predicted average values for fitness components?*
 
-Our supplementary material does indeed contain all of our main figures, in order to show the data and code used to generate them. We have now made sure that e.g. Figure 2 in the HTML supplement is correctly labelled as Figure 2, to make it clear that it is not a different figure. **A JOB FOR JUSTIN HERE**
+Our supplementary material does indeed contain all of our main figures, in order to show the data and code used to generate them. We have changed the numbering of the supplementary figures, so that e.g. Figure 2 in the HTML supplement is correctly labelled as Figure 2 and not as Fig. S1, to make it clear that it is the same figure. **A JOB FOR JUSTIN HERE**
 
 ________________________________________________________
 
@@ -430,7 +431,7 @@ grid.arrange(both.plots +
              lnRR.plots + ggtitle("\n\n") + xlim(-0.5,0.75), nrow = 1, widths = c(3,4))
 ```
 
-*Fourthly*, the distribution of the lnRR effect sizes is non-normal (notably moreso than the distribution of Hedges' *g*), perhaps because one can get extreme values when taking a ratio (e.g. when the denominator is close to zero). Accordingly, @Lajeunesse_2015 showed that *lnRR* is problematic when quantifying the outcome of primary studies with small sample sizes, and can yield unsuitable variance estimates when the parameter scale of the study are close to zero. So, Hedges' *g* has the possible practical advantage of increasing model fit in our meta-analysis.  
+*Fourthly*, the distribution of the lnRR effect sizes is non-normal (notably moreso than the distribution of Hedges' *g*), perhaps because one can get extreme values when taking a ratio (e.g. if the denominator is close to zero). Accordingly, @Lajeunesse_2015 showed that *lnRR* is problematic when quantifying the outcome of primary studies with small sample sizes, and can yield unsuitable variance estimates when the parameter scale of the study are close to zero. So, Hedges' *g* has the possible practical advantage of increasing model fit in our meta-analysis.  
 
 ```{r}
 grid.arrange(ggplot(data = lnRR.data, aes(x = lnRR))+
@@ -460,7 +461,7 @@ ggplot(full_dataset, aes(sample = g)) +
 
 Many thanks -- we have now also present a meta-analysis of variation using lnVR in addition to one using lnCVR. We have the following comments on this new analysis:
 
-*Firstly*, as the reviewer suggested, we now justify our use of lnCVR as opposed to lnVR, by assessing the mean-variance relationship in our data. The major limitation of lnVR is that it does not account for the mean-variance relationship; indeed this is why lnCVR was suggested as the favourable correction [@RN177]. We indeed found a strong positive correlation between mean and variance, suggesting our original use of lnCVR was justified.
+*Firstly*, as the reviewer suggested, we now justify our use of lnCVR as opposed to lnVR, by assessing the mean-variance relationship in our data. The major limitation of lnVR is that it does not account for the mean-variance relationship; indeed this is why lnCVR has been recommended over lnVR [@RN177]. We indeed found a strong positive correlation between mean and variance, suggesting our original use of lnCVR was justified.
 
 ```{r, warning=FALSE, message=FALSE, error = FALSE, fig.align='center', fig.width = 8, fig.height=3.75}
 grid.arrange(full_dataset %>% ggplot(aes(x = mean.low, y = sd.low))+
@@ -485,7 +486,7 @@ grid.arrange(full_dataset %>% ggplot(aes(x = mean.low, y = sd.low))+
 +  In stressful environments sexual selection leads to a decrease in the variance for females, relative to benign environments.  
 +  Sexual selection reduces variance in females compared to males.  
 
-However, when using *lnVR*, the variability of fitness traits for males under sexual selection increased, *lnVR* for females in stressful environments was not statistically different from zero, and sexual selection in benign environments increased phenotypic variance for females. Model results and predictions (from the REML model) can be cound within the Supplementary Material.   
+However, when using *lnVR*, the variability of fitness traits for males under sexual selection increased, *lnVR* for females in stressful environments was not statistically different from zero, and sexual selection in benign environments increased phenotypic variance for females. Model results and predictions (from the REML model) can be cound in the Supplementary Material.   
 
 ```{r, warning=FALSE, message=FALSE, error = FALSE, fig.align='center', fig.width = 10, fig.height=6}
 grid.arrange(both.var.plots + 
@@ -513,7 +514,7 @@ Many thanks for this feedback -- we have incorporated all the suggestions within
 
 >Egger, M., G. Smith, M. Schneider, and C. Minder. 1997. Bias in metaanalysis detected by a simple, graphical test. \textit{Br Med J} 315:629 - 634.
 
-Thanks -- we now remind the reader that funnel plot asymmetry is not decisive evidence for publicaiton bias, because it can also result from unexplained heterogeneity in the original effect sizes. We have elected not to implement trim-and-fill since the method seems to have fallen into disfavour among many readers, and because we are unsure how to correctly implement it using the REML- and Bayesian methods we used. NB that there is no method for trim-and-fill in mixed meta-analysis in the popular R package `metafor` (which we used), suggesting the method is not simple to implement. 
+Thanks -- we now **remind the reader that funnel plot asymmetry is not decisive evidence** for publication bias, because it can also result from unexplained heterogeneity in the original effect sizes. We have elected not to implement trim-and-fill since the method seems to have fallen into disfavour among many readers, and because we are unsure how to correctly implement it using the REML- and Bayesian methods we used. NB that there is no method for trim-and-fill in mixed meta-analysis in the popular R package `metafor` (which we used), suggesting the method is not simple to implement. 
 
 >*5 --- Figure 3 - are these grey envelopes 95% CI?*
 
@@ -523,12 +524,11 @@ Yes, and we have now included this information in the figure caption. Thank you 
 
 >Nakagawa, S., and R. Poulin. 2012. Meta-analytic insights into evolutionary ecology: an introduction and synthesis. \textit{Evolutionary Ecology} 26:1085-1099.
 
-We think that the scope of a true systematic review (in the sense used by e.g. Cochrane reviews) is larger than our study entails. However, we did use a systematic literature search strategy and PRISMA framework of inclusion/exclusion. With this in mind, we have left our paper's title as "meta-analysis" rather than calling it a systematic review.
-
+We agree, and we have changed the title to "Sexual selection improves population fitness: a systematic review and meta-analysis".  **DO THIS**
 
 >*Hope my comments are useful.*
 
-They were extremely useful, many thanks!
+Very useful, thank you!
 
 ________________________________________________________
 
