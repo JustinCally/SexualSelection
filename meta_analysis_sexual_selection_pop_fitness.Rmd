@@ -456,7 +456,7 @@ ____________________
 
 ```{r, fig.height=18, fig.width=12}
 # Create new factor to order factors in a way where Ambig, Indirect and Direct are Grouped
-full_dataset$Outcome_f = factor(full_dataset$Outcome, levels = c('Behavioural Plasticity', 'Body Size', 'Development Rate', 'Early Fecundity', 'Immunity', 'Male Attractiveness', 'Mating Duration', 'Pesticide Resistance', 'Mutant Frequency', 'Body Condition', 'Fitness Senescence', 'Lifespan', 'Mating Frequency', 'Mating Latency', 'Mating Success', 'Strength', 'Ejaculate Quality and Production', 'Extinction Rate', 'Offspring Viability', 'Reproductive Success'))
+full_dataset$Outcome_f = factor(full_dataset$Outcome, levels = c('Behavioural Plasticity', 'Body Size', 'Development Rate', 'Early Fecundity', 'Immunity', 'Male Attractiveness', 'Male Reproductive Success', 'Mating Duration', 'Pesticide Resistance', 'Mutant Frequency', 'Body Condition', 'Fitness Senescence', 'Lifespan', 'Mating Frequency', 'Mating Latency', 'Mating Success', 'Strength', 'Ejaculate Quality and Production', 'Both Reproductive Success', 'Extinction Rate', 'Female Reproductive Success', 'Offspring Viability'))
 
 # define upper and lower bounds
 full_dataset$lowerci <- full_dataset$g - 1.96*(sqrt(full_dataset$var.g))
@@ -523,7 +523,7 @@ p.meta <- full_dataset %>%
                                   face = "bold"),
         axis.title.x = element_text(hjust = 0.5, size = 14))
 
-knitr::include_graphics(path = "figures/ForestPlot_size_reduced.png") 
+#knitr::include_graphics(path = "figures/ForestPlot_size_reduced.png") 
 ```
 
 <br></br>
@@ -567,7 +567,7 @@ brms.predictions <- data.frame(brms.newdata$Outcome, brms.predict$Estimate, brms
 #Name columns
 colnames(brms.predictions) <- c("Fitness Component", "Bayes Prediction", "Bayes SE", "Bayes LCI", "Bayes UCI")
 
-outcome.list.factor <-  c('Behavioural Plasticity', 'Body Size', 'Development Rate', 'Early Fecundity', 'Immunity', 'Male Attractiveness', 'Mating Duration', 'Pesticide Resistance', 'Mutant Frequency', 'Body Condition', 'Fitness Senescence', 'Lifespan', 'Mating Frequency', 'Mating Latency', 'Mating Success', 'Strength', 'Ejaculate Quality and Production', 'Extinction Rate', 'Offspring Viability', 'Reproductive Success')
+outcome.list.factor <-  c('Behavioural Plasticity', 'Body Size', 'Development Rate', 'Early Fecundity', 'Immunity', 'Male Attractiveness', 'Male Reproductive Success', 'Mating Duration', 'Pesticide Resistance', 'Mutant Frequency', 'Body Condition', 'Fitness Senescence', 'Lifespan', 'Mating Frequency', 'Mating Latency', 'Mating Success', 'Strength', 'Ejaculate Quality and Production', 'Both Reproductive Success', 'Extinction Rate', 'Female Reproductive Success', 'Offspring Viability')
 
 brms.predictions <- brms.predictions[match(outcome.list.factor, brms.predictions$`Fitness Component`),]
 rownames(brms.predictions) <- NULL
@@ -576,7 +576,7 @@ colnames(sample.sizes.outcomes) <- c("Fitness Component", "n")
 fitness.component.predictions <- left_join(brms.predictions, sample.sizes.outcomes, by = "Fitness Component")
 
 # Obtain Bayes Factor of likelihood that the outcome is greater than 0
-BF.outcome.list <-  c('Body Size', 'Development Rate', 'Early Fecundity', 'Immunity', 'Male Attractiveness', 'Mating Duration', 'Pesticide Resistance', 'Mutant Frequency', 'Body Condition', 'Fitness Senescence', 'Lifespan', 'Mating Frequency', 'Mating Latency', 'Mating Success', 'Strength', 'Ejaculate Quality and Production', 'Extinction Rate', 'Offspring Viability', 'Reproductive Success')
+BF.outcome.list <-  c('Body Size', 'Development Rate', 'Early Fecundity', 'Immunity', 'Male Attractiveness', 'Male Reproductive Success', 'Mating Duration', 'Pesticide Resistance', 'Mutant Frequency', 'Body Condition', 'Fitness Senescence', 'Lifespan', 'Mating Frequency', 'Mating Latency', 'Mating Success', 'Strength', 'Ejaculate Quality and Production', 'Both Reproductive Success', 'Extinction Rate', 'Female Reproductive Success', 'Offspring Viability')
 # Obtain BF for all components
 Hypotheses <- list()
 BFs <- list()
@@ -595,7 +595,7 @@ model.fitness.components.REML <- rma.mv(g, var.g, mods = ~ 1 + Outcome,
                          data = full_dataset)
 
 get.predictions.outcomes <- function(newdata){
-  `Body Condition`<-0; `Body Size`<-0; `Development Rate`<-0; `Early Fecundity`<-0; `Ejaculate Quality and Production`<-0; `Extinction Rate`<-0; `Fitness Senescence`<-0; Immunity<-0; Lifespan<-0; `Male Attractiveness`<-0; `Mating Duration`<-0; `Mating Frequency`<-0; `Mating Latency`<-0; `Mating Success`<-0; `Mutant Frequency`<-0; `Offspring Viability`<-0; `Pesticide Resistance`<-0; `Reproductive Success`<-0; Strength<-0
+  `Body Condition`<-0; `Body Size`<-0; `Development Rate`<-0; `Early Fecundity`<-0; `Ejaculate Quality and Production`<-0; `Extinction Rate`<-0; `Fitness Senescence`<-0; Immunity<-0; Lifespan<-0; `Male Attractiveness`<-0; `Male Reproductive Success`<-0; `Mating Duration`<-0; `Mating Frequency`<-0; `Mating Latency`<-0; `Mating Success`<-0; `Mutant Frequency`<-0; `Offspring Viability`<-0; `Pesticide Resistance`<-0; `Female Reproductive Success`<-0; `Both Reproductive Success`<-0; Strength<-0
   if(newdata[1] == 'Body Size') `Body Size`<-1
   if(newdata[1] == 'Development Rate') `Development Rate`<-1
   if(newdata[1] == 'Early Fecundity') `Early Fecundity`<-1
@@ -607,6 +607,7 @@ get.predictions.outcomes <- function(newdata){
   if(newdata[1] == 'Fitness Senescence')`Fitness Senescence`<-1
   if(newdata[1] == 'Lifespan')Lifespan<-1
   if(newdata[1] == 'Male Attractiveness')`Male Attractiveness`<-1
+  if(newdata[1] == 'Male Reproductive Success')`Male Reproductive Success`<-1
   if(newdata[1] == 'Mating Frequency')`Mating Frequency`<-1
   if(newdata[1] == 'Mating Latency')`Mating Latency`<-1
   if(newdata[1] == 'Mating Success')`Mating Success`<-1
@@ -614,9 +615,10 @@ get.predictions.outcomes <- function(newdata){
   if(newdata[1] == 'Ejaculate Quality and Production')`Ejaculate Quality and Production`<-1
   if(newdata[1] == 'Extinction Rate')`Extinction Rate`<-1
   if(newdata[1] == 'Offspring Viability')`Offspring Viability`<-1
-  if(newdata[1] == 'Reproductive Success')`Reproductive Success`<-1
+  if(newdata[1] == 'Female Reproductive Success')`Female Reproductive Success`<-1
+  if(newdata[1] == 'Both Reproductive Success')`Both Reproductive Success`<-1
     
-  predict(model.fitness.components.REML, newmods=c(`Body Condition`, `Body Size`, `Development Rate`, `Early Fecundity`, `Ejaculate Quality and Production`, `Extinction Rate`, `Fitness Senescence`, Immunity, Lifespan, `Male Attractiveness`, `Mating Duration`, `Mating Frequency`, `Mating Latency`, `Mating Success`, `Mutant Frequency`, `Offspring Viability`, `Pesticide Resistance`, `Reproductive Success`, Strength))
+  predict(model.fitness.components.REML, newmods=c(`Body Condition`, `Body Size`, `Development Rate`, `Early Fecundity`, `Ejaculate Quality and Production`, `Extinction Rate`, `Fitness Senescence`, Immunity, Lifespan, `Male Attractiveness`, `Male Reproductive Success`, `Mating Duration`, `Mating Frequency`, `Mating Latency`, `Mating Success`, `Mutant Frequency`, `Offspring Viability`, `Pesticide Resistance`, `Female Reproductive Success`, `Both Reproductive Success`, Strength))
 }
 # Get the predictions for each combination of moderators
 predictions.outcomes <- as.data.frame(expand.grid(Outcome = outcome.list.factor))
@@ -635,8 +637,10 @@ left_join(fitness.component.predictions, predictions.outcomes, by = "Fitness Com
 **Table S9** In some instances it may be beneficial to the reader to obtain average effect sizes of each fitness trait **entirely independently** of other traits. For this reason we present a summary of independent model estimates for 16 fitness components with a sample size greater than 3 effect sizes (n>3). Unlike above where estimates were generated based on predictions from a single model, here we run individual meta-analyses for each fitness related trait. Independent models generally reduce the power and significance of some of the estimates with 'Extinction rate' and 'Ejaculate quality and production' the only two traits with p-values < 0.05.  
 
 ```{r, warning = FALSE}
-outcome.list <- as.list(c('Behavioural Plasticity', 'Body Size', 'Development Rate', 'Early Fecundity', 'Immunity', 'Male Attractiveness', 'Mating Duration', 'Pesticide Resistance', 'Mutant Frequency', 'Fitness Senescence', 'Lifespan', 'Mating Frequency', 'Mating Latency', 'Mating Success', 'Strength', 'Ejaculate Quality and Production', 'Extinction Rate', 'Offspring Viability', 'Reproductive Success'))
-names(outcome.list) <- c('Behavioural Plasticity', 'Body Size', 'Development Rate', 'Early Fecundity', 'Immunity', 'Male Attractiveness', 'Mating Duration', 'Pesticide Resistance', 'Mutant Frequency', 'Fitness Senescence', 'Lifespan', 'Mating Frequency', 'Mating Latency', 'Mating Success', 'Strength', 'Ejaculate Quality and Production', 'Extinction Rate', 'Offspring Viability', 'Reproductive Success')
+#Excluding those with 3 or less effect sizes.
+
+outcome.list <- as.list(c('Body Size', 'Development Rate', 'Early Fecundity', 'Immunity', 'Male Attractiveness', 'Male Reproductive Success', 'Mating Duration', 'Mutant Frequency', 'Fitness Senescence', 'Lifespan', 'Mating Frequency', 'Mating Latency', 'Mating Success', 'Ejaculate Quality and Production', 'Both Reproductive Success', 'Extinction Rate', 'Female Reproductive Success', 'Offspring Viability'))
+names(outcome.list) <- c('Body Size', 'Development Rate', 'Early Fecundity', 'Immunity', 'Male Attractiveness', 'Male Reproductive Success', 'Mating Duration', 'Mutant Frequency', 'Fitness Senescence', 'Lifespan', 'Mating Frequency', 'Mating Latency', 'Mating Success', 'Ejaculate Quality and Production', 'Both Reproductive Success', 'Extinction Rate', 'Female Reproductive Success', 'Offspring Viability')
 outcome.models <-  llply(outcome.list, function(x) rma.mv(g, var.g, 
                           mods = ~ 1, 
                           method = "REML",
@@ -747,6 +751,15 @@ X = model.matrix(outcome.models[["Male Attractiveness"]])
 P = W - W %*% X %*% solve(t(X) %*% W %*% X) %*% t(X) %*% W
 MaleAttractivenessI2 <- 100 * sum(outcome.models[["Male Attractiveness"]]$sigma2) / (sum(outcome.models[["Male Attractiveness"]]$sigma2) + (outcome.models[["Male Attractiveness"]]$k-outcome.models[["Male Attractiveness"]]$p)/sum(diag(P)))
 
+#Male Reproductive Success
+restricted.dataMRS <- full_dataset %>% filter(full_dataset$Outcome == "Male Reproductive Success")
+
+#Run estimate of heterogeneity
+W = diag(1/restricted.dataMRS$var.g)
+X = model.matrix(outcome.models[["Male Reproductive Success"]])
+P = W - W %*% X %*% solve(t(X) %*% W %*% X) %*% t(X) %*% W
+MaleReproductiveSuccessI2 <- 100 * sum(outcome.models[["Male Reproductive Success"]]$sigma2) / (sum(outcome.models[["Male Reproductive Success"]]$sigma2) + (outcome.models[["Male Reproductive Success"]]$k-outcome.models[["Male Reproductive Success"]]$p)/sum(diag(P)))
+
 
 #Mating Frequency
 restricted.dataMF <- full_dataset %>% filter(full_dataset$Outcome == "Mating Frequency")
@@ -803,16 +816,27 @@ X = model.matrix(outcome.models[["Offspring Viability"]])
 P = W - W %*% X %*% solve(t(X) %*% W %*% X) %*% t(X) %*% W
 OffspringViabilityI2 <- 100 * sum(outcome.models[["Offspring Viability"]]$sigma2) / (sum(outcome.models[["Offspring Viability"]]$sigma2) + (outcome.models[["Offspring Viability"]]$k-outcome.models[["Offspring Viability"]]$p)/sum(diag(P)))
 
-#Reproductive Success
-restricted.dataRS <- full_dataset %>% filter(full_dataset$Outcome == "Reproductive Success")
+#Both Reproductive Success
+restricted.dataBRS <- full_dataset %>% filter(full_dataset$Outcome == "Both Reproductive Success")
 
 #Run estimate of heterogeneity
-W = diag(1/restricted.dataRS$var.g)
-X = model.matrix(outcome.models[["Reproductive Success"]])
+W = diag(1/restricted.dataBRS$var.g)
+X = model.matrix(outcome.models[["Both Reproductive Success"]])
 P = W - W %*% X %*% solve(t(X) %*% W %*% X) %*% t(X) %*% W
-ReproductiveSuccessI2 <- 100 * sum(outcome.models[["Reproductive Success"]]$sigma2) / (sum(outcome.models[["Reproductive Success"]]$sigma2) + (outcome.models[["Reproductive Success"]]$k-outcome.models[["Reproductive Success"]]$p)/sum(diag(P)))
+BothReproductiveSuccessI2 <- 100 * sum(outcome.models[["Both Reproductive Success"]]$sigma2) / (sum(outcome.models[["Both Reproductive Success"]]$sigma2) + (outcome.models[["Both Reproductive Success"]]$k-outcome.models[["Both Reproductive Success"]]$p)/sum(diag(P)))
 
-simple.frame$I2 <- c(NA, BodySizeI2, DevelopmentRateI2, EarlyFecundityI2, ImmunityI2, MaleAttractivenessI2, MatingDurationI2, NA, MutantFrequencyI2, FitnessSenescenceI2, LifespanI2, MatingFrequencyI2, MatingLatencyI2, MatingSuccessI2, NA, EjaculateQualityI2, ExtinctionRateI2, OffspringViabilityI2, ReproductiveSuccessI2)
+
+#Female Reproductive Success
+restricted.dataFRS <- full_dataset %>% filter(full_dataset$Outcome == "Female Reproductive Success")
+
+#Run estimate of heterogeneity
+W = diag(1/restricted.dataFRS$var.g)
+X = model.matrix(outcome.models[["Female Reproductive Success"]])
+P = W - W %*% X %*% solve(t(X) %*% W %*% X) %*% t(X) %*% W
+FemaleReproductiveSuccessI2 <- 100 * sum(outcome.models[["Female Reproductive Success"]]$sigma2) / (sum(outcome.models[["Female Reproductive Success"]]$sigma2) + (outcome.models[["Female Reproductive Success"]]$k-outcome.models[["Female Reproductive Success"]]$p)/sum(diag(P)))
+
+
+simple.frame$I2 <- c(BodySizeI2, DevelopmentRateI2, EarlyFecundityI2, ImmunityI2, MaleAttractivenessI2, MaleReproductiveSuccessI2, MatingDurationI2, MutantFrequencyI2, FitnessSenescenceI2, LifespanI2, MatingFrequencyI2, MatingLatencyI2, MatingSuccessI2, EjaculateQualityI2, BothReproductiveSuccessI2, ExtinctionRateI2, FemaleReproductiveSuccessI2, OffspringViabilityI2)
 
 
 outcome.frame <- format(simple.frame, digits = 2)
@@ -822,7 +846,7 @@ outcome.frame$k <- as.numeric(outcome.frame$k)
 outcome.frame$ci.lb <- as.numeric(outcome.frame$ci.lb)
 outcome.frame$ci.ub <- as.numeric(outcome.frame$ci.ub)
 outcome.frame$I2 <- as.numeric(outcome.frame$I2)
-outcome.frame$Class <- c("Ambiguous", "Ambiguous", "Ambiguous", "Ambiguous", "Ambiguous", "Ambiguous", "Ambiguous", "Indirect", "Indirect", "Indirect", "Indirect", "Indirect", "Indirect", "Indirect", "Indirect", "Indirect", "Direct", "Direct", "Direct")
+outcome.frame$Class <- c("Ambiguous", "Ambiguous", "Ambiguous", "Ambiguous", "Ambiguous", "Ambiguous", "Ambiguous", "Indirect", "Indirect", "Indirect", "Indirect", "Indirect", "Indirect", "Indirect", "Direct", "Direct", "Direct", "Direct")
 
 outcome.frame %>% rename(beta = b, n = k) %>% filter(Outcome != "Behavioural Plasticity" & Outcome != "Pesticide Resistance" & Outcome != "Strength") %>% pander(split.cell = 40, split.table = Inf)
 ```
@@ -836,7 +860,7 @@ We collected data from fitness components that were deemed ambiguous as well as 
 
 ```{r}
 model.preliminary <- rma.mv(g, var.g, 
-                         mods = ~ 1 + Sex * Environment + Taxon + Outcome.Class + log(Generations) + Blinding, 
+                         mods = ~ 1 + Sex * Environment + Taxon + Outcome.Class + log(Generations) + Blinding + Enforced.Monogamy, 
                          random = list(~ 1 | Study.ID, 
                                        ~ 1 | Outcome), 
                          method = "REML", 
@@ -849,7 +873,7 @@ summary(model.preliminary, digits = 2)
 Here we can also run a Bayesian model alongside the REML model (metafor). The _R^2^_ for this model is 0.36 (95% CIs = 0.33-0.4). 
 ```{r, warning = FALSE, results='hide', message=FALSE, error = FALSE}
 if(!file.exists("data/brms.preliminary.rds")){
-  brms.preliminary <- brm(g | se(SE)  ~ 1 + Sex * Environment + log(Generations) + Blinding #Note that running se(SE, sigma = TRUE) gives different result due to a difference in priors
+  brms.preliminary <- brm(g | se(SE)  ~ 1 + Sex * Environment + log(Generations) + Blinding + Enforced.Monogamy #Note that running se(SE, sigma = TRUE) gives different result due to a difference in priors
                 + (1|Study.ID) #group level effects
                 + (1|Outcome)
                 + (1|Taxon), 
