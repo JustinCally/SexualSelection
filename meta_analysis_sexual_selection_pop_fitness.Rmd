@@ -1,5 +1,5 @@
 ---
-title: 'Sexual selection improves population fitness: a meta-analysis'
+title: 'Sexual selection improves population fitness: a systematic review and meta-analysis'
 author: "Justin G. Cally^1^, Devi Stuart-Fox^1^ and Luke Holman^1^ <br></br> <br></br> ^1^The University of Melbourne"
 subtitle: Supplementary Material
 bibliography: bibliography_meta_analysis.bib
@@ -341,7 +341,7 @@ if(!file.exists("data/grand.mean.class.bayes.rds")){
                           family = "gaussian", 
                           seed = 1,
                           cores = 4, chains = 4, iter = 4000, #Run 4 chains in parallel for 4000 iterations (2000 are burn in)
-                          control = list(adapt_delta = 0.9999, max_treedepth = 15),
+                          control = list(adapt_delta = 0.999, max_treedepth = 15),
                           data = full_dataset %>% mutate(SE = sqrt(var.g)))
   
   saveRDS(grand.mean.class.bayes, "data/grand.mean.class.bayes.rds") # Save to avoid re-running during knit
@@ -929,20 +929,20 @@ The models and plots above all use the full dataset (called `full_dataset` in th
 <!-- Note to Justin: here, I changed to just the 'direct' measures, and added the "Enforced Monogamy" predictor. You'll need to add the Bayesian equivalent, and alter the code for the figure etc. I think it's better this way, and the results don't appear to change in any major way -->
 
 ```{r, message=FALSE, error = FALSE, warning=FALSE}
-# strict_dataset <- full_dataset %>% 
-#   filter(Outcome.Class != "Ambiguous" & Environment != "Not Stated")  %>% 
-#   mutate(Sex = relevel(Sex, ref = "M"),
-#          Environment = relevel(factor(Environment), ref = "Unstressed"),
-#          Taxon = relevel(factor(Taxon), ref = "Beetle"))
-
-strict_dataset <- full_dataset %>% 
-  filter(Outcome.Class == "Direct" & Environment != "Not Stated")  %>% 
+strict_dataset <- full_dataset %>%
+  filter(Outcome.Class != "Ambiguous" & Environment != "Not Stated")  %>%
   mutate(Sex = relevel(Sex, ref = "M"),
          Environment = relevel(factor(Environment), ref = "Unstressed"),
          Taxon = relevel(factor(Taxon), ref = "Beetle"))
 
+# strict_dataset <- full_dataset %>% 
+#   filter(Outcome.Class == "Direct" & Environment != "Not Stated")  %>% 
+#   mutate(Sex = relevel(Sex, ref = "M"),
+#          Environment = relevel(factor(Environment), ref = "Unstressed"),
+#          Taxon = relevel(factor(Taxon), ref = "Beetle"))
+
 model.complete <- rma.mv(g, V = var.g, 
-                         mods = ~ 1 + Sex * Environment + Taxon + Enforced.Monogamy, 
+                         mods = ~ 1 + Sex * Environment + Taxon, 
                          random = list(~ 1 | Study.ID, 
                                        ~ 1 | Outcome), 
                          method = "REML", 
@@ -971,11 +971,11 @@ The result is a model with estimates for various taxa, species, sexes and enviro
 ```{r, warning=FALSE, fig.height= 8, fig.width=8}
 # function that makes predict.rma work like a normal predict() function, instead of the idiosyncratic way that it works by default.
 get.predictions.complete <- function(newdata){
-  B<-0; F<-0; Stressed<-0; Cricket<-0; Fly<-0; Guppy<-0; Mite<-0; Mouse<-0; interaction1<-0; interaction2<-0; interaction3<-0
+  B<-0; F<-0; Stressed<-0; Cricket<-0; Fly<-0; Guppy<-0; Mite<-0; Mouse<-0; interaction1<-0; interaction2<-0;
   if(newdata[1] == "B") B<-1 
   if(newdata[1] == "F") F<-1 
   if(newdata[2] == "Stressed") Stressed<-1
-  if(newdata[3] == "Cricket") Cricket<-1
+  if(newdata[2] == "Cricket") Cricket<-1
   if(newdata[3] == "Fly") Fly<-1
   if(newdata[3] == "Guppy") Guppy<-1
   if(newdata[3] == "Mite") Mite<-1
@@ -983,7 +983,7 @@ get.predictions.complete <- function(newdata){
   if(newdata[1] == "B" & newdata[2] == "Stressed") interaction1<-1
   if(newdata[1] == "F" & newdata[2] == "Stressed") interaction2<-1
 
-  predict(model.complete, newmods=c(B, F, Stressed, Cricket, Fly, Guppy, Mite, Mouse, 1, interaction1, interaction2))
+  predict(model.complete, newmods=c(B, F, Stressed, Cricket, Fly, Guppy, Mite, Mouse, interaction1, interaction2))
 }
 # Get the predictions for each combination of moderators
 predictions.complete <- as.data.frame(expand.grid(Sex = c("M", "B", "F"),
@@ -1133,7 +1133,7 @@ if(!file.exists("data/brms.complete2.rds")){
                         family = "gaussian", 
                         seed = 1,
                         cores = 4, chains = 4, iter = 4000, 
-                        control = list(adapt_delta = 0.9999, max_treedepth = 15),
+                        control = list(adapt_delta = 0.999, max_treedepth = 15),
                         data = strict_dataset %>% mutate(SE = sqrt(var.g)))
   saveRDS(brms.complete2, file = "data/brms.complete2.rds")
 }
@@ -1398,7 +1398,7 @@ if(!file.exists("data/lnRR.brms.env.sex.rds")){
                         family = "gaussian", 
                         seed = 1,
                         cores = 4, chains = 4, iter = 4000, 
-                        control = list(adapt_delta = 0.9999, max_treedepth = 15),
+                        control = list(adapt_delta = 0.999, max_treedepth = 15),
                         data = lnRR.data %>% mutate(SE = sqrt(lnRR_var)) %>% 
                           filter(Outcome.Class != "Ambiguous" & Environment != "Not Stated"))
   saveRDS(lnRR.brms.env.sex, file = "data/lnRR.brms.env.sex.rds")

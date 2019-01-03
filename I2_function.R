@@ -56,7 +56,7 @@ I2 <- function(model, v, ME = FALSE, sims = 1500, phylo = FALSE){
     colnames(sigma2) <- model$s.names
     sigmaN <- model$s.nlevels
     
-    if("Study.ID" %in% colnames(sigma2) == FALSE){
+    if(model[["s.names"]][1] %in% colnames(sigma2) == FALSE){
       stop("The metafor object does not contain a residual variance estimate. Please include an observation-level random effect (~1|obs) when fitting model")
     }
     
