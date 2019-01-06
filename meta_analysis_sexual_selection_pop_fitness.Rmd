@@ -341,7 +341,7 @@ if(!file.exists("data/grand.mean.class.bayes.rds")){
                           family = "gaussian", 
                           seed = 1,
                           cores = 4, chains = 4, iter = 4000, #Run 4 chains in parallel for 4000 iterations (2000 are burn in)
-                          control = list(adapt_delta = 0.999, max_treedepth = 15),
+                          control = list(adapt_delta = 0.9999, max_treedepth = 15),
                           data = full_dataset %>% mutate(SE = sqrt(var.g)))
   
   saveRDS(grand.mean.class.bayes, "data/grand.mean.class.bayes.rds") # Save to avoid re-running during knit
@@ -353,7 +353,7 @@ brms.newdata.class <- as.data.frame(expand.grid(Outcome.Class = unique(full_data
 
 # Get average SE: useful if using predict, but not fitted
 av.se.g.class <- full_dataset %>% group_by(Outcome.Class) %>% summarise(mean = mean(sqrt(var.g)))
-brms.newdata.class$SE <- av.se.g.class$mean
+brms.newdata.class <- left_join(av.se.g.class %>% rename(SE = mean), brms.newdata.class)
 
 # Find the fitted values (i.e. predictions from the linear mixed model fit by brms)
 brms.predict.class <- fitted(grand.mean.class.bayes, newdata = brms.newdata.class, re_formula = NA) %>% as.data.frame()
@@ -412,7 +412,7 @@ left_join(fitness.class.predictions, predictions.class, by = "Relationship to Fi
 ```
 
 
-```{r, include = FALSE}
+```{r, fig.width = 8, fig.height = 4}
 pd <- position_dodge(0.3)
 predictions.class[,2:5] <- sapply(predictions.class[,2:5], as.numeric)
 forest.plot.class <- predictions.class %>%
@@ -444,8 +444,11 @@ forest.plot.class <- predictions.class %>%
                      name = "Relationship\nto fitness")+
   xlab("Relationship to Fitness\n")+
   coord_flip()
+
+forest.plot.class
 ```
 
+**Figure 1** The effect sizes used in this meta-analysis ($n$ = 459) were grouped into either direct, indirect or ambiguous measures of fitness. Overall, effect sizes were more often positive than negative. Predicted average values are presented as a diamond for each fitness-relationship category. The estimates presented here are from REML models with the grand mean across all effect sizes ($\beta$ = 0.25) shown as the blue dotted line. Predictions from both Bayesian and REML models can be found in Table S7.
 
 ____________________
 
@@ -523,7 +526,7 @@ p.meta <- full_dataset %>%
                                   face = "bold"),
         axis.title.x = element_text(hjust = 0.5, size = 14))
 
-#knitr::include_graphics(path = "figures/ForestPlot_size_reduced.png") 
+knitr::include_graphics(path = "figures/ForestPlot_size_reduced.png") 
 ```
 
 <br></br>
@@ -550,7 +553,7 @@ if(!file.exists("data/components.brms.rds")){
 components.brms <- readRDS(file = "data/components.brms.rds") 
 ```
   
-**Table S8** Summary of model predictions for 20 fitness components. In Figure S1 these values are presented as a text overlay on Figure 1 (Forest Plot) using the Bayesian values. Additionally, Bayes Factors (BF) are presented as the likelihood ratio that the effect size is greater than 0. Where values greater than 1 correspond to higher likelihood of the effect size being positive and values less than 1 suggest that the effect size is more likely to be negative. The right side of the table provides the REML estimates with SE and 95 % CIs.
+**Table S8** Summary of model predictions for 22 fitness components. In Figure S1 these values are presented as a text overlay using the Bayesian values. Additionally, Bayes Factors (BF) are presented as the likelihood ratio that the effect size is greater than 0. Where values greater than 1 correspond to higher likelihood of the effect size being positive and values less than 1 suggest that the effect size is more likely to be negative. The right side of the table provides the REML estimates with SE and 95 % CIs.
 
 ```{r, warning = FALSE}
 # Define new data for prediction
@@ -596,32 +599,36 @@ model.fitness.components.REML <- rma.mv(g, var.g, mods = ~ 1 + Outcome,
 
 get.predictions.outcomes <- function(newdata){
   `Body Condition`<-0; `Body Size`<-0; `Development Rate`<-0; `Early Fecundity`<-0; `Ejaculate Quality and Production`<-0; `Extinction Rate`<-0; `Fitness Senescence`<-0; Immunity<-0; Lifespan<-0; `Male Attractiveness`<-0; `Male Reproductive Success`<-0; `Mating Duration`<-0; `Mating Frequency`<-0; `Mating Latency`<-0; `Mating Success`<-0; `Mutant Frequency`<-0; `Offspring Viability`<-0; `Pesticide Resistance`<-0; `Female Reproductive Success`<-0; `Both Reproductive Success`<-0; Strength<-0
+  
+  if(newdata[1] == 'Body Condition')`Body Condition`<-1
   if(newdata[1] == 'Body Size') `Body Size`<-1
+  if(newdata[1] == 'Both Reproductive Success') `Both Reproductive Success`<-1
   if(newdata[1] == 'Development Rate') `Development Rate`<-1
   if(newdata[1] == 'Early Fecundity') `Early Fecundity`<-1
-  if(newdata[1] == 'Immunity')Immunity<-1
-  if(newdata[1] == 'Mating Duration')`Mating Duration`<-1
-  if(newdata[1] == 'Pesticide Resistance')`Pesticide Resistance`<-1
-  if(newdata[1] == 'Mutant Frequency')`Mutant Frequency`<-1
-  if(newdata[1] == 'Body Condition')`Body Condition`<-1
+  if(newdata[1] == 'Ejaculate Quality and Production')`Ejaculate Quality and Production`<-1
+  if(newdata[1] == 'Extinction Rate')`Extinction Rate`<-1
+  if(newdata[1] == 'Female Reproductive Success')`Female Reproductive Success`<-1
   if(newdata[1] == 'Fitness Senescence')`Fitness Senescence`<-1
+  if(newdata[1] == 'Immunity')Immunity<-1
   if(newdata[1] == 'Lifespan')Lifespan<-1
   if(newdata[1] == 'Male Attractiveness')`Male Attractiveness`<-1
   if(newdata[1] == 'Male Reproductive Success')`Male Reproductive Success`<-1
+  if(newdata[1] == 'Mating Duration')`Mating Duration`<-1
   if(newdata[1] == 'Mating Frequency')`Mating Frequency`<-1
   if(newdata[1] == 'Mating Latency')`Mating Latency`<-1
   if(newdata[1] == 'Mating Success')`Mating Success`<-1
-  if(newdata[1] == 'Strength')Strength<-1
-  if(newdata[1] == 'Ejaculate Quality and Production')`Ejaculate Quality and Production`<-1
-  if(newdata[1] == 'Extinction Rate')`Extinction Rate`<-1
+  if(newdata[1] == 'Mutant Frequency')`Mutant Frequency`<-1
   if(newdata[1] == 'Offspring Viability')`Offspring Viability`<-1
-  if(newdata[1] == 'Female Reproductive Success')`Female Reproductive Success`<-1
-  if(newdata[1] == 'Both Reproductive Success')`Both Reproductive Success`<-1
-    
-  predict(model.fitness.components.REML, newmods=c(`Body Condition`, `Body Size`, `Development Rate`, `Early Fecundity`, `Ejaculate Quality and Production`, `Extinction Rate`, `Fitness Senescence`, Immunity, Lifespan, `Male Attractiveness`, `Male Reproductive Success`, `Mating Duration`, `Mating Frequency`, `Mating Latency`, `Mating Success`, `Mutant Frequency`, `Offspring Viability`, `Pesticide Resistance`, `Female Reproductive Success`, `Both Reproductive Success`, Strength))
+  if(newdata[1] == 'Pesticide Resistance')`Pesticide Resistance`<-1
+  if(newdata[1] == 'Strength')Strength<-1
+
+  predict(model.fitness.components.REML, newmods=c(`Body Condition`,`Body Size`,`Both Reproductive Success`,`Development Rate`,`Early Fecundity`,`Ejaculate Quality and Production`,`Extinction Rate`,`Female Reproductive Success`,`Fitness Senescence`,`Immunity`,`Lifespan`,`Male Attractiveness`,`Male Reproductive Success`,`Mating Duration`,`Mating Frequency`,`Mating Latency`,`Mating Success`,`Mutant Frequency`,`Offspring Viability`,`Pesticide Resistance`,`Strength`))
 }
+
+outcome.list.model.levels <- c('Behavioural Plasticity' ,'Body Condition','Body Size','Both Reproductive Success','Development Rate','Early Fecundity','Ejaculate Quality and Production','Extinction Rate','Female Reproductive Success','Fitness Senescence','Immunity','Lifespan','Male Attractiveness','Male Reproductive Success','Mating Duration','Mating Frequency','Mating Latency','Mating Success','Mutant Frequency','Offspring Viability','Pesticide Resistance','Strength')
+
 # Get the predictions for each combination of moderators
-predictions.outcomes <- as.data.frame(expand.grid(Outcome = outcome.list.factor))
+predictions.outcomes <- as.data.frame(expand.grid(Outcome = outcome.list.model.levels))
 predictions.outcomes <- cbind(predictions.outcomes, do.call("rbind", apply(predictions.outcomes, 1, get.predictions.outcomes))) %>%
   select(Outcome, pred, se, ci.lb, ci.ub) 
 for(i in 2:5) predictions.outcomes[,i] <- unlist(predictions.outcomes[,i])
@@ -1274,8 +1281,9 @@ both.plots <- posterior.plot +
 
 both.plots
 ```
+
 <br></br>
-**Figure S3:** Sexual selection generally increases population fitness, especially for females under stressful conditions. The benefits of sexual selection on fitness for females under stressful conditions are small-medium according to Cohen's interperetation of effect sizes. Circle size is proportional to sample size (shown below). The REML predictions are shown as circles with error bars and the Bayesian predictions as density ridges. This figure can also be found in the main manuscript. 
+**Figure 2a:** Sexual selection generally increases population fitness, especially for females under stressful conditions. The benefits of sexual selection on fitness for females under stressful conditions are small-medium according to Cohen's interperetation of effect sizes. Circle size is proportional to sample size (shown below). The REML predictions are shown as circles with error bars and the Bayesian predictions as density ridges. This figure can also be found in the main manuscript. 
 
 
 **Table S15** The REML predictions in the plot above use the following dataframe
@@ -1521,7 +1529,7 @@ lnRR.plots <- posterior.lnRR.plot +
 lnRR.plots
 ```
   
-**Figure S4:** Using an alternative effect size (lnRR) sexual selection also increases population fitness. Circle size is proportional to sample size (shown below). The REML predictions are shown as circles with error bars and the Bayesian predictions as density ridges. Note that the magnitude of the effect sizes presented here should not be directly compared with those using Hedges' g as lnRR is a log-transformed value.
+**Figure S3:** Using an alternative effect size (lnRR) sexual selection also increases population fitness. Circle size is proportional to sample size (shown below). The REML predictions are shown as circles with error bars and the Bayesian predictions as density ridges. Note that the magnitude of the effect sizes presented here should not be directly compared with those using Hedges' g as lnRR is a log-transformed value.
 
 **Table S16** The REML predictions for the meta-analysis using lnRR (plotted above) are formulated from the following model and predictions.  
 
@@ -1581,8 +1589,8 @@ strict_dataset$var.lnCVr <- with(strict_dataset, Calc.var.lnCVR (mean.low, sd.lo
 
 ```{r, warning=FALSE}
 variance.model <- rma.mv(lnCVr, V = var.lnCVr, mods = ~ 1 + Sex*Environment, 
-                          random = list(~ 1 | Taxon,
-                                        ~ 1 | Study.ID,
+                          random = list(~ 1 | Study.ID,
+                                        ~ 1 | Taxon,
                                         ~ 1 | Outcome), 
                          method = "REML", data = strict_dataset)
 summary(variance.model, digits = 2)
@@ -1719,7 +1727,7 @@ both.var.plots <- var.plot.posterior +
 both.var.plots
 ```
 <br></br>
-**Figure S5:** Phenotypic variation changes under sexual selection in stressful environments. For females under stressful conditions phenotypic variation decreases (narrows). While for males in stressful environments it increases. For outcomes that measured a mix of both males and females (pooled samples) in stressful environments phenotypic variation decreased slightly. The REML predictions are shown as circles with error bars and the Bayesian predictions as density ridges. Circle size is proportional to sample size.
+**Figure 2b:** Phenotypic variation changes under sexual selection in stressful environments. For females under stressful conditions phenotypic variation decreases (narrows). While for males in stressful environments it increases. For outcomes that measured a mix of both males and females (pooled samples) in stressful environments phenotypic variation decreased slightly. The REML predictions are shown as circles with error bars and the Bayesian predictions as density ridges. Circle size is proportional to sample size.
 
 
 **Table S18** The REML predictions in the plot above use the following dataframe.
@@ -1815,7 +1823,7 @@ full_dataset %>% ggplot(aes(x = mean.high, y = sd.high))+
   geom_smooth(method = "lm", colour = "red")
 ```
 
-**Figure S6** The use of lnCVR (as opposed to lnVR) is justified in this meta-analysis due to the strong mean-variance relationship. In this case the standard deviation from the treatment group is compared to the means of the treatment group on a log-scale. 
+**Figure S4** The use of lnCVR (as opposed to lnVR) is justified in this meta-analysis due to the strong mean-variance relationship. In this case the standard deviation from the treatment group is compared to the means of the treatment group on a log-scale. 
 
 ```{r, warning = FALSE}
 lnVR.data <- 
@@ -1978,7 +1986,7 @@ both.lnVR.plots <- lnVR.plot.posterior +
 both.lnVR.plots
 ```
 
-**Figure S7:** The effects of sexual selection on the log-variance ratio (lnVR). Without accounting for the mean variance relationship (lnCVR) sexual selection has different effects on the variance measure.
+**Figure S5:** The effects of sexual selection on the log-variance ratio (lnVR). Without accounting for the mean variance relationship (lnCVR) sexual selection has different effects on the variance measure.
 
 
 **Table S21** The points in the above plot are based on the following REML model and predictions. While the predicted effects of sexual selection on lnVR in stressful conditions is non-significantly negative, there is still a negative significant interaction between stressful environments and the female sex.   
@@ -2085,7 +2093,7 @@ ggsave(plot = funnel.plot, filename = "figures/funnel_plot.eps", height = 7.5, w
 funnel.plot
 ```
 <br></br>
-**Figure S8:** A funnel plot of 459 effect sizes shows asymmetry, indicating potential publication bias, egger's regression test for funnel plot asymmetry also suggests the plot is asymmetrical (z = 6.22, p < 0.0001). The asymmetry appears to come from a spread of positive effect sizes outside the funnel and of varying degrees of precision. Counter to expectations of publication bias these positive studies are not just 'low precision, large effect' results. Funnel plot asymmetry may also be due to genuine heterogeneity in effect sizes between studies, which is high in the present meta-analysis because it covers many species, outcome measurements, and experimental designs. 
+**Figure 3a:** A funnel plot of 459 effect sizes shows asymmetry, indicating potential publication bias, egger's regression test for funnel plot asymmetry also suggests the plot is asymmetrical (z = 6.22, p < 0.0001). The asymmetry appears to come from a spread of positive effect sizes outside the funnel and of varying degrees of precision. Counter to expectations of publication bias these positive studies are not just 'low precision, large effect' results. Funnel plot asymmetry may also be due to genuine heterogeneity in effect sizes between studies, which is high in the present meta-analysis because it covers many species, outcome measurements, and experimental designs. 
 
 
 ### Journal Impact Factor
@@ -2117,7 +2125,7 @@ JIF.plot <- ggplot(data = full_dataset, aes(x=JIF, y=g, size = 1 / var.g))+
 JIF.plot
 ```
 <br></br>
-**Figure S9:** Journal impact factor is not correlated with effect size. Point size is proportional to the precision of the effect size.
+**Figure 3a:** Journal impact factor is not correlated with effect size. Point size is proportional to the precision of the effect size.
 
 Testing the effect of JIF on effect size with a simple linear model (slope = +0.1, p = 0.25): 
 ```{r}
@@ -2156,7 +2164,7 @@ time.plot <- full_dataset %>%
 time.plot
 ```
 <br></br>
-**Figure S10:** The effect size dataset shows little to no signs of the time-lag bias: the average effect size from published studies has remained consistent across the two previous decades. Point size is proportional to the precision of the effect size.
+**Figure 3b:** The effect size dataset shows little to no signs of the time-lag bias: the average effect size from published studies has remained consistent across the two previous decades. Point size is proportional to the precision of the effect size.
 
 
 Again, a linear model for the regression line in the plot shows no effect (slope = -0.007, p = 0.3):
@@ -2200,7 +2208,7 @@ blind.plot <- df.forest.model %>% ggplot(aes(x=Blinding, y=g))+
 blind.plot
 ```
 <br></br>
-**Figure S11:** Blinding does not appear to alter the magnitude or direction of effect sizes for the studies used in this meta-analysis. However, this should not be viewed as evidence against the validity of blinding as a research method. 
+**Figure S6:** Blinding does not appear to alter the magnitude or direction of effect sizes for the studies used in this meta-analysis. However, this should not be viewed as evidence against the validity of blinding as a research method. 
 
 ____________
 
@@ -2235,7 +2243,7 @@ generations.plot <- strict_dataset %>% ggplot(aes(x=Generations, y=g))+
 generations.plot
 ```
 <br></br>
-**Figure S12:** The number of generations an experimental evolution procedure is run for does not appear to affect the magnitude or direction of the effect size from the fitness related outcome measured at that point. 
+**Figure S7:** The number of generations an experimental evolution procedure is run for does not appear to affect the magnitude or direction of the effect size from the fitness related outcome measured at that point. 
 
 
 A linear model shows next to no effect of generations on effect size: 
@@ -2272,7 +2280,7 @@ generations.plot.var <- strict_dataset %>% ggplot(aes(x=Generations, y=lnCVr))+
 generations.plot.var
 ```
 <br></br>
-**Figure S13:** Phenotypic variation (lnCVR) is not affected by the number of generations an experiment is ran for.
+**Figure S8:** Phenotypic variation (lnCVR) is not affected by the number of generations an experiment is ran for.
 
 ```{r}
 summary(lm(lnCVr ~ Generations, data = strict_dataset))
