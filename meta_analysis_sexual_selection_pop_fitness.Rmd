@@ -1302,12 +1302,21 @@ ____________________
 
 ###Estimating Hedges' g Heterogeneity Using _I^2^_
 
-Using an adapted function from https://github.com/daniel1noble/metaAidR we can obtain confidence intervals for total _I^2^_ and the individual components of the random effects. There are different methods to obtain estimates of _I^2^_. Here we obtain an overall value of _I^2^_ that is weighted based on variance and where estimates of heterogeneity are sourced from sigma^2^ of the respective models. The values are based on the REML models. 
+Using a function from https://github.com/daniel1noble/metaAidR we can obtain confidence intervals for total _I^2^_ and the individual components of the random effects. There are different methods to obtain estimates of _I^2^_. Here we obtain an overall value of _I^2^_ that is weighted based on variance and where estimates of heterogeneity are sourced from sigma^2^ of the respective models. The values are based on the REML models. 
 
 ```{r warning=FALSE}
-I2(model.complete2, strict_dataset$var.g) %>% pander(digits = 3)
+I2.model.g <- rma.mv(g, V = var.g, 
+                          mods = ~ 1 + Sex * Environment, 
+                          random = list(~ 1 | Observation.level, 
+                                        ~ 1 | Study.ID, 
+                                        ~ 1 | Outcome,
+                                        ~ 1 | Taxon), 
+                          method = "REML", 
+                          data = strict_dataset %>% mutate(Observation.level = 1:n()))
+
+I2(I2.model.g, strict_dataset$var.g) %>% pander(digits = 3)
 ```
-These values indicate that 57.4 % of total heterogeneity is due to the **between study** heterogeneity and 37.4 % for **between outcome** heterogeneity between different outcomes. The total _I^2^_  is 94.7 %, a reasonably high _I^2^_ value. However this is relatively common in Ecology and Evolution total [@Senior_I2_2016]. 
+These values indicate that 36 % of total heterogeneity is due to the **between study**. The total _I^2^_  is 95.2 %, a reasonably high _I^2^_ value. However this is relatively common in Ecology and Evolution total [@Senior_I2_2016]. 
 
 ____________________
 
@@ -1802,11 +1811,45 @@ ____________________
 
 ###Estimating lnCVR Heterogeneity Using _I^2^_
 
-Similar to the meta-analysis on Hedges' g we can obtain _I^2^_ for lnCVR REML model. In this case (compared to Hedges' g) we see Taxon has more of a variable effect on overall _I^2^_ estimates and the total _I^2^_ is larger.
+Similar to the meta-analysis on Hedges' g we can obtain _I^2^_ for lnCVR REML model. In this case (compared to Hedges' g) we see Taxon has more of a variable effect on overall _I^2^_ estimates and Study.ID has the variance component ($\sigma^2$) esgtimated at zero.
 
 ```{r}
-I2(variance.model, na.omit(strict_dataset$var.lnCVr)) %>% pander(digits = 3)
+I2.model.lnCVr <- rma.mv(lnCVr, V = var.lnCVr, 
+                          mods = ~ 1 + Sex * Environment, 
+                          random = list(~ 1 | Study.ID,
+                                        ~ 1 | Outcome,
+                                        ~ 1 | Taxon,
+                                        ~ 1 | Observation.level), 
+                          method = "REML", 
+                          data = strict_dataset %>% mutate(Observation.level = 1:n()))
+
+I2(I2.model.lnCVr, na.omit(strict_dataset$var.lnCVr)) %>% pander(digits = 3)
 ```
+
+**Disclaimer**: Noticeabley, the Study.ID $I^2$ is estimated at zero with no CIs. This result is sourced from the variance component for Study.ID ($\sigma_2$) being estimated at zero with a standard error of zero. This result is questionable, thus we run the above model using ``brms`` and find the variance of the Study.ID group-level effect to be non-zero with confidence intervals including zero (see below). This is potential advantage of the Bayesian approach.  
+
+```{r}
+if(!file.exists("data/I2.variance.brms.rds")){
+
+I2.variance.brms <- brm(lnCVr| se(SE.v)  ~ 1 + Sex * Environment 
+                + (1|Taxon) 
+                + (1|Study.ID)
+                + (1|Outcome) 
+                + (1|Observation.level),
+                family = "gaussian", 
+                seed = 1,
+                cores = 4, chains = 4, iter = 4000, 
+                control = list(adapt_delta = 0.999, max_treedepth = 15),
+                data = strict_dataset %>% mutate(SE.v = sqrt(var.lnCVr)) %>% mutate(Observation.level = 1:n()))
+  saveRDS(I2.variance.brms, "data/I2.variance.brms.rds")
+  
+}
+I2.variance.brms <- readRDS(file = "data/I2.variance.brms.rds") #Avoid re-running model above
+
+I2.variance.brms
+```
+
+
 _________
 
 ###lnVr Effect Size of Variance
