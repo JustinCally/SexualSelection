@@ -1,0 +1,59 @@
+---
+title: 'Sexual selection improves population fitness: a systematic review and meta-analysis'
+output:
+  pdf_document: default
+subtitle: Response to Editorial Requests
+bibliography: Manuscripts/Bibliography/Bibliography.bib
+header-includes: 
+- \usepackage{hyperref}\hypersetup{colorlinks=true, linkcolor=blue, filecolor=blue, urlcolor=blue} 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Dear Dr. Jones and colleagues,
+
+We are delighted to provide a revised manuscript for publication in \textit{Nature Communications}. Below we provide a point-by-point response to the editorial requests as well as a response to comments by Prof. Jacek Radwan.  
+
+## Editorial Requests
+
+\begin{enumerate}
+  \item \textit{Please supply the main manuscript file in Microsoft Word or LaTeX format. Please supply a Supplementary Information file in PDF format.} \\ 
+  The main manuscript is provided in LaTeX format (.tex) and the Supplementary Information is now in pdf format. However, we retain the HTML formatting for the Supplementary Information hosted on \hyperlink{https://justincally.github.io/SexualSelection/}{Github}.   
+
+  \item \textit{Please edit the title so that it is 15 words or fewer and does not include punctuation} \\
+  <!-- Sexual selection improves population fitness based on a systematic review and meta-analysis -->
+  
+  \item \textit{The final paragraph of the Introduction should summarise the major results and conclusions of this manuscript, in the present tense.} \\
+  <!-- We had previously included this in an earlier draft and cut it. Can add it back  -->
+  
+  \item \textit{Please shorten all subheadings in the Results section to fewer than 60 characters including spaces.} \\
+  Sexual selection is associated with higher mean values for most fitness components \textbbf{to} Sexual selection improves average fitness for most traits. \\
+  Sexual selection reduces phenotypic variance, for female traits in stressful environments \textbbf{to} Effects of sexual selection on phenotypic variance
+  
+  \item \textit{Please do not use italics or bold font to convey emphasis (in both the main text and the display items).} \\
+  Is this the latin? (e.g. /Prima facie / Tabbles have bold, figures have bold...)  
+  
+  \item \texit{Please avoid using speech marks around words or phrases. In most cases they are unnecessary.} \\
+  Speech marks around the following words/phrases have now been removed: population fitness (l.21), purged (l.175), softer (l.199), harder (l.199), 'good genes' (l.243), attractive (l.244), unambiguous (l.359).  
+  
+  \item \textit{Please make sure that mathematical terms throughout your manuscript and Supplementary Information (including in figures, figure axes, and legends) conform strictly to the guidelines} \\
+  Not sure where we went wrong here?
+  
+  \item \textit{Wherever p-values are stated in the text and figure legends, please also state the name of the statistical test.} \\
+  A couple of linear models in the publication bias section have p values without stating it is a linear regression.  Otherwise we dont have that many p values and it is described in the table as from a multilevel meta-analysis model.  
+  
+  \item \textit{Please provide a full Methods section in the main manuscript file. Please note that there are no word limits to the Methods section. The Methods section must include subheadings of fewer than 60 characters including spaces. There is no word limit for the Methods section, so we recommend against splitting the methods description between the main text and Supplementary Information.} 
+  
+  All headings are under 60 characters in length, we have some additional Supp Methods in the Supp info but it is more or an appendage to the Supp tables and search terms (which would not nicely format in the main text)
+  
+  \item \textit{Please rename the Methods section as "Methods".} \\
+  
+  Done 
+  
+  \item \textit
+
+\end{enumerate}
+
+## Response to Prof. Jacek Radwan
