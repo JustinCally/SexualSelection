@@ -1,0 +1,577 @@
+---
+title: 'Sexual selection improves population fitness: a systematic review and meta-analysis'
+output:
+  pdf_document: default
+  word_document: default
+subtitle: Response to Decision Letter
+bibliography: Manuscripts/Bibliography/Bibliography.bib
+---
+
+```{r, warning=FALSE, message=FALSE, results='hide', echo = FALSE}
+library(pander)
+library(tidyr)
+library(compute.es)
+library(metafor)
+library(plyr)
+library(dplyr)
+library(lme4)
+library(car)
+library(forestplot)
+library(ggplot2)
+library(ggthemes)
+library(kableExtra)
+library(ggrepel)
+library(reshape2)
+library(RColorBrewer)
+library(ggridges)
+library(rstan) #Note that installation requires some effort: dependency for brms
+library(brms) 
+library(backports) #seems to be a dependency
+library(bayesplot)
+#devtools::install_github("mvuorre/brmstools")
+library(brmstools)
+library(metaAidR) # install.packages("metaAidR")
+library(cowplot)
+library(gridExtra)
+library(janitor)
+#setwd("~/Documents/Uni/metaanalysis/SexualSelection")
+source("I2_function.R") #Adapted function for obtaining I2 with CIs
+source("Vdodge_function.R") # nice function for ggplot
+source("Tidy_functions_for_brms.R") #Tidy functions for making model tables for brms
+
+load(".RData")
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Dear Dr. Jones and colleagues,
+
+We appreciate the insightful comments provided by the Associate Editor and reviewers. We have made the suggested changes and clarifications, detailed below. In addition to the revised manuscript and revised supplementary material, we attach a copy of the revised manuscript in which the significant changes and additions have been highlighted.
+
+Yours Sincerely,
+
+Justin Cally and co-authors
+
+________________________________________________________
+
+## Comments from Reviewer 1 (Prof. Jacek Radwan)
+
+>*The manuscript presents results of a meta-analysis assessing the effect of sexual selection on population fitness. This topic has been increasingly studied over the past decade or so, and the time seems ripe for a synthesis. The authors have done good job searching the literature – it includes all relevant papers I could remember, and the results should be of interest to a broad range of evolutionary biologists. I cannot expertly judge on state-of-the-art methodology, but I do have several general concerns about how the analyses were performed.*  
+
+Many thanks for your time and for you very helpful feedback.
+
+>*Firstly, it seems that several male traits like to be under sexual selection, but not related to population fitness were included. I don’t think this is correct given the question being asked (i.e. whether sexual selection increases population fitness). I think traits which are directly under sexual selection (eg. attractiveness, reproductive success) should not be pooled with traits which may respond to manipulation of sexual selection indirectly (eg. male development time, survival) and can affect population fitness. Distinguishing between both types of trait could actually be revealing – e.g. could expose trade-offs between sexually selected traits and fitness components unrelated to reproductive competition (see eg. Radwan et al. 2015 Evol Biol), a thus potentially explain lower effect of sexual selection on (pooled) male traits than on female traits.*
+
+We appreciate the reviewer's point that distinguishing between traits that are direct targets of sexual selection, versus those that respond more indirectly, could be revealing. For this reason, we present separate meta-analytical measurements for the effects of sexual selection on each of the various fitness components in the supplementary material. This enables the reader to gauge the effect of sexual selection each of the fitness components, e.g. to test whether direct targets of sexual selection (such as attractiveness) respond more strongly to sexual selection than traits such as immunity or longevity with a more indirect link to reproduction.
+
+However, because the subject of our study is population fitness, we classified fitness components according to their relationship to population fitness, rather than their relationship with sexual selection. We took this decision because the relationship between sexual selection and population fitness is contentious, while there is no controversy over how sexual selection should affect traits like attractiveness (almost by definition, individuals born under sexual selection should be more attractive whenever attractiveness is hereditary).
+
+In the revision, we have slightly altered which traits were classified as having a "direct", "indirect", or "ambiguous" relationship with population fitness, in light of the reviewer's feedback (see Table S1 for a breakdown of how all the traits were classified). Because we think that attractiveness is only tenuously linked to population fitness, and we have re-classified its relationship with population fitness as "ambiguous" (as opposed to "indirect" in the original manuscript). Additionally, we have split the trait "Reproductive success" by sex, in light of the fact that male and female fitness are maximised in differenet ways and are likely to have differentially related to population fitness. The revised manuscript and its main figures show that this reclassification had little impact on our main conclusions. 
+
+>*Secondly, looking at Figure 1, one notices apparent anomalies, for example significantly positive slope for male attractiveness, based on studies with average effect size close to zero. I think this (and few others) surprising estimates may result from fitting random terms across all trait types (fitted as a fixed factor, second model); I guess fitting interaction (random slopes) would not be feasible for some categories including few data points, but some of them could easily be pooled in wider categories.*
+
+For reference, we here present the result for male attractiveness that the reviewer mentioned. The table shows the estimate from the meta-analysis, and the figure shows the n = 6 effect sizes that underlie it, with the mean effect size plotted as vertical lines.
+
+```{r}
+left_join(fitness.component.predictions, predictions.outcomes, by = "Fitness Component") %>% 
+  filter(`Fitness Component` == "Male Attractiveness") %>% pander(split.table = Inf, digits = 2, caption = "Model predictions for Male Attractiveness")
+```
+
+
+```{r, fig.height=2.5, fig.width=6}
+pd <- position_dodgev(0.6)
+
+p.meta.male.attract <- full_dataset %>% 
+  mutate(Sex = replace(as.character(Sex), Sex == "B", "Both"),
+         Sex = replace(Sex, Sex == "M", "Male"),
+         Sex = replace(Sex, Sex == "F", "Female"),
+         Outcome.Class = factor(Outcome.Class, levels = c("Ambiguous", "Indirect", "Direct"))) %>%
+  filter(Outcome == "Male Attractiveness") %>%
+  
+  ggplot(aes(x=reorder(AuthorYear, -g), y = g)) +
+  scale_color_manual(values = c("Ambiguous" = "#a50f15", "Indirect" = "#fe9929", "Direct" = "#4daf4a"), 
+                     name = "Relationship\nto fitness")+
+  scale_shape_manual(values=c(21,22,24))+
+  scale_fill_manual(values = c("Ambiguous" = "#a50f15", "Indirect" = "#fe9929", "Direct" = "#4daf4a"), 
+                    name = "Relationship\nto fitness")+
+  geom_linerange(aes(ymin = lowerci, 
+                   ymax = upperci,
+                   x = reorder(AuthorYear, -g),
+                     color = Outcome.Class,
+                     group = "identity"),
+               show.legend = FALSE,
+               position = position_dodge2(width = 0.5, preserve = "single")) +
+  
+  geom_point(aes(shape = Sex,
+                 fill = Outcome.Class),
+             size = 1.75, 
+             color = "grey20",
+             position = position_dodge2(width = 0.5),
+             show.legend = F) +
+  
+  coord_flip()+
+  
+  scale_y_continuous(limits=c(-3.1, 3.1), 
+                     breaks = c(-3, -2, -1, 0, 1, 2, 3), 
+                     name='Standardized Mean Difference (g) \n[positive values indicate sexual selection improves fitness components]') +
+  
+  xlab('Reference') + 
+  
+  geom_hline(yintercept=0, 
+             color='black', 
+             linetype='dashed')+
+  
+    geom_hline(yintercept=0.314, 
+             color='#4daf4a', 
+             linetype=1,
+             size = 1)+
+  
+  geom_hline(yintercept=0.0302, 
+             color='#4daf4a', 
+             linetype=3)+
+  
+  geom_hline(yintercept=0.61, 
+             color='#4daf4a', 
+             linetype=3)+
+  
+  facet_grid(Outcome_f~.,
+             labeller = label_wrap_gen(width=10),
+             scales= 'free', 
+             space='free')+
+  
+  guides(fill = guide_legend(override.aes = list(shape = 21, colour = "grey20", size = 6)),
+         shape = F)+
+  
+  #Add theme specifying text size, margins, lines etc.
+  theme_bw()+
+  
+  theme(strip.text.y = element_text(angle = 0, size = 12, margin = margin(t=15, r=15, b=15, l=15)), 
+        strip.background = element_rect(colour = NULL,
+                                        linetype = "blank",
+                                        fill = "gray90"),
+        text = element_text(size=13),
+        panel.spacing = unit(0.5, "lines"),
+        panel.border= element_blank(),
+        axis.line=element_line(), 
+        panel.grid.major.x = element_line(linetype = "solid", colour = "gray95"),
+        panel.grid.major.y = element_line(linetype = "solid", color = "gray95"),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(), 
+        legend.text = element_text(size=12), 
+        legend.title=element_text(size=12, 
+                                  face = "bold"),
+        axis.title.x = element_text(hjust = 0.5, size = 12))
+
+p.meta.male.attract
+```
+  
+We agree that alone, these 6 effect sizes do not provide strong evidence that the true mean effect size is positive. But given that 4/6 of the effect sizes are positive, and these were all either precisely measured or quite large, the model's conclusion that there is very weak evidence for a positive effect seems correct.
+
+Additionally, regarding the comment about random slopes, we were not sure what revised model the reviewer is proposing. To clarify things, we first note that the current model has the following attributes:
+
+- *Effect size* (i.e. the effect of sexual selection treatment on some fitness component) as the response variable, weighted by the associated standard error
+- The *type of fitness trait* (e.g. fecundity, lifespan, attractiveness) as a fixed factor or 'moderator vairable'
+- The *Study ID* as a random intercept (to model the similarity among effect sizes derived from the same study)
+- The *Taxon* as a random intercept (to model the similarity among effect sizes pertaining to the same taxon)
+
+Given this, we suppose that the reviewer was proposing to add add the fixed factor *type of fitness trait* as a random slope to one or both of the two random intercept terms. This would allow each fitness trait to show a different amount of inter-study and inter-taxon variation. We suspect that such a model would be overly-complex given tour dataset, and it is unlikely to provide a statistically significantly better fit than the more parsimonious model that we currently use. Rather few studies in our dataset measured multiple traits, and there are several taxa in which only one or two trait types have been measured, meaning that the model would not be able to accurately measure the variance explained by the proposed random slopes.
+
+Alternatively, it is possible that the reviewer meant for us to build a model that allows the response to sexual selection treatment to differ among the fitness traits. In pseudocode, this model would look something like `Trait_value ~ Sexual_selection_treatment * Type_of_trait`. However, this would represent a misunderstanding: we did not analyse the raw trait values from the original studies, but rather we collected their effect sizes and combined them to estimate the average effect size for each of the different fitness traits. Our present analysis already allows for the possibility that the response to sexual selection is different for different types of fitness trait. Apologies in advance if we have missed the point you were making.
+
+In light of this comment, we have changed our main figure for greater clarity and simplicity (we now group the traits by their relationship to population fitness, as opposed to the numerous individual types of types). Specifically we have changed Figure 1 to a simpler style of forest plot, with the big forest plot that was formerly Figure 1 now moved to the Supplementary Material (Fig. S1).
+  
+>*Thirdly, type of trait measured explained 35% variance, but the authors do not explore this any further. However, examination of Fig. 1 suggest that some indirect/ambiguous fitness measures account for much of this heterogeneity and they generally have higher average effect sizes that direct measures (except for immunity). I’d like to see if the authors recover their main result if they only direct measures.*
+
+We followed this suggestion and re-ran the model on 'direct only' and compared this to our previous results (both are presented below for comparison). The main result remains the same: the positive effect of sexual selection on fitness is magnified for females in stressful environments. However, two things have changed in terms of statistical significance. 
+
+Firstly, for the 'direct only' model the predicted effect size for males in stressful environments is now significantly negative (*Hedges' g*= -0.45; 95 % CIs = -0.70 to -0.19) as opposed to showing no difference. However, there are only two effect sizes for males in stressful environments using the 'direct only' subset of the data, so this is not very strong evidence that the direct and indirect measures differ considerably. 
+
+Secondly, the predicted effect size for females in benign environments in the 'direct only' model are non-significantly positive, unlike the “direct and indirect” model where this result was statistically significant. 
+
+We now include the results recovered of the 'direct only' model in the supplementary material, and mention them in the main manuscript. We have left the 'direct plus indirect' model as our main focus, because its sample size and thus statistical power is much higher than the 'direct only' model (n = 289 vs n = 159 effect sizes). 
+
+*N.B.* Using the corrected $I^2$ formula (see reviewer 3 comments) the type of trait measured only accounts for ~ 0.5 % of the total heterogeneity (for Hedges' g) and thus we have not added further discussion. 
+
+
+```{r, warning=FALSE, message=FALSE, error = FALSE, fig.align='center', fig.width = 10, fig.height=6}
+model.direct.only <- rma.mv(g, V = var.g, 
+                          mods = ~ 1 + Sex * Environment, 
+                          random = list(~ 1 | Study.ID, 
+                                       ~ 1 | Outcome,
+                                       ~ 1 | Taxon), 
+                          method = "REML", 
+                          data = strict_dataset %>% filter(Outcome.Class == "Direct"))
+
+#Generate predictions without taxon utilising the previously described function
+get.predictions.direct <- function(newdata){
+  B<-0; F<-0; Stressed<-0; interaction1<-0; interaction2<-0; interaction3<-0
+  if(newdata[1] == "B") B<-1 
+  if(newdata[1] == "F") F<-1 
+  if(newdata[2] == "Stressed") Stressed<-1
+  if(newdata[1] == "B" & newdata[2] == "Stressed") interaction1<-1
+  if(newdata[1] == "F" & newdata[2] == "Stressed") interaction2<-1
+
+  predict(model.direct.only, newmods=c(B, F, Stressed, interaction1=interaction1, interaction2=interaction2))
+}
+
+# Get the predictions for each combination of moderators
+predictions.direct <- as.data.frame(expand.grid(Sex = c("M", "B", "F"),
+                           Environment = c("Unstressed", "Stressed")))
+predictions.direct <- cbind(predictions.direct, do.call("rbind", apply(predictions.direct, 1, get.predictions.direct))) %>%
+  select(Sex, Environment, pred, se, ci.lb, ci.ub) 
+for(i in 3:6) predictions.direct[,i] <- unlist(predictions.direct[,i])
+
+countpred <- count_(strict_dataset %>% filter(Outcome.Class == "Direct"), c("Sex", "Environment"))
+
+predictions.direct <- left_join(predictions.direct, countpred, by = c("Sex", "Environment"))
+colnames(predictions.direct) <- c("Sex", "Environment", "Prediction", "SE", "CI.lb", "CI.ub", "n")
+predictions.direct <- predictions.direct %>%
+      mutate(Sex = replace(as.character(Sex), Sex == "B", "Both"),
+         Sex = replace(Sex, Sex == "M", "Male"),
+         Sex = replace(Sex, Sex == "F", "Female"),
+         Environment = replace(as.character(Environment), Environment == "Stressed", "Stressful"),
+         Environment = replace(Environment, Environment == "Unstressed", "Benign"),
+         Sex = factor(Sex, levels = c("Male", "Both", "Female")))
+
+predictions.direct <- format(predictions.direct, digits = 2)
+predictions.direct$Prediction = as.numeric(predictions.direct$Prediction)
+predictions.direct$CI.lb = as.numeric(predictions.direct$CI.lb)
+predictions.direct$CI.ub = as.numeric(predictions.direct$CI.ub)
+predictions.direct$n = as.numeric(predictions.direct$n)
+
+
+
+if(!file.exists("data/brms.direct.rds")){
+  brms.direct <- brm(g | se(SE)  ~ 1 + Sex * Environment 
+                        + (1|Taxon) 
+                        + (1|Study.ID) 
+                        + (1|Outcome), 
+                        family = "gaussian", 
+                        seed = 1,
+                        cores = 4, chains = 4, iter = 4000, 
+                        control = list(adapt_delta = 0.9999, max_treedepth = 15),
+                        data = strict_dataset %>% 
+                          filter(Outcome.Class == "Direct") %>% 
+                          mutate(SE = sqrt(var.g)))
+  saveRDS(brms.direct, file = "data/brms.direct.rds")
+}
+brms.direct <- readRDS(file = "data/brms.direct.rds")
+
+# lternatively you can obtain posterior samples manually.
+post.direct <- (posterior_samples(brms.direct, 
+                           pars = c("b_Intercept", "b_SexB", "b_SexF", 
+                                    "b_EnvironmentStressed", "b_SexB:EnvironmentStressed", 
+                                    "b_SexF:EnvironmentStressed")) %>%
+           mutate(both_benign = b_Intercept + b_SexB,
+                  both_stressful = b_Intercept + b_SexB + b_EnvironmentStressed + `b_SexB:EnvironmentStressed`,
+                  male_benign = b_Intercept,
+                  male_stressful = b_Intercept + b_EnvironmentStressed,
+                  female_benign = b_Intercept + b_SexF,
+                  female_stressful = b_Intercept + b_SexF + b_EnvironmentStressed + `b_SexF:EnvironmentStressed`))[,-(1:6)]
+
+# Add columns for Environment and Sex
+post.direct <- as.data.frame(t(post.direct))
+post.direct$Sex <- c("Both", "Both", "Male", "Male", "Female", "Female")
+post.direct$Environment <- c("Benign", "Stressful", "Benign", "Stressful", "Benign", "Stressful")
+
+#Clean up dataframe
+post.direct <- melt(post.direct, id = c("Sex", "Environment"))
+post.direct$variable <- NULL
+
+#Plot the posterior values from the Bayesian model as density ridges
+pd <- position_dodgev(height = 0.3)
+posterior.direct.plot <- post.direct %>% mutate(Sex = factor(Sex, levels = c("Male", "Both", "Female"))) %>% ggplot()+
+  stat_density_ridges(aes(x=value, y = Environment, fill = Sex), alpha = 0.65, scale = 0.6, position = position_nudge(y = 0.15), height = 10, show.legend = F, quantile_lines = T, quantiles = 2)+
+  geom_vline(xintercept = 0, linetype = 2, colour = "black") + 
+  ylab("Environment\n")+
+  xlab("\nEffect Size (Hedges' g)")+
+  # scale_fill_manual(values = c("Male" = "#e41a1c", "Female" = "#377eb8", "Both" = "#4daf4a"))+
+  # scale_color_manual(values = c("Male" = "#e41a1c", "Female" = "#377eb8", "Both" = "#4daf4a"))+
+  scale_fill_manual(values = c("Male" = "#ff7f00", "Female" = "#984ea3", "Both" = "#4daf4a"))+
+  scale_color_manual(values = c("Male" = "#ff7f00", "Female" = "#984ea3", "Both" = "#4daf4a"))+
+  scale_x_continuous(limits = c(-1.25, 1.25), breaks = c(-1, -.5, 0, 0.5, 1))+
+  
+  theme_bw()+
+  
+  theme(panel.spacing = unit(0.1, "lines"),
+        text = element_text(size=16),
+        panel.border= element_blank(),
+        axis.line=element_line(), 
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(), 
+        legend.text = element_text(size=16), 
+        legend.title=element_text(size=16, face = "bold"),
+        axis.title.x = element_text(hjust = 0.5, size = 14),
+        axis.title.y = element_text(size = 16, hjust = 0.35, margin = margin(r=-10)),
+        axis.text.y = element_text(angle = 0),
+        plot.title = element_text(size = 16))
+
+#Add the REML predictions as circles with error bars
+both.direct.plots <- posterior.direct.plot + 
+  geom_errorbarh(data = predictions.direct %>% mutate(Sex = factor(Sex, levels = c("Male", "Both", "Female"))), 
+                 aes(xmin = predictions.direct$CI.lb,
+                     xmax = predictions.direct$CI.ub, y = Environment,
+                     color = Sex), 
+                 height = 0, show.legend = F, position = pd)+
+  
+  geom_point(data = predictions.direct %>% mutate(Sex = factor(Sex, levels = c("Male", "Both", "Female"))), 
+             aes(x = Prediction, y = Environment, size=n, fill = Sex), 
+             shape=21, color = "grey20", position = pd) +
+  
+    guides(fill = guide_legend(reverse=T, override.aes = list(size = 7.5)))+
+    scale_size(guide = 'none')+
+  
+  scale_y_discrete(expand=c(0.075, 0))
+
+grid.arrange(both.plots + 
+               guides(fill = FALSE)+
+               ggtitle("Indirect And Direct\n")+ theme(plot.title = element_text(size = 18, face = "bold", colour = "Red")),
+             both.direct.plots + ggtitle("Direct Only\n")+
+               theme(axis.title.y = element_blank(), 
+                     plot.title = element_text(size = 18, face = "bold", colour = "Red")), 
+             nrow = 1, 
+             widths = c(3,3.5))
+```
+  
+
+```{r, warning=FALSE}
+predictions.direct %>% pander(caption = "Model predictions using only direct measures of fitness")
+```
+
+
+>*Another major problem I have with the manuscript concerns interpretation of the very intriguing finding that the response to manipulation of sexual selection was stronger for female traits compared to male traits. I’m confused by the authors’ explanation: do they assume sexual selection acted directly on females, and not only indirectly, via males? Only then things like mother to daughter heritability, or hard selection on females, should matter.*
+
+We agree that this section could have been much clearer, and have made changes in light of this comment to clarify what we meant. We believe that experiments that manipuate sexual selection on males will alter female fitness traits, even in species where females experience no sexual selection, because of mechanisms such as intra- and inter-locus sexual conflict. That is, evolution in males will almost always have pleiotropic consequences for females, or change how males males affect females (i.e. sexual selection on males causes evolution of males’ indirect genetic effects on females).
+
+Consider for example the classic Holland and Rice-style experiment, where one removes sexual selection by enforcing random monogamy in a species with 'traditional sex roles', such as _Drosophila_. Males are predicted to evolve to be less harmful to females in these experiments, and they are also predicted to evolve a more female-like overall phenotype, due to the removal of selection on male-specific functions involved in sexual selection. Both of these male adaptations are expected to cause a genetically-based change in female traits: the former as a result of inter-locus coevolution (e.g. female resistance should evolve in response to the reduction in male-induced harm), and the latter as a result of pleiotropy between the sexes. We thus might predict that females would adapt even more than males if female traits have more genetic variation, or if selection is 'harder' on females than males. These explanations are speculative and _post hoc_, and so in the revision we are careful to identify them as such. Our result is arguably opposite to what one would predict, because naively one would expect sexual selection to have greater effects on the phenotype of males, and we now spell this out as well.
+
+
+>*Perhaps the effect on females is indeed direct, and results from stress imposed by polygamous treatment, which magnifies direct, hard selection on females? This would be an important finding, and perhaps the authors could test it with their dataset by contrasting middle-class-neighborhood-like studies from those which allowed for female evolution. But if correct, this explanation is not exactly the effect of sexual selection, but rather enhanced selection of females due to enhanced (male induced) stress, so the interpretation of results should change.*
+
+Unfortunately, too few studies have manipulated sexual selection (independently of _all_ selection) using the middle class neighborhood design for a reliable test. However we did collect data on how sexual selection was manipulated: many studies imposed random monogamy, but other studies instead manipulated the adult sex ratio (e.g. 3 males 1 female, 2 of each, or 3 females 1 male). In the revised Supplementary Material we now included "manipulation type" as a two-level moderator variable. We find no effect of manipulation type on effect size, suggesting that both ways of removing sexual selection had a similar effect on population fitness traits. This result can be found in the revised Table S10 (moderator labelled as Enforced MonogamyYES).
+
+**Other comments:**   
+
+>*l. 30 – reviews on sexual conflict are OK to cite here, but there are empirical papers actually demonstrating correlation between male sexual selected traits (Harano et al. 2011; Plesnar et al. 2014) which should also be cited.*
+
+Thank you, we have added citations of those papers as suggested. 
+
+>*l. 151 – the authors discuss beneficial effects of sexual selection on direct fitness measures such as reproductive success or offspring viability, but estimates for both of these measures actually overlapped zero! Perhaps joint analysis of direct fitness measures, as I suggested above, could support this conclusion, but currently this is an overstatement.*
+
+Thank you for catching this -- we have tempered our conclusions in the relevant section of the Discussion, since the results provide only moderate evidence for a positive effect.
+
+>*In the discussion the authors say they included the number of experimental evolution generations, but I could not find this information in methods.*
+
+For relevant results, please see the section of the results that reads "Other moderator variables that we examined had minimal impacts on effect size (Figure S2, Table S10). Specifically, effect size did not depend on whether or not the study was conducted blind (Figure S6), nor on the number of generations for which the experimental evolution study was run (Figure S7, S8)." In the methods, we wrote "Additionally, we collected details for each effect size on: sex (male, female or a mixed sample of both), taxon (flies, beetles, mice, nematodes, mites, crickets and guppies), blinding of researchers to treatments and number of generations a treatment group underwent experimentally evolution."
+
+>*Fig. S1 is not referred to in the main texts, is it different from Fig. 2, except that the latter contains predicted average values for fitness components?*
+
+Our supplementary material contains all of our main figures (such as Figure 2), in order to show the data and the code that was used to generate them. We have changed the numbering of the supplementary figures, so that e.g. Figure 1 in the HTML supplement is correctly labelled as Figure 1 and not as Fig. S1, to make it clearer which are the same. 
+
+________________________________________________________
+
+## Comments from Reviewer 2
+
+>*This meta-analysis investigated the consequences of sexual selection experiments on trait mean and variance (comparing sexually selected groups vs control groups). Overall, the authors observe sexual selection usually increase mean and reduce variance (especially in females). The authors conclude sexual selection's benefits outweigh its detrimental effects. This meta-analysis is extremely well conducted (the use of both likelihood-based and Bayesian models for robustness), and although I am not an expert on this topic, I really enjoyed reading it, and it was very clear. Especially, I am impressed with the detailed supplement which showed the code and analysis. However, I have several comments regarding their analysis, which will increase the robustness of results and thus conclusions.*
+
+Many thanks for your time and attention, and for the valuable feedback.
+
+>*1 --- The use of Hedges' $g$. I understand that Hedges' $g$ was probably used because it can take interval measurements as well as ratio measurements (lnCVR can only take ratio measurements). However, $g$ cannot really deal well with heterogeneity between two groups (i.e. experimental and control groups having different variances). This is why Hedges' $g$ (Cohen's $d$) was criticized earlier.* 
+
+>Osenberg, C. W., O. Sarnelle, and S. D. Cooper. 1997. Effect size in ecological experiments: the application of biological models in meta-analysis. \textit{American Naturalist} 150:798-812.
+
+>*As a response, they come up with log response ratio (lnRR) - see*
+
+>Hedges, L. V., J. Gurevitch, and P. S. Curtis. 1999. The meta-analysis of response ratios in experimental ecology. \textit{Ecology} 80:1150-1156.
+
+>*I recommend that the authors use lnRR for their effect size for mean comparison as well as Hedge's $g$ to see the robustness of their conclusions for the mean.*
+
+After reading those papers, we agree that Hedges' *g* is imperfect, and so we checked the robustness of our meta-analysis using two alternative measures of effect size. Firstly, we present the log response ratio (*lnRR*) as suggested by this reviewer. Secondly, we present a modified version of Hedges' *g* that attempts to account for the heterogeneity issue [@bonett2009meta], named SMDH (standardized mean difference with heteroscedastic population variances in the two groups). Here are the findings from our new analyses using lnRR and SMDH: 
+
+Firstly, we found that Hedges' *g* and SMDH are highly correlated (in means and variance). This is reassuring because it suggests that analyses based on *g* and SMDH are likely to yield the same results. 
+
+```{r, warning=FALSE, message = FALSE, error=FALSE}
+#This function writes in the correlation value
+panel.cor <- function(x, y, digits=2, prefix="", cex.cor, ...)
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(-2.5, 2.5, -2.5, 2.5))
+  r <- cor(x, y, use="pairwise.complete.obs")
+  txt <- format(c(r, 0.123456789), digits=digits)[1]
+  txt <- paste0(prefix, txt)
+  if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+  text(0, 0, txt, cex = cex.cor * 2*r)
+}
+
+es.correlation.df <- lnRR.data %>% left_join(SMD.data %>% rename(`Hedge's g` = SMD)) %>% left_join(SMDH.data)
+
+pairs(es.correlation.df %>% select(`Hedge's g`, lnRR, SMDH), lower.panel=panel.smooth, upper.panel=panel.cor)
+# pairs(es.correlation.df %>% select(SMD_var, SMDH_var), lower.panel=panel.smooth, upper.panel=panel.cor)
+```
+
+Secondly, we note that lnRR and SMDH can only be calculated in cases where the primary study reported means, standard deviations and sample sizes (352 out of 459 primary effect sizes). This is a limitation of lnRR and SMDH, as we must discard roughly 25% of the data in order to use them instead of Hedges' *g*. We therefore think it is best to focus primarily on Hedges' *g* despite its minor limitations, and to use lnRR and SMDH for sensitivity analysis in the online supplementary material.
+
+```{r, warning=FALSE, message = FALSE, error=FALSE}
+predictions.complete2 %>% select(Sex, Environment, `Hedge's g sample size` = n) %>% 
+  left_join(predictions.lnRR %>% select(Sex, Environment, `lnRR sample size` = n), by = c("Sex", "Environment")) %>%
+  adorn_totals("row") %>% pander()
+```
+
+Thirdly, if we conduct a meta-analysis using lnRR as the effect size we obtain very similar results with all our main conclusions unchanged, keeping in mind that lnRR and Hedge's *g* are on different scales (see the revised Supplementary Material). Specifically,  
+
++ The effect of sexual selection on population fitness tends to be positive.
++ This effect is magnified for females in stressful environments with a significantly positive interaction term (stress*females).  
+
+```{r, warning=FALSE, message=FALSE, error = FALSE, fig.align='center', fig.width = 10, fig.height=6}
+grid.arrange(both.plots + 
+               guides(fill = FALSE) + 
+               ggtitle("Comparison between Hedge's g \nand lnRR effect sizes \n"), 
+             lnRR.plots + ggtitle("\n\n") + xlim(-0.5,0.75), nrow = 1, widths = c(3,4))
+```
+
+Fourthly, the distribution of the lnRR effect sizes is non-normal (notably moreso than the distribution of Hedges' *g*), perhaps because one can get extreme values when taking a ratio (e.g. if the denominator is close to zero, the ratio can be very large). Accordingly, @Lajeunesse_2015 showed that *lnRR* is problematic when quantifying the outcome of primary studies with small sample sizes, and can yield unsuitable variance in some cases. So, Hedges' *g* has the possible practical advantage of increasing model fit in our meta-analysis.  
+
+```{r}
+grid.arrange(ggplot(data = lnRR.data, aes(x = lnRR))+
+  geom_density(),
+
+ggplot(lnRR.data, aes(sample = lnRR)) + 
+  stat_qq() + 
+  stat_qq_line() +
+  labs(x = 'theoretical quantiles', y = "lnRR sample"),
+
+ggplot(data = full_dataset, aes(x = g))+
+  geom_density()+
+  xlab("Hedges' g"),
+
+ggplot(full_dataset, aes(sample = g)) + 
+  stat_qq() + 
+  stat_qq_line() +
+  labs(x = 'theoretical quantiles', y = "Hedges' g sample"))
+```
+  
+
+>*2 --- The authors may consider also doing another set of meta-analyses using lnVR (log variability ratio - proposed in Nakagawa et al. 2015).*
+
+>Nakagawa, S., R. Poulin, K. Mengersen, K. Reinhold, L. Engqvist, M. Lagisz, and A. M. Senior. 2015. Meta-analysis of variation: ecological and evolutionary applications and beyond. \textit{Methods in Ecology and Evolution} 6:143-152.
+
+>*As one can see in Figure 2, the mean results (Hedges' $g$) are a mirror image of the variance results (this makes sense CV controls for means). I would like to see what the absolute change in variances. Probably the authors can put the analysis using lnVR in the supplement. The results of this analysis can be discussed. Also, the mean-variance relationship between mean and variance (sd) should be verified (e.g. plot log mean and log sd or log variance).*  
+
+Many thanks -- we now also present a meta-analysis of variation using lnVR in addition to one using lnCVR. We have the following comments on this new analysis:
+
+Firstly, as the reviewer suggested, we now justify our use of lnCVR (as opposed to lnVR) by assessing the mean-variance relationship in our data. The major limitation of lnVR is that it does not account for the mean-variance relationship; indeed this is why lnCVR has been recommended over lnVR [@RN177]. We indeed found a strong positive correlation between mean and variance, suggesting that we should favour lnCVR over lnVR.
+
+```{r, warning=FALSE, message=FALSE, error = FALSE, fig.align='center', fig.width = 8, fig.height=3.75}
+grid.arrange(full_dataset %>% ggplot(aes(x = mean.low, y = sd.low))+
+  geom_point()+
+  scale_x_log10()+
+  scale_y_log10()+
+  xlab("Mean of Control Group")+
+  ylab("Standard Deviation of Control Group") +
+  geom_smooth(method = "lm", colour = "red"),
+  
+  full_dataset %>% ggplot(aes(x = mean.high, y = sd.high))+
+  geom_point()+
+  scale_x_log10()+
+  scale_y_log10()+
+  xlab("Mean of Treatment Group")+
+  ylab("Standard Deviation of Treatment Group") +
+  geom_smooth(method = "lm", colour = "red"), nrow = 1)
+```
+
+Although we think that *lnVR* is not preferable due to this positive relationship, we ran our meta-analyses using *lnVR* in the interests of completeness. We present this new result in the supplementary material and briefly discuss it in the manuscript. To summarise, we found very similar patterns, although the statistical significance of some of the results has changed; see the following figure:
+
+```{r, warning=FALSE, message=FALSE, error = FALSE, fig.align='center', fig.width = 10, fig.height=6}
+grid.arrange(both.var.plots + 
+               guides(fill = FALSE) + 
+               ggtitle("Comparison between lnCVR \nand lnVR effect sizes \n"), 
+             both.lnVR.plots + ggtitle("\n\n"), nrow = 1, widths = c(3,4))
+```
+  
+  
+>*3 --- $I^2$ needs to be explained. $I^2$ is proposed originally here:*
+
+>Higgins, J., and S. Thompson. 2002. Quantifying heterogeneity in a meta-analysis. \textit{Statistics in Medicine} 21:1539 - 1558.
+
+>*But later expanded in here for mixed models (hierarchical models)*
+
+>Nakagawa, S., and E. S. A. Santos. 2012. Methodological issues and advances in biological meta-analysis. \textit{Evolutionary Ecology} 26:1253-1274.
+
+>*This is what the authors use. Also, it will be good to put the degree in I^2 in the context. To do this see this paper:*
+
+>Senior, A. M., C. E. Grueber, T. Kamiya, M. Lagisz, K. O'Dwyer, E. S. A. Santos, and S. Nakagawa. 2016. Heterogeneity in ecological and evolutionary meta-analyses: its magnitude and implications. \textit{Ecology} 97:3293-3299.
+
+Many thanks for this feedback -- we have incorporated all these suggestions in the Methods section.
+
+>*4 --- Publication tests have been conducted on, I think, "meta-analytic" residuals results as suggested in Nakagawa and Santos 2012. One could use such residuals to conduct the trim and fill method and see how much the mean could move (see Nakagawa and Santos 2012). One should remember the funnel asymmetry could be caused by the presece of heterogeniety. See:*
+
+>Egger, M., G. Smith, M. Schneider, and C. Minder. 1997. Bias in metaanalysis detected by a simple, graphical test. \textit{Br Med J} 315:629 - 634.
+
+Thanks -- we now remind the reader that funnel plot asymmetry is not decisive evidence for publication bias, because it can also result from unexplained heterogeneity in the original effect sizes. We have elected not to implement trim-and-fill since the method seems to have fallen into disfavour, and because we are unsure how to correctly implement it using the REML- and Bayesian methods we used. NB that there is no method for trim-and-fill in mixed meta-analysis in the popular R package `metafor` (which we used), suggesting the method is not simple to implement. 
+
+>*5 --- Figure 3 - are these grey envelopes 95% CI?*
+
+Yes -- we have now included this information in the figure caption. 
+
+>*6 --- the title - do the authors include "a systematic review" - so "a systematic reveiw and meta-analysis" - these two things are diferent - see:*
+
+>Nakagawa, S., and R. Poulin. 2012. Meta-analytic insights into evolutionary ecology: an introduction and synthesis. \textit{Evolutionary Ecology} 26:1085-1099.
+
+We agree, and we have changed the title to "Sexual selection improves population fitness: a systematic review and meta-analysis".
+
+>*Hope my comments are useful.*
+
+Very useful, thank you!
+
+________________________________________________________
+
+## Comments from Reviewer 3
+
+>*This manuscript addresses the question of whether, on average, sexual selection has a net beneficial or detrimental effect on population fitness, using a meta-analysis of experimental evolution studies comparing the fitness of populations under different intensities of sexual selection. The analyses consider the effects of sexual selection on both the mean and variance of population fitness, and test whether these effects differ for stressful vs. benign environments, or depend on the measure of population fitness.*
+
+>*These are issues of longstanding interest, and as there is now quite a wealth of experimental evolution studies addressing these questions a meta-analysis synthesising their findings is timely.*
+
+Many thanks for your time and attention, and for the valuable feedback.
+
+>*The results of this meta-analysis broadly concur with current theoretical predictions, and are likely to interest a wide readership. Across all studies, environment types and fitness measures there was a small positive effect of sexual selection on mean population fitness, although effect sizes varied with the fitness measure used. The positive effect of sexual selection on fitness was strongest for females in stressful environments, who also showed reduced variance in fitness under sexual selection.*
+
+>*The authors discuss these findings thoughtfully, although they focus more on the (weaker) effects found for ‘direct’ measures of fitness while somewhat neglecting the effects seen for ‘indirect’ fitness measures (e.g. of attractiveness, mating latency, lifespan, ejaculate traits). These potentially deserve more consideration, especially as many appear to be male-limited traits or measured mainly in males, that would appear to have a direct bearing on male mating success (if an indirect link to overall fitness), yet despite this the overall effect of sexual selection on male fitness is not significant.*
+
+Please see our earlier response to Prof. Radwan: we do not consider male mating success (and related traits) to be correlates of population fitness, which is why the results differ between our strict analysis and the one that includes all the traits. Additionally, we chose to spend more time writing about the "direct" effects because our main focus is on population fitness. We agree that our secondary results are interesting as well, but we wanted to keep the manuscript focused and concise. Also, there is no theoretical controversy over how sexual selection should affect traits like male mating success; by contrast, the relationship between sexual selection and population fitness is contentious.
+
+>*I have only a few more specific comments:*
+
+>*Does your approach consider variation in the intensity of sexual selection exclusively on males? This is worth noting (e.g. statements such as that on line 98-99 might be amended to “Sexual selection on males significantly improved female fitness.”)*
+
+Yes, we now also stress that we consider sexual selection on males, as suggested (changes are made throughout the manuscript).
+
+>*Experiments manipulating the sex ratio to alter sexual selection might simultaneously decrease sexual selection on males while increasing sexual selection on females. Would this be classified as reduced sexual selection in your analyses? I don’t think you included this aspect of study design as a moderator variable in any of your analyses – given that close to half of the effects you include come from “alternative manipulations” (line 70) perhaps you could test whether this affects effect size?*
+
+Some of the studies used the enforced monogamy design (as in Holland and Rice 2002), where one compares monogamous family groups with polyandrous ones (i.e. multiple males and one female), and so these manipulate sexual selection on males only, and eliminate sexual selection on females. Others instead manipulated the adult sex ratio (e.g. 3 males 1 female, 2 of each, or 3 females 1 male); these studies manipulate sexual selection on both sexes simultaneously. For the latter type, we considered the strength of sexual selection on males to be variable of interest, though it is confounded with the strength of sexual seleciton on females. To test if there was any difference in the effect sizes induced by these two types of manipulation, we now include 'manipulation type' (named "Enforced.Monogamy" in the Supplementary Material and R code) as a moderator variable: there was no effect in our preliminary model (see above comment to Reviewer 1 and the revised Table S10).
+
+>*It seems possible that sexual selection on females, and not only on males, could affect population fitness – potentially even more directly than sexual selection on males. And might differing extents of sexual selection in each sex interact with the differences you saw in fitness measured in males vs. females?*
+
+It is possible that sexual selection on females affects population fitness, although to our knowledge no-one has considered or modelled this before. Also, we are not a aware of any experiments that have manipulated the opportunity for sexual selection on females independently of any other factors (e.g. sexual selection on males; see above comment). So, we have opted not to discuss or analyse this further, as we think the data do not yet allow for a robust test.
+
+>*L111-118 It seems a little odd that there is no residual heterogeneity in your $I^2$ estimates. From the supplemental information it is not entirely clear to me how you have adapted the function that is under development in “metaAidR”, but can you double check that you have appropriately incorporated the residual variance into these estimates?*
+
+Many thanks for raising this. The original $I^2$ mistakingly did not include residual heterogeneity in the denominator when calculating proportion of heterogeneity for each random effect. The supplementary material has now been changed, with correctly derived $I^2$ values included in the revised manuscript.  
+
+>*L307-311 Please clarify here that lnCVR was calculated as the ratio $ln(CVfitness_{SS}/CVfitness_{no SS})$*  
+
+We now clarify this as suggested.  
+
+>*Fig. 3 Please explain the dashed red and black lines in the figure caption.*  
+
+We now clarify the confidence intervals on the funnel plot as suggested.  
+
+>*Tables 1, 2 Please check – the parameter estimates for ‘Female sex’ and test for ‘Female > Male’ are bolded inconsistently between the REML and Bayesian models where these estimates are identical.*
+
+The revised manuscript no longer has this disparity between REML and Bayesian estimates. However we noticed that Bayesian estimates had slightly wider confidence intervals than REML models leading to differences in statistical significance (e.g. Table S6).
+
+# References
+<div id="refs"></div>  

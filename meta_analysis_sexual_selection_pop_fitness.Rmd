@@ -142,7 +142,7 @@ read.csv('data/references.tableS1.csv', fileEncoding="UTF-8") %>%
 **Table S2:** A study was deemed eligible for inclusion in the meta-analysis if it met all four criteria discussed above (referred to by their numbers, 1-4, in this table). We went through these four criteria in a step-wise fashion, for each of the 130 studies for which we read the full text, and noted the first criterion that was failed (if any). The table provides notes on our inclusion/exclusion decisions.
 
 ```{r}
-read.csv('data/Eligibility Workbook(22.02).csv', fileEncoding="UTF-8") %>%
+read.csv('data/Eligibility Workbook.csv', fileEncoding="UTF-8") %>%
   kable("html") %>% kable_styling() %>%
   scroll_box(width = "100%", height = "500px")
 ```
@@ -526,7 +526,7 @@ p.meta <- full_dataset %>%
                                   face = "bold"),
         axis.title.x = element_text(hjust = 0.5, size = 14))
 
-knitr::include_graphics(path = "figures/ForestPlot_size_reduced.png") 
+knitr::include_graphics(path = "figures/ForestPlot_large.png") 
 ```
 
 <br></br>
@@ -2132,7 +2132,7 @@ make.funnel <- function(dataset, model){
 
 funnel.plot <- make.funnel(df.forest.model, forest.model)
 
-ggsave(plot = funnel.plot, filename = "figures/funnel_plot.eps", height = 7.5, width = 10)
+#ggsave(plot = funnel.plot, filename = "figures/funnel_plot.eps", height = 7.5, width = 10)
 funnel.plot
 ```
 <br></br>

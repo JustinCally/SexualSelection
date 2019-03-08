@@ -149,9 +149,13 @@ Meta-analyses fit by REML were implemented in the *metafor* ``R`` package [v. 2.
 
 We tested for publication bias via funnel plots, using Egger’s test to quantify plot asymmetry [@RN213; @RN214]. Additionally, we tested for time-lag bias [@RN216], in which effect size magnitudes decline over time as more data are collected. Additionally, we assessed a potential source of publication bias through the correlation between effect size and journal impact factor [@RN217], which can arise if null or countervailing results are more difficult to publish (impact factors were from *InCites Journal Citation Reports*).\phantomsection  
 
-##Code and data availability
+##Code availability
 
-The code and data used to perform this meta-analysis is available as Electronic Supplementary Material and on Github (https://justincally.github.io/SexualSelection/). The repository (https://github.com/JustinCally/SexualSelection) provides complete data tables of effect sizes, variance and sample sizes needed to reproduce our results. \phantomsection   
+The code used to perform this meta-analysis is available on Github (https://justincally.github.io/SexualSelection/). The repository (https://github.com/JustinCally/SexualSelection) provides complete data tables of effect sizes, variance and sample sizes needed to reproduce our results. \phantomsection   
+
+##Data availability
+
+All data are available on Github (https://github.com/JustinCally/SexualSelection).
 
 #Acknowledgements
 We are very grateful to Paco Garcia-Gonzalez for sharing a collection of literature that helped to guide our study, and to Tim Connallon for comments on the manuscript.

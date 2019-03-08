@@ -24,19 +24,22 @@ We are delighted to provide a revised manuscript for publication in \textit{Natu
 
   \item \textit{Please edit the title so that it is 15 words or fewer and does not include punctuation} \\
   <!-- Sexual selection improves population fitness based on a systematic review and meta-analysis -->
+  We have changed our title to: Meta-analytic evidence that sexual selection improves population fitness 
   
   \item \textit{The final paragraph of the Introduction should summarise the major results and conclusions of this manuscript, in the present tense.} \\
   <!-- We had previously included this in an earlier draft and cut it. Can add it back  -->
   
   \item \textit{Please shorten all subheadings in the Results section to fewer than 60 characters including spaces.} \\
-  Sexual selection is associated with higher mean values for most fitness components \textbbf{to} Sexual selection improves average fitness for most traits. \\
-  Sexual selection reduces phenotypic variance, for female traits in stressful environments \textbbf{to} Effects of sexual selection on phenotypic variance
+  Sexual selection is associated with higher mean values for most fitness components \textbf{to} Sexual selection improves average fitness for most traits. \\
+  Sexual selection reduces phenotypic variance, for female traits in stressful environments \textbf{to} Effects of sexual selection on phenotypic variance
   
   \item \textit{Please do not use italics or bold font to convey emphasis (in both the main text and the display items).} \\
   Is this the latin? (e.g. /Prima facie / Tabbles have bold, figures have bold...)  
   
-  \item \texit{Please avoid using speech marks around words or phrases. In most cases they are unnecessary.} \\
+  \item \textit{Please avoid using speech marks around words or phrases. In most cases they are unnecessary.} \\
   Speech marks around the following words/phrases have now been removed: population fitness (l.21), purged (l.175), softer (l.199), harder (l.199), 'good genes' (l.243), attractive (l.244), unambiguous (l.359).  
+  
+  Single quotes for technical terms
   
   \item \textit{Please make sure that mathematical terms throughout your manuscript and Supplementary Information (including in figures, figure axes, and legends) conform strictly to the guidelines} \\
   Not sure where we went wrong here?
@@ -52,7 +55,8 @@ We are delighted to provide a revised manuscript for publication in \textit{Natu
   
   Done 
   
-  \item \textit
+  \item \textit{All Nature Communications manuscripts must include a section titled "Data Availability" as a separate section after the Methods section and before the References.}
+  
 
 \end{enumerate}
 
