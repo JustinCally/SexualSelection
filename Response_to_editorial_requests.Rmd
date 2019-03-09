@@ -55,7 +55,51 @@ We are delighted to provide a revised manuscript for publication in \textit{Natu
   
   Done 
   
-  \item \textit{All Nature Communications manuscripts must include a section titled "Data Availability" as a separate section after the Methods section and before the References.}
+  \item \textit{All Nature Communications manuscripts must include a section titled "Data Availability" as a separate section after the Methods section and before the References.} \\
+  
+  We have now ammended this section of the manuscript by seperating data availability and code availability as well as providing the relevent links to the data sources hosted on github.  
+  
+  \item \textit{We strongly encourage authors to deposit all new data associated with the paper in a persistent repository where they can be freely and enduringly accessed.} \\
+  
+  We have chosen to host our data on a github repository alongside all our code and a neatly formatted html with supplementary information in an effort to maximise transparency of our analysis as well as allowing for the data and code to be easily reproduced and built upon by future studies.  
+  
+  \item \textit{For all studies developing new software or using custom code in the generation or processing of datasets, a statement must be included in the Methods section, under the subheading "Code Availability", indicating whether and how the code can be accessed, including any restrictions to access. This section should also include information on the versions of any software used, if relevant, and any specific variables or parameters used to generate, test, or process the current dataset.} \\
+  
+  Done. The Supplementary information has a section at the end with `R Session Information`, which provides details of the attached packages and parameters of the operating system.  
+  
+  \item \textit{Please add a reference to the source data file in the "Data Availability" section} \\
+  
+  Done. The repository now also contains a more extensive 'READ ME', with a description of the repository organisation.  
+  
+  \item \textit{End notes} \\
+  
+  Acknowledgements, Author Contributions and Competing Interests are now found after the references.  
+  
+  \item \textit{Please update any preprints in the reference list with details of the published paper, if possible.} \\
+  
+  We have changed one reference that was a preprint and is now published (Li and Holman 2018). 
+  
+  \item \textit{Please check whether your manuscript or Supplementary Information contain third-party images, such as figures from the literature, stock photos, clip art or commercial satellite and map data.} \\
+  
+  No third-party images are included in the display items.  
+  
+  \item \textit{Please include a brief title for all figure legends that summarises the whole figure and does not refer to specific panels and Please ensure that figure legend titles are brief - they should not occupy more than one line in the final proof.} \\
+  
+  Figure titles are now included and illustrated in bold at the start of the figure legend. They do not occupy more than one line.  
+  
+  \item \textit{Please include figure legends of up to 350 words, referring to all panels within the figure.} \\
+  
+  No figure legends are above 350 words and in all cases all panels are referred to in the legend.  
+  
+  \item \textit{Data in tables must be free from bold/italic formatting unless this has been clearly defined in the footnote. Tables need to be black and white, fit onto a single A4 portrait page and can contain only one row of column titles. Finally, we are unable to merge cells or include vertical dividing lines or diagonal lines. Please format your tables accordingly.} \\
+  
+  Bolding in tables are now clearly defined in the footnotes, the tables are formatted in latex, contain one row of column titles and are in black and white.  
+  
+  \item \textit{Please ensure that table titles are brief - they should not occupy more than one line in the final proof.} \\
+  
+  Done
+  
+  
   
 
 \end{enumerate}

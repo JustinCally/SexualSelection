@@ -151,14 +151,11 @@ We tested for publication bias via funnel plots, using Egger’s test to quantif
 
 ##Code availability
 
-The code used to perform this meta-analysis is available on Github (https://justincally.github.io/SexualSelection/). The repository (https://github.com/JustinCally/SexualSelection) provides complete data tables of effect sizes, variance and sample sizes needed to reproduce our results. \phantomsection   
+The code used to perform this meta-analysis is freely available on Github (https://justincally.github.io/SexualSelection/). Here the code is available through a neatly compiled html, with the R Markdown file found within the corresponding github repository:  (https://github.com/JustinCally/SexualSelection).  \phantomsection   
 
 ##Data availability
 
-All data are available on Github (https://github.com/JustinCally/SexualSelection).
-
-#Acknowledgements
-We are very grateful to Paco Garcia-Gonzalez for sharing a collection of literature that helped to guide our study, and to Tim Connallon for comments on the manuscript.
+All data are freely available on Github (https://github.com/JustinCally/SexualSelection). The repository provides a source data file that was used to create all results, tables and figures. \phantomsection   
 
 \newpage\phantomsection
 
@@ -167,13 +164,23 @@ We are very grateful to Paco Garcia-Gonzalez for sharing a collection of literat
 
 \newpage
 \phantomsection
+
+#Acknowledgements
+We are very grateful to Paco Garcia-Gonzalez for sharing a collection of literature that helped to guide our study, and to Tim Connallon for comments on the manuscript.  \phantomsection
+
+#Author contributions  
+All authors designed the study; JGC collected the data; JGC and LH conducted the meta-analyses; JGC wrote the first draft of the manuscript; and all authors contributed substantially to all further revisions.  \phantomsection
+
+#Competing interests  
+The authors declare no competing interests.
+
+\newpage
+\phantomsection
 \nolinenumbers
 
 #Tables and Figures
 
 
-
-Table 1: Results for the multilevel meta-analysis model testing the effects of sexual selection on fitness (measured by Hedges' _g_) in different environments and between sexes. Moderator variables whose 95% confidence intervals do not cross zero are shown in bold.
 
 ```{r, echo = F}
 model.complete2 <- readRDS('../data/model.complete2.rds')
@@ -202,16 +209,20 @@ table1 <- table1 %>%
     Parameters = cell_spec(Parameters, "latex", bold = ifelse(LCI*UCI > 0, T, F))
   )
 
-kable(table1, format = "latex", booktabs = T, digits = 2, escape = F) %>% 
-  kable_styling(latex_options = c("scale_down", "striped"), full_width = F) %>%
+kable(table1, format = "latex", booktabs = T, digits = 2, escape = F, 
+      caption = "Multilevel meta-analysis model results") %>% 
+  kable_styling(latex_options = c("striped", "hold_position"), full_width = F) %>%
   row_spec(0, bold = TRUE) %>%
   group_rows("REML Model", 1, 6) %>%
-  group_rows("Bayesian Model", 7, 12)
+  group_rows("Bayesian Model", 7, 12) %>% 
+  footnote(symbol_title = "", 
+           symbol = c("Moderator variables whose 95\\\\% confidence intervals do not cross zero are shown in bold.", 
+                       "Hedges' \\\\textit{g} is the response variable for this model"), 
+           threeparttable = T, 
+           escape = F)
 ```
  
-\vspace{0.75 cm}
-
-Table 2: Hypothesis tests using restricted maximum likelihood (REML) or Bayesian methods, illustrating how sex and environmental stress interact to modulate effect size. Tests whose 95% confidence intervals do not cross zero are shown in bold.
+\vspace{0.5 cm}
 
 ```{r, echo = F}
 options(knitr.kable.NA = ' ')
@@ -222,21 +233,27 @@ table2 <- read.csv('table2.csv') %>% rename('Statistical Approach' = Statistical
     `Statistical Approach` = cell_spec(`Statistical Approach`, "latex", bold = ifelse(LCI*UCI > 0, T, F))
   )
 
-kable(table2, format = "latex", booktabs = T, digits = 2, escape = F) %>% 
-  kable_styling(latex_options = c("scale_down"), full_width = F) %>%
+kable(table2, format = "latex", booktabs = T, digits = 2, escape = F, 
+      caption = "Hypothesis tests showing how sex and environmental stress interact to modulate effect size") %>% 
+  kable_styling(latex_options = c("hold_position"), full_width = F) %>%
   row_spec(0, bold = TRUE) %>%
-  collapse_rows(columns = 1:2, latex_hline = "major")
+  collapse_rows(columns = 1:2, latex_hline = "major") %>%
+  footnote(symbol_title = "", 
+         symbol = c("Moderator variables whose 95\\\\% confidence intervals do not cross zero are shown in bold.", 
+                     "Hedges' \\\\textit{g} is the response variable for this model"), 
+         threeparttable = T, 
+         escape = F)
 ```
 
 
 
 \newpage
 
-![The effect sizes used in this meta-analysis ($n$ = 459) were grouped into either direct, indirect or ambiguous measures of fitness. Overall, effect sizes were more often positive than negative. Predicted average values are presented as a diamond with 95 % CIs for each fitness-relationship category. The estimates presented here are from REML models with the grand mean across all effect sizes ($\beta$ = 0.25) shown as the blue dotted line. Predictions from both Bayesian and REML models can be found in Table S7).\label{forest_plot}](Figures/forest.plot.class.pdf)
+![\textbf{The effect of sexual selection on direct, indirect and ambiguous fitness components.} The effect sizes used in this meta-analysis ($n$ = 459) were grouped into either direct, indirect or ambiguous measures of fitness. Overall, effect sizes were more often positive than negative. Predicted average values are presented as a diamond with 95 % CIs for each fitness-relationship category. The estimates presented here are from REML models with the grand mean across all effect sizes ($\beta$ = 0.25) shown as the blue dotted line. Predictions from both Bayesian and REML models can be found in Table S7).\label{forest_plot}](Figures/forest.plot.class.pdf)
 
-![(a) Sexual selection tends to increase the population mean values of fitness traits, especially for female traits and for populations living under stressful conditions. (b) Under stressful conditions, sexual selection tends to reduce the phenotypic variance in fitness traits, especially for traits measured in females or mixed-sex individuals. The points with error bars show the mean effect sizes and their 95% CIs, determined from a meta-regression fit using restricted maximum likelihood (REML); the point sizes are proportional to the number of effect sizes (see Table S12 and S14). Results from Bayesian meta-regression are shown as posterior prediction density curves, with vertical lines indicating the median.\label{env_sex}](Figures/environment_variance_edit5.pdf)
+![\textbf{The roles of environmental stress and sex.} (a) Sexual selection tends to increase the population mean values of fitness traits, especially for female traits and for populations living under stressful conditions. (b) Under stressful conditions, sexual selection tends to reduce the phenotypic variance in fitness traits, especially for traits measured in females or mixed-sex individuals. The points with error bars show the mean effect sizes and their 95% CIs, determined from a meta-regression fit using restricted maximum likelihood (REML); the point sizes are proportional to the number of effect sizes (see Table S12 and S14). Results from Bayesian meta-regression are shown as posterior prediction density curves, with vertical lines indicating the median.\label{env_sex}](Figures/environment_variance_edit5.pdf)
 
-![Tests of publication bias are mixed and suggest publication bias may be present. (a) Inspection and statistical tests of the funnel plot reveal large amounts of heterogeneity in the dataset with asymmetry from increased low-powered, large effect studies. (b) No significant correlation exists between journal impact factor and effect size, (c) additionally there is no significant correlation between effect size and year of publication when testing for the time-lag bias. For (b) and (c) point size is proportional to the precision of the effect size (*i.e.* the inverse of its variance). For (a), the dashed red lines represent the 95 % CIs of the grand mean estimate for all effect sizes and the black dotted and dashed lines depict the 95 % and 99 % CIs for the dataset. The Grey envelopes in (b) and (c) represent the 95 % CI of the linear regression.\label{publication_bias}](Figures/publicationbias.pdf)
+![\textbf{Tests for publication bias in the dataset.} Tests of publication bias are mixed and suggest publication bias may be present. (a) Inspection and statistical tests of the funnel plot reveal large amounts of heterogeneity in the dataset with asymmetry from increased low-powered, large effect studies. (b) No significant correlation exists between journal impact factor and effect size, (c) additionally there is no significant correlation between effect size and year of publication when testing for the time-lag bias. For (b) and (c) point size is proportional to the precision of the effect size (*i.e.* the inverse of its variance). For (a), the dashed red lines represent the 95 % CIs of the grand mean estimate for all effect sizes and the black dotted and dashed lines depict the 95 % and 99 % CIs for the dataset. The Grey envelopes in (b) and (c) represent the 95 % CI of the linear regression.\label{publication_bias}](Figures/publicationbias.pdf)
 
-![Flow of inclusion and exclusion of studies identified during the literature search, presented as a PRISMA diagram with number of published papers in brackets.\label{prisma_flow}](Figures/PRISMA\ Chart.pdf)
+![\textbf{PRISMA diagram.} Flow of inclusion and exclusion of studies identified during the literature search, presented as a PRISMA diagram with number of published papers in brackets.\label{prisma_flow}](Figures/PRISMA\ Chart.pdf)
 
