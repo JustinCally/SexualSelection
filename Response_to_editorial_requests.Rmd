@@ -1,8 +1,8 @@
 ---
-title: 'Sexual selection improves population fitness: a systematic review and meta-analysis'
+title: 'Meta-analytic evidence that sexual selection improves population fitness'
 output:
   pdf_document: default
-subtitle: Response to Editorial Requests
+subtitle: Response to Editorial Requests and Reviewer 1
 bibliography: Manuscripts/Bibliography/Bibliography.bib
 header-includes: 
 - \usepackage{hyperref}\hypersetup{colorlinks=true, linkcolor=blue, filecolor=blue, urlcolor=blue} 
@@ -23,85 +23,139 @@ We are delighted to provide a revised manuscript for publication in \textit{Natu
   The main manuscript is provided in LaTeX format (.tex) and the Supplementary Information is now in pdf format. However, we retain the HTML formatting for the Supplementary Information hosted on \hyperlink{https://justincally.github.io/SexualSelection/}{Github}.   
 
   \item \textit{Please edit the title so that it is 15 words or fewer and does not include punctuation} \\
-  <!-- Sexual selection improves population fitness based on a systematic review and meta-analysis -->
   We have changed our title to: Meta-analytic evidence that sexual selection improves population fitness 
   
   \item \textit{The final paragraph of the Introduction should summarise the major results and conclusions of this manuscript, in the present tense.} \\
-  <!-- We had previously included this in an earlier draft and cut it. Can add it back  -->
+  We have now replaced our aims in the last paragraph of the last paragraph of the introduction with a summary of the major results and colnclusions of the study.  
   
   \item \textit{Please shorten all subheadings in the Results section to fewer than 60 characters including spaces.} \\
   Sexual selection is associated with higher mean values for most fitness components \textbf{to} Sexual selection improves average fitness for most traits. \\
   Sexual selection reduces phenotypic variance, for female traits in stressful environments \textbf{to} Effects of sexual selection on phenotypic variance
   
   \item \textit{Please do not use italics or bold font to convey emphasis (in both the main text and the display items).} \\
-  Is this the latin? (e.g. /Prima facie / Tabbles have bold, figures have bold...)  
+  We only use italics for latin words or abbreviations (\textit{e.g., i.e., Prima facie}) and not for emphasis.  
   
   \item \textit{Please avoid using speech marks around words or phrases. In most cases they are unnecessary.} \\
-  Speech marks around the following words/phrases have now been removed: population fitness (l.21), purged (l.175), softer (l.199), harder (l.199), 'good genes' (l.243), attractive (l.244), unambiguous (l.359).  
-  
-  Single quotes for technical terms
+  Speech marks around the following words/phrases have now been removed: purged (l.175), softer (l.199), harder (l.199),  attractive (l.244), unambiguous (l.359).  \\
+  However, we have retained single quotation marks for the following terms as they recall technical terms: 'population fitness' (l.21), 'good genes' (l.243).  
   
   \item \textit{Please make sure that mathematical terms throughout your manuscript and Supplementary Information (including in figures, figure axes, and legends) conform strictly to the guidelines} \\
-  Not sure where we went wrong here?
+  The mathematical and greek letter symbols (\textit{e.g.} $\beta$) are formatted as mathematical symbols in the submitted latex manuscript.  
   
   \item \textit{Wherever p-values are stated in the text and figure legends, please also state the name of the statistical test.} \\
-  A couple of linear models in the publication bias section have p values without stating it is a linear regression.  Otherwise we dont have that many p values and it is described in the table as from a multilevel meta-analysis model.  
+  The p-values presented in the publication bias section now clearly state that they were obtained from a linear regression model. The p-values in Table 1 are clearly stated to be coming from a multilevel meta-analysis model with a corresponding z-value.    
   
-  \item \textit{Please provide a full Methods section in the main manuscript file. Please note that there are no word limits to the Methods section. The Methods section must include subheadings of fewer than 60 characters including spaces. There is no word limit for the Methods section, so we recommend against splitting the methods description between the main text and Supplementary Information.} 
-  
-  All headings are under 60 characters in length, we have some additional Supp Methods in the Supp info but it is more or an appendage to the Supp tables and search terms (which would not nicely format in the main text)
+  \item \textit{Please provide a full Methods section in the main manuscript file. Please note that there are no word limits to the Methods section. The Methods section must include subheadings of fewer than 60 characters including spaces. There is no word limit for the Methods section, so we recommend against splitting the methods description between the main text and Supplementary Information.} \\
+  All headings are under 60 characters in length, we have some additional Supplementary Methods in the Supplementary Information but it is an appendage to the Supplementary Tables 1-3 and search terms (which would not nicely format in the main text).  
   
   \item \textit{Please rename the Methods section as "Methods".} \\
-  
   Done 
   
   \item \textit{All Nature Communications manuscripts must include a section titled "Data Availability" as a separate section after the Methods section and before the References.} \\
-  
-  We have now ammended this section of the manuscript by seperating data availability and code availability as well as providing the relevent links to the data sources hosted on github.  
+  We have now ammended this section of the manuscript by seperating data availability and code availability as well as providing the relevent links to the data sources hosted on Github.  
   
   \item \textit{We strongly encourage authors to deposit all new data associated with the paper in a persistent repository where they can be freely and enduringly accessed.} \\
-  
-  We have chosen to host our data on a github repository alongside all our code and a neatly formatted html with supplementary information in an effort to maximise transparency of our analysis as well as allowing for the data and code to be easily reproduced and built upon by future studies.  
+  We have chosen to host our data on a Github repository alongside all our code and a neatly formatted html with supplementary information in an effort to maximise transparency of our analysis as well as allowing for the data and code to be easily reproduced and built upon by future studies.  
   
   \item \textit{For all studies developing new software or using custom code in the generation or processing of datasets, a statement must be included in the Methods section, under the subheading "Code Availability", indicating whether and how the code can be accessed, including any restrictions to access. This section should also include information on the versions of any software used, if relevant, and any specific variables or parameters used to generate, test, or process the current dataset.} \\
-  
-  Done. The Supplementary information has a section at the end with `R Session Information`, which provides details of the attached packages and parameters of the operating system.  
+  Done. The Supplementary Information has a section at the end with `R Session Information`, which provides details of the attached packages and parameters of the operating system.  
   
   \item \textit{Please add a reference to the source data file in the "Data Availability" section} \\
-  
-  Done. The repository now also contains a more extensive 'READ ME', with a description of the repository organisation.  
-  
+  Done. The github repository now also contains a more extensive 'READ ME', with a description of the repository organisation.  
   \item \textit{End notes} \\
-  
   Acknowledgements, Author Contributions and Competing Interests are now found after the references.  
   
   \item \textit{Please update any preprints in the reference list with details of the published paper, if possible.} \\
-  
   We have changed one reference that was a preprint and is now published (Li and Holman 2018). 
   
   \item \textit{Please check whether your manuscript or Supplementary Information contain third-party images, such as figures from the literature, stock photos, clip art or commercial satellite and map data.} \\
-  
   No third-party images are included in the display items.  
   
   \item \textit{Please include a brief title for all figure legends that summarises the whole figure and does not refer to specific panels and Please ensure that figure legend titles are brief - they should not occupy more than one line in the final proof.} \\
-  
   Figure titles are now included and illustrated in bold at the start of the figure legend. They do not occupy more than one line.  
   
   \item \textit{Please include figure legends of up to 350 words, referring to all panels within the figure.} \\
-  
   No figure legends are above 350 words and in all cases all panels are referred to in the legend.  
   
   \item \textit{Data in tables must be free from bold/italic formatting unless this has been clearly defined in the footnote. Tables need to be black and white, fit onto a single A4 portrait page and can contain only one row of column titles. Finally, we are unable to merge cells or include vertical dividing lines or diagonal lines. Please format your tables accordingly.} \\
-  
   Bolding in tables are now clearly defined in the footnotes, the tables are formatted in latex, contain one row of column titles and are in black and white.  
   
   \item \textit{Please ensure that table titles are brief - they should not occupy more than one line in the final proof.} \\
+  Done  
   
-  Done
+  \item \textit{Please define any new abbreviations, symbols or colours present in your figures in the associated legends. Please do not use symbols in your legend, instead please write out the symbols in words (blue circles, red dashed line, etc.)} \\
+  We include text descriptions in our figure legends. With figure 2 we have used an in-figure guide to allow the reader to easily distinguish the statistical approach used and the sex of the group.  
   
+  \item \textit{In each figure and supplementary figure where error bars are used, they must be defined. One statement at the end of each figure is sufficient if the error bars are equivalent throughout the figure.} \\
+  Error bars are described in the figure legends for all appropriate figures (1,2,3).  
   
+  \item \textit{The only section headings permitted in the Supplementary Information are Supplementary Figures, Supplementary Tables, Supplementary Methods (although this is discouraged), Supplementary Notes, Supplementary Discussion, Supplementary References. All other section headings and numbering should be removed or relabelled.} \\
+  We have a section with Supplementary Methods that details the search terms and inclusion/exclusion process. Because many of the Supplementary Tables are in reference to Supplementary Figures (i.e. contains the numerical values shown in the plot) we did not split Supplementary Figures and Supplementary Tables.  
   
+  \item \textit{In the Supplementary Information file and the main manuscript text, supplementary items must be labelled and cited using only the following formats: Supplementary Figure 1, Supplementary Table 1, Supplementary Methods, Supplementary Note 1, Supplementary Discussion, and Supplementary References. Please note the use of "Supplementary" and that we do not use the "S" prefix.}\\
+  This has now been changed. 
+  
+  \item \textit{Please replace general citations to the Supplementary Information (e.g. "see Supplementary Information") with specific citations (e.g. "See Supplementary Figure 1", etc.).}
+  We have now updated the references to the Supplementary Information with specific tables/figures. Additionally, as per Prof. Jacek Radwan's comment "I hope supplementary figures will be linked to the main text, as it is somewhat difficult to find them by the number in the supplement deposited in a repository" we have created hyperlinks to the section of the Supplementary Information (the HTML version hosted on github) with the relevent table/figure.
+  
+  \item \textit{Supplementary References should appear at the end of the Supplementary Information file, and should be self-contained and numbered from 1. References mentioned in both the main text and the Supplementary Information should be part of both reference lists so that the Supplementary Information does not refer to the reference list in the main paper and vice versa.}\\
+  The Supplementary References are formatted in the style of Nature Communications (numbered) and are seperate from the main manuscript.  
+  
+  \item\textit{Please supply Supplementary Software as a ZIP file and provide a legend for it in your cover letter (not in the Supplementary Information file).}\\
+  Not applicable for our manuscript.
+  
+  \item \textit{Within the Source Data file, each figure or table (in the main manuscript and in the Supplementary Information) containing relevant data should be represented by a single sheet in an Excel document, or a single .txt file or other file type in a zipped folder. Blot and gel images should be pasted in and labelled with the relevant panel and identifying information such as the antibody used.}\\
+  Source data are formatted as a single csv file. Figures 1-3 now provide the url of the repository with the source data.  
+  
+  \item \textit{Nature Communications uses a transparent peer review system, where for manuscripts submitted from January 2016 we are publishing the reviewer comments to the authors and author rebuttal letters of our research articles online as a supplementary peer review file. Please indicate in your cover letter when submitting the final version of your manuscript whether you wish to opt out of this scheme or not.}\\
+  We are happy for peer reviews to be published.
+  
+  \item \textit{An updated editorial policy checklist that verifies compliance with all required editorial policies must be completed and uploaded with the revised manuscript. All points on the policy checklist must be addressed; if needed, please revise your manuscript in response to these points. Please note that this form is a dynamic "smart pdf" and must therefore be downloaded and completed in Adobe Reader, instead of opening it in a web browser. Editorial policy checklist: https://www.nature.com/authors/policies/Policy.pdf} \\
+  We provide an updated copy of this checklist.
 
+  \item \textit{An updated reporting summary must be completed and uploaded with the revised manuscript. All points on the reporting summary must be addressed; if needed, please revise your manuscript in response to these points. Please note that this form is a dynamic ""smart pdf"" and must therefore be downloaded and completed in Adobe Reader, instead of opening it in a web browser. Reporting summary: https://www.nature.com/authors/policies/ReportingSummary.pdf} \\
+  We provide an updated copy of this reporting summary.
+  
+  \item \textit{Your paper will be accompanied by a two-sentence Editor's summary, of between 250-300 characters including spaces, when it is published on our homepage. Could you please approve the draft summary below or provide us with a suitably edited version. \\"Sexual selection has the potential to either increase or decrease absolute fitness. Here, Cally et al. perform a meta-analysis of 65 experimental evolution studies and find that sexual selection on males tends to increase fitness, especially in females and under stressful conditions."} \\
+We wish to make a small change to the last sentence of the above summary:  
+
+"Sexual selection has the potential to either increase or decrease absolute fitness. Here, Cally et al. perform a meta-analysis of 65 experimental evolution studies and find that sexual selection on males tends to increase fitness, especially in females evolving under stressful conditions."
+  
+  \item \textit{As part of our efforts to communicate our content to a wider audience, we endeavour to highlight papers published in Nature Communications on the journal’s Twitter account (@NatureComms). If you would like us to mention authors, institutions or lab groups in these tweets, please provide the relevant twitter handles in your cover letter upon resubmission.}\\
+  Luke and my handles are now included in the cover letter.
+  
+  \item \textit{If you opted into the journal hosting details of a preprint version of your manuscript via a link on our dedicated website (https://nature-research-under-consideration.nature.com), it will remain on this site while you are revising your manuscript, as we consider the file to remain active. Should you wish to remove these details, please email naturecommunications@nature.com indicating your manuscript number and the link on our website that was previously sent to you. Please see our pre-publicity policy at http://www.nature.com/authors/policies/confidentiality.html For more information, please refer to our FAQ page at https://nature-research-under-consideration.nature.com/posts/19641-frequently-asked-questions} \\
+  Not applicable to our manuscript.
+  
 \end{enumerate}
 
 ## Response to Prof. Jacek Radwan
+
+\begin{enumerate}
+  \item \textit{The authors made a good effort to address my concerns. In particular, they now report a separate analysis addressing the effect of sexual selection manipulation on traits with direct effect on population fitness, which is the most relevant analysis for the question being asked. This effect has proved ambiguous (significant with REML, but with 95\%Cis overlapping zero with Bayesian analysis), which, coupled with some evidence for publication bias (lines 147-151) , makes the main conclusion of positive effect of selection on population fitness rather tentative. This interpretational uncertainty, however, is not properly reflected in the revised manuscript, eg. in the abstract (l. 12-13 ) and discussion (172-175; 249-251). Furthermore, recommendations for conservation biology seem premature in this context.}\\
+  We have modified the title and abstract of the paper, and made it clear which conclusions are supported unambiguously and which are more tentative. For example…. [provide a quote or two].
+
+  \item \textit{Sorry for not being clear with my point on random slopes, I meant the first option the authors identified, but (as I already indicated in my original review) I appreciate that dataset at hand may make this difficult. I’m OK with the way this comment was taken into account.}\\
+  We are glad that the reviewer found the modifications we made satisfactory.
+
+  \item \textit{I appreciate the added text explaining that stronger response in females is counterintuitive (l. 195-222). However, it is still not clear what the authors mean to say about the nature of selection on females. I can see two options (which the authors also identify in their response to my question) (i) stronger correlated response in females to selection on males, compared to response in males themselves and (ii) direct effect of sexual selection manipulation on female fitness, e.g. due to increased male harassment. These two mechanisms should be clearly separated and discussed, they can have different consequences for interpretations of the results, but also on recommendations about allowing for “good genes” sexual selection in endangered species (eg. line 243).}\\
+  We agree that this section of the discussion can be clearer and have modified the two paragraphs in question.
+
+The section in questions rests upon the fundamental premise that the response to selection depends on A) genetic variance, and B) the strength of selection. This fact is captured in the Breeder’s equation, $R = h^2s$, where $R$ is the response to selection, $h^2$ is the narrow-sense heritability of the trait, and s is the selection differential. Because females responded more strongly than males did (bigger $R$ for females), our argument is that $h^2$ and/or $s$ must be bigger for females. We then list a number of mechanisms that might make $h^2$ or $s$ bigger for females.
+
+Here are the revised paragraphs:
+
+\subsection {Other Comments}
+
+  \item \textit{l. 21: I wonder if defining population fitness as an average (presumably in both sexes) makes sense? As the authors state later in abstract, what really matters is fitness of demographically-limiting sex (and the traits which affect the demography).}\\
+  We have not made a change here, for two reasons.
+
+Firstly, it usually makes no difference if one thinks of population fitness as an average across all the females, or an average across both sexes. This is because the average fitness of males is always equal to the average fitness of females, assuming the population has obligate sexual reproduction and a 50:50 primary sex ratio (as most species in our meta-analysis do), because every offspring has one genetic mother and one genetic father. For example, if the average fitness across all the females is 1.1, the average fitness of all the males must be 1.1 as well, so one gets the same answer when averaging over females only, or the whole population.
+
+Secondly, ‘population fitness’ has a prominent technical definition that has been used by eminent figures in population geneticists (e.g. Wright, Fisher and Kimura), i.e. the average across the whole population. However, many of these classic models implicitly ignored males (e.g. by assuming isogamous sexual reproduction) for reasons of mathematical tractability. Later ecological and evolutionary models have incorporated the sexes explicitly, and unsurprisingly found that adaptation in males and females has different effects on the growth rate of the population (confusingly, the growth rate of the population is also called ‘population fitness’ by many ecologists). We believe that a clear, inclusive, and universally satisfying definition of population fitness is currently missing, but it is beyond the scope of this paper – instead, we use the standard definition.
+
+\end{enumerate}
+
+
+
+

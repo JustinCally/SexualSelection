@@ -1,7 +1,7 @@
 ---
-title: 'Sexual selection improves population fitness: a systematic review and meta-analysis'
+title: 'Meta-analytic evidence that sexual selection improves population fitness'
 author: "Justin G. Cally^1^, Devi Stuart-Fox^1^ and Luke Holman^1^ <br></br> <br></br> ^1^The University of Melbourne"
-subtitle: Supplementary Material
+subtitle: Supplementary Information
 bibliography: bibliography_meta_analysis.bib
 output:
   html_document:
@@ -118,10 +118,10 @@ After removing duplicates papers recovered from both _Web of Science_ and _Scopu
   + **(3: Intervention and Control)** The study experimentally manipulated the strength of sexual selection for at least one generation (e.g. via enforced monogamy or an altered sex ratio)
   + **(4: Outcomes)** The study measured a trait that we judged to be a potential correlate of population fitness. 
   
-Criterion 4 is somewhat subjective, because there is rarely enough data justify the assumption that a particular trait is (or is not) correlated with population fitness. We therefore relied on our best judgement when deciding which studies to exclude (see **Table S1**). The inclusion/exlusion critera as applied to each study are detailed in **Table S2**.
+Criterion 4 is somewhat subjective, because there is rarely enough data justify the assumption that a particular trait is (or is not) correlated with population fitness. We therefore relied on our best judgement when deciding which studies to exclude (see **Supplementary Table 1**). The inclusion/exlusion critera as applied to each study are detailed in **Supplementary Table 2**.
 
 
-**Table S1:** We classified each of the twenty fitness outcomes into three broad groups -- direct, indirect and ambiguous -- based on the established link with population fitness, the directionality of the measure. Here we detailed how these outcomes were measured in the primary studies.
+**Supplementary Table 1:** We classified each of the twenty fitness outcomes into three broad groups -- direct, indirect and ambiguous -- based on the established link with population fitness, the directionality of the measure. Here we detailed how these outcomes were measured in the primary studies.
 
 ```{r, warning=FALSE}
 read.csv('data/outcome.descriptions.csv', fileEncoding="UTF-8") %>%
@@ -130,7 +130,7 @@ read.csv('data/outcome.descriptions.csv', fileEncoding="UTF-8") %>%
 ```
 <br></br>
 
-#### References for Table S1
+#### References for Supplementary Table 1
 ```{r, warning=FALSE}
 read.csv('data/references.tableS1.csv', fileEncoding="UTF-8") %>%
   kable("html") %>% kable_styling() %>%
@@ -139,7 +139,7 @@ read.csv('data/references.tableS1.csv', fileEncoding="UTF-8") %>%
 <br></br>
 
 
-**Table S2:** A study was deemed eligible for inclusion in the meta-analysis if it met all four criteria discussed above (referred to by their numbers, 1-4, in this table). We went through these four criteria in a step-wise fashion, for each of the 130 studies for which we read the full text, and noted the first criterion that was failed (if any). The table provides notes on our inclusion/exclusion decisions.
+**Supplementary Table 2:** A study was deemed eligible for inclusion in the meta-analysis if it met all four criteria discussed above (referred to by their numbers, 1-4, in this table). We went through these four criteria in a step-wise fashion, for each of the 130 studies for which we read the full text, and noted the first criterion that was failed (if any). The table provides notes on our inclusion/exclusion decisions.
 
 ```{r}
 read.csv('data/Eligibility Workbook.csv', fileEncoding="UTF-8") %>%
@@ -159,7 +159,7 @@ The rules utilised during the data extraction and effect size calculation were a
 
 3. If means were not reported then we extracted a summary statistic or proportion value, which we could later convert to Hedges g' using the _compute.es_ package [@compute_es]. Summary statistics included _F_, _z_, _t_ and _chi^2^_. These conversions still required providing sample sizes for each treatment so these needed to be extractable from the study. Some summary statistics were obtained from generalized linear model summary tabels, others from straight forward ANOVAs and then some from more complex analysis such as proportional hazards statistical tests. 
 
-4. We also collected various covariates for some of the studies (**Table S3**), which are discussed later.
+4. We also collected various covariates for some of the studies (**see source data**), which are discussed later.
 
 ______________
 
@@ -167,7 +167,7 @@ ______________
 
 ### Table of Effect Sizes
 
-**Table S3:** Table of effect sizes included in our meta-analysis. See the text following the table for an explanation of each column.
+**Source Data:** Table of effect sizes included in our meta-analysis. See the text following the table for an explanation of each column.
  <br/><br/> 
 ```{r}
 # Load the data and format the variables
@@ -208,9 +208,9 @@ kable(full_dataset, "html") %>%
 
 **n**: Pooled sample size of the paired treatments.
 
-**Outcome**: The fitness related outcome that was measured, e.g. fecundity, survival, or mating success (see Table S1 for all 20 categories). We applied our own classifications rather than relying on those provided by the authors, because different papers sometimes used different names for the same trait. 
+**Outcome**: The fitness related outcome that was measured, e.g. fecundity, survival, or mating success (see Supplementary Table 1 for all 20 categories). We applied our own classifications rather than relying on those provided by the authors, because different papers sometimes used different names for the same trait. 
 
-**Outcome Class**: To help guide analysis the outcomes were classed into three categories; ambiguous, indirect and direct (see Table S1).
+**Outcome Class**: To help guide analysis the outcomes were classed into three categories; ambiguous, indirect and direct (see Supplementary Table 1).
 
 **Sex**: A moderator variable with three levels, describing whether the effect size in question comes from a measurement of males (M), females (F), or individuals of both sexes (B).
 
@@ -234,7 +234,7 @@ _________
 
 Here we present the number of effect sizes, publications, blind experiments, effect sizes in stresful conditions, male, female and both measures and different species used. 
 
-**Table S4:** Table of effect sizes included in our meta-analysis. See the text following the data table for an explanation of each column.
+**Supplementary Table 3:** Table of effect sizes included in our meta-analysis. See the text following the data table for an explanation of each column.
 ```{r message=FALSE, warning=FALSE}
 n.blind.ones <- (sum(full_dataset$Blind == "Blind"))
 full_dataset %>% 
@@ -268,7 +268,7 @@ full_dataset %>%
  <br/><br/> 
  
  
-**Table S5:** Table of fitness outcomes included in our meta-analysis by sex.
+**Supplementary Table 4:** Table of fitness outcomes included in our meta-analysis by sex.
 ```{r}
 Outcome_and_sex <- as.data.frame.matrix(table(full_dataset$Outcome, full_dataset$Sex))
 colnames(Outcome_and_sex) <- cbind("Both", "Female", "Male")
@@ -318,7 +318,7 @@ forest.model <- rma.mv(g, var.g,
 #### Inspect the effect sizes esimates from these two models
 
 
-**Table S6**
+**Supplementary Table 5:**
 These estimates are presented in the text of the Results section. The test statistic is either the p-value (REML) or Bayes factor (BF) comparing the effect size to zero (Bayesian).
 ```{r, warning = F}
 pander(data.frame(
@@ -331,7 +331,7 @@ pander(data.frame(
   
 ### Effect of sexual selection on direct, indirect and ambiguous measures of fitness 
 
-**Table S7** The predicted effect size for each of the three fitness trait classes (Ambiguous, Indirect and Direct) that are presented in Figure 1 in the manuscript. This table presents both Bayesian and REML predictions with some discrepencies in the estimated error margins. Figure 1 within the manuscript uses REML predictions.
+**Supplementary Table 6:** The predicted effect size for each of the three fitness trait classes (Ambiguous, Indirect and Direct) that are presented in Figure 1 in the manuscript. This table presents both Bayesian and REML predictions with some discrepencies in the estimated error margins. Figure 1 within the manuscript uses REML predictions.
 
 ```{r, warning = FALSE, message=FALSE, error = FALSE}
 if(!file.exists("data/grand.mean.class.bayes.rds")){
@@ -448,7 +448,7 @@ forest.plot.class <- predictions.class %>%
 forest.plot.class
 ```
 
-**Figure 1** The effect sizes used in this meta-analysis ($n$ = 459) were grouped into either direct, indirect or ambiguous measures of fitness. Overall, effect sizes were more often positive than negative. Predicted average values are presented as a diamond for each fitness-relationship category. The estimates presented here are from REML models with the grand mean across all effect sizes ($\beta$ = 0.25) shown as the blue dotted line. Predictions from both Bayesian and REML models can be found in Table S7.
+**Figure 1:** The effect sizes used in this meta-analysis ($n$ = 459) were grouped into either direct, indirect or ambiguous measures of fitness. Overall, effect sizes were more often positive than negative. Predicted average values are presented as a diamond for each fitness-relationship category. The estimates presented here are from REML models with the grand mean across all effect sizes ($\beta$ = 0.25) shown as the blue dotted line. Predictions from both Bayesian and REML models can be found in Supplementary Table 6.
 
 ____________________
 
@@ -531,7 +531,7 @@ knitr::include_graphics(path = "figures/ForestPlot_large.png")
 
 <br></br>
 
-**Figure S1:** Forest plot of raw effect sizes and their 95% confidence intervals, grouped according to measured fitness components and the sex of the individuals whose fitness trait was measured (male, female, or both sexes mixed together). Rows with multiple data points denote studies that provided multiple effect sizes. Positive values indicate fitness benefits of sexual selection.  
+**Supplementary Figure 1:** Forest plot of raw effect sizes and their 95% confidence intervals, grouped according to measured fitness components and the sex of the individuals whose fitness trait was measured (male, female, or both sexes mixed together). Rows with multiple data points denote studies that provided multiple effect sizes. Positive values indicate fitness benefits of sexual selection.  
 
 Instead of running individual models for each fitness component we can run a model with the fitness components as predictors. In this case we maintain all of our fitness components and include `study.id` as a group level effect (to account for within study correlations in effect size). Using the `brms` package we can run a Bayesian model and generate fitted values for each fitness component.
 
@@ -553,7 +553,7 @@ if(!file.exists("data/components.brms.rds")){
 components.brms <- readRDS(file = "data/components.brms.rds") 
 ```
   
-**Table S8** Summary of model predictions for 22 fitness components. In Figure S1 these values are presented as a text overlay using the Bayesian values. Additionally, Bayes Factors (BF) are presented as the likelihood ratio that the effect size is greater than 0. Where values greater than 1 correspond to higher likelihood of the effect size being positive and values less than 1 suggest that the effect size is more likely to be negative. The right side of the table provides the REML estimates with SE and 95 % CIs.
+**Supplementary Table 7:** Summary of model predictions for 22 fitness components. In Supplementary Figure 1 these values are presented as a text overlay using the Bayesian values. Additionally, Bayes Factors (BF) are presented as the likelihood ratio that the effect size is greater than 0. Where values greater than 1 correspond to higher likelihood of the effect size being positive and values less than 1 suggest that the effect size is more likely to be negative. The right side of the table provides the REML estimates with SE and 95 % CIs.
 
 ```{r, warning = FALSE}
 # Define new data for prediction
@@ -639,9 +639,11 @@ predictions.outcomes <- format(predictions.outcomes, digits = 2)
 fitness.component.predictions <- fitness.component.predictions %>% cbind.data.frame(as.data.frame(BFs) %>% t() %>% as.data.frame() %>% `colnames<-`("BF")) %>% `row.names<-`(NULL) %>% format(digits = 2)
 
 left_join(fitness.component.predictions, predictions.outcomes, by = "Fitness Component") %>% pander(split.table = Inf, digits = 2)
+
+# saveRDS(left_join(fitness.component.predictions, predictions.outcomes, by = "Fitness Component"), "PDF_RDS_files/ST7.rds")
 ```
 
-**Table S9** In some instances it may be beneficial to the reader to obtain average effect sizes of each fitness trait **entirely independently** of other traits. For this reason we present a summary of independent model estimates for 16 fitness components with a sample size greater than 3 effect sizes (n>3). Unlike above where estimates were generated based on predictions from a single model, here we run individual meta-analyses for each fitness related trait. Independent models generally reduce the power and significance of some of the estimates with 'Extinction rate' and 'Ejaculate quality and production' the only two traits with p-values < 0.05.  
+**Supplementary Table 8:** In some instances it may be beneficial to the reader to obtain average effect sizes of each fitness trait **entirely independently** of other traits. For this reason we present a summary of independent model estimates for 16 fitness components with a sample size greater than 3 effect sizes (n>3). Unlike above where estimates were generated based on predictions from a single model, here we run individual meta-analyses for each fitness related trait. Independent models generally reduce the power and significance of some of the estimates with 'Extinction rate' and 'Ejaculate quality and production' the only two traits with p-values < 0.05.  
 
 ```{r, warning = FALSE}
 #Excluding those with 3 or less effect sizes.
@@ -856,6 +858,8 @@ outcome.frame$I2 <- as.numeric(outcome.frame$I2)
 outcome.frame$Class <- c("Ambiguous", "Ambiguous", "Ambiguous", "Ambiguous", "Ambiguous", "Ambiguous", "Ambiguous", "Indirect", "Indirect", "Indirect", "Indirect", "Indirect", "Indirect", "Indirect", "Direct", "Direct", "Direct", "Direct")
 
 outcome.frame %>% rename(beta = b, n = k) %>% filter(Outcome != "Behavioural Plasticity" & Outcome != "Pesticide Resistance" & Outcome != "Strength") %>% pander(split.cell = 40, split.table = Inf)
+
+# saveRDS(outcome.frame %>% rename(beta = b, n = k) %>% filter(Outcome != "Behavioural Plasticity" & Outcome != "Pesticide Resistance" & Outcome != "Strength"), "PDF_RDS_files/ST8.rds")
 ```
 
 
@@ -895,7 +899,7 @@ brms.preliminary <- readRDS(file = "data/brms.preliminary.rds") # Avoid re-runni
 ```
 <br></br>
 
-**Table S10:** Bayesian model results for a preliminary model that explores many covariates collected in the dataset.  
+**Supplementary Table 9:** Bayesian model results for a preliminary model that explores many covariates collected in the dataset.  
 
 ```{r}
 #Plot model results
@@ -933,7 +937,6 @@ ____________________
 
 The models and plots above all use the full dataset (called `full_dataset` in the R code). However, some of the variables included in that dataset are not clearly related to population fitness (these were scored as "Ambiguous" in the "Outcome.Class" column), or it was unclear whether the environmental conditions could be termed "Stressful" or "Benign". To check whether our findings are robust to the inclusion of the ambiguous results, and to properly evaluate the effects of environmental stress, we next restricted the dataset to exclude these unclear cases (called `strict_dataset` in the R code). We also focus on the model containing the fixed effects Sex, Environment, Taxon and the interaction between sex and environment, as these are key to our research question. 
 
-<!-- Note to Justin: here, I changed to just the 'direct' measures, and added the "Enforced Monogamy" predictor. You'll need to add the Bayesian equivalent, and alter the code for the figure etc. I think it's better this way, and the results don't appear to change in any major way -->
 
 ```{r, message=FALSE, error = FALSE, warning=FALSE}
 strict_dataset <- full_dataset %>%
@@ -1053,23 +1056,27 @@ Taxon.metaanlysis <- predictions.complete %>%
         axis.title.y = element_text(size = 14),
         plot.title = element_text(size = 14))
 
-#ggsave(plot = Taxon.metaanlysis, filename = "figures/Taxon_metaanalysis_plot.svg", height = 8, width = 8)
+#ggsave(plot = Taxon.metaanlysis, filename = "PDF_RDS_files/SF2.pdf", height = 8, width = 8)
 Taxon.metaanlysis
+
+#saveRDS(Taxon.metaanlysis, "PDF_RDS_files/SF2.rds")
 ```
 <br></br>
-**Figure S2:** The predictions from this model indicate some heterogeneity between taxon. However, the most apparent difference between taxa is that confidence bands increase for taxa with low sample size. As previously shown, the beetle and fly taxa are the most heavily sampled and in the above figure have the narrowest confidence bands. Importantly, the overall direction of effect does not change between taxon, although guppies and mice show near zero effect sizes. Here we see that under stressed environments, females from all taxa appear to have greater fitness increase than males or 'both'. 
+**Supplementary Figure 2:** The predictions from this model indicate some heterogeneity between taxon. However, the most apparent difference between taxa is that confidence bands increase for taxa with low sample size. As previously shown, the beetle and fly taxa are the most heavily sampled and in the above figure have the narrowest confidence bands. Importantly, the overall direction of effect does not change between taxon, although guppies and mice show near zero effect sizes. Here we see that under stressed environments, females from all taxa appear to have greater fitness increase than males or 'both'. 
 
 
-**Table S11** The predictions for the above figure looking at the effect of sexual selection amongst taxa uses the following dataframe. 
+**Supplementary Table 10:** The predictions for the above figure looking at the effect of sexual selection amongst taxa uses the following dataframe. 
 
 ```{r}
 colnames(predictions.complete) <- c("Sex", "Environment", "Taxon", "Prediction", "SE", "CI.lb", "CI.ub", "n")
 predictions.complete <- format(predictions.complete, digits = 2)
 predictions.complete[[9]] <- NULL
 predictions.complete %>% pander()
+
+#saveRDS(predictions.complete, "PDF_RDS_files/ST10.rds")
 ```
 
-Given that none of the levels of `Taxon` have a particularly strong impact on effect size, and many categories are incompletely sampled with regards to Sex and Environment (Table S11), we elected to treat `Taxon` as a random/group level effect in all subsequent models.
+Given that none of the levels of `Taxon` have a particularly strong impact on effect size, and many categories are incompletely sampled with regards to Sex and Environment (Supplementary Table 10), we elected to treat `Taxon` as a random/group level effect in all subsequent models.
 
 ____________
 
@@ -1091,7 +1098,7 @@ summary(model.complete2, digits = 2)
 
 Next, we conducted planned contrasts on `model.complete2` to investigate the difference in effect size between groups, using the anova method from `metafor`.
 
-**Table S12** Using the ``anova.rma`` function we can conduct hypothesis tests between two categorical groups in the model. Here we conduct 5 tests comparing the relative effect of sexual selection between the sexes, and in different environments. 
+**Supplementary Table 11:** Using the ``anova.rma`` function we can conduct hypothesis tests between two categorical groups in the model. Here we conduct 5 tests comparing the relative effect of sexual selection between the sexes, and in different environments. 
 
 ```{r}
 #anova where you specify the values based on the list of moderators
@@ -1124,6 +1131,8 @@ colnames(anova.frame)[colnames(anova.frame)=="star"] <- " "
 anova.frame$pval <- NULL
 rownames(anova.frame) <- c("M vs F, Benign", "M vs F, Stressful", "Benign vs Stressful, Female", "Benign vs Stressful, Male", "Benign vs Stressful, Both")
 anova.frame %>% pander(split.table = Inf)
+
+#saveRDS(anova.frame, "PDF_RDS_files/ST11.rds")
 ```
 <br></br>
 
@@ -1148,7 +1157,7 @@ brms.complete2 <- readRDS(file = "data/brms.complete2.rds")
 ```
 <br></br>
 
-**Table S13** Model estimate summary table for the Bayesian model investigating the effect of environment and sex (alongside sexual selection) on fitness. 
+**Supplementary Table 12:** Model estimate summary table for the Bayesian model investigating the effect of environment and sex (alongside sexual selection) on fitness. 
 ```{r}
 # lternatively you can obtain posterior samples manually.
 post <- (posterior_samples(brms.complete2, 
@@ -1176,7 +1185,8 @@ make_text_summary(brms.complete2) %>% add_significance_stars() %>% tibble::rowna
 <br></br>
 
 
-**Table S14** Hypothesis tests for the Bayesian model are similar to the REML model (Table S9), with slight differences to CIs.
+**Supplementary Table 13:** Hypothesis tests for the Bayesian model are similar to the REML model (Supplementary Table 8), with slight differences to CIs.
+
 ```{r}
 #Obtain hypothesis estimates
 brms.hypothesis <- hypothesis(brms.complete2, c("0 = SexF",
@@ -1286,7 +1296,8 @@ both.plots
 **Figure 2a:** Sexual selection generally increases population fitness, especially for females under stressful conditions. The benefits of sexual selection on fitness for females under stressful conditions are small-medium according to Cohen's interperetation of effect sizes. Circle size is proportional to sample size (shown below). The REML predictions are shown as circles with error bars and the Bayesian predictions as density ridges. This figure can also be found in the main manuscript. 
 
 
-**Table S15** The REML predictions in the plot above use the following dataframe
+**Supplementary Table 14:** The REML predictions in the plot above use the following dataframe
+
 ```{r}
 predictions.complete2 <- format(predictions.complete2, digits = 2)
 predictions.complete2$Prediction = as.numeric(predictions.complete2$Prediction)
@@ -1295,12 +1306,169 @@ predictions.complete2$CI.ub = as.numeric(predictions.complete2$CI.ub)
 predictions.complete2$n = as.numeric(predictions.complete2$n)
 
 predictions.complete2 %>% pander()
+
+#saveRDS(predictions.complete2, "PDF_RDS_files/ST14.rds")
 ```
 
+##Effects of environment and sex on direct fitness components  
+
+```{r, warning=FALSE, message=FALSE, error = FALSE, fig.align='center', fig.width = 10, fig.height=6}
+model.direct.only <- rma.mv(g, V = var.g, 
+                          mods = ~ 1 + Sex * Environment, 
+                          random = list(~ 1 | Study.ID, 
+                                       ~ 1 | Outcome,
+                                       ~ 1 | Taxon), 
+                          method = "REML", 
+                          data = strict_dataset %>% filter(Outcome.Class == "Direct"))
+
+#Generate predictions without taxon utilising the previously described function
+get.predictions.direct <- function(newdata){
+  B<-0; F<-0; Stressed<-0; interaction1<-0; interaction2<-0; interaction3<-0
+  if(newdata[1] == "B") B<-1 
+  if(newdata[1] == "F") F<-1 
+  if(newdata[2] == "Stressed") Stressed<-1
+  if(newdata[1] == "B" & newdata[2] == "Stressed") interaction1<-1
+  if(newdata[1] == "F" & newdata[2] == "Stressed") interaction2<-1
+
+  predict(model.direct.only, newmods=c(B, F, Stressed, interaction1=interaction1, interaction2=interaction2))
+}
+
+# Get the predictions for each combination of moderators
+predictions.direct <- as.data.frame(expand.grid(Sex = c("M", "B", "F"),
+                           Environment = c("Unstressed", "Stressed")))
+predictions.direct <- cbind(predictions.direct, do.call("rbind", apply(predictions.direct, 1, get.predictions.direct))) %>%
+  select(Sex, Environment, pred, se, ci.lb, ci.ub) 
+for(i in 3:6) predictions.direct[,i] <- unlist(predictions.direct[,i])
+
+countpred <- count_(strict_dataset %>% filter(Outcome.Class == "Direct"), c("Sex", "Environment"))
+
+predictions.direct <- left_join(predictions.direct, countpred, by = c("Sex", "Environment"))
+colnames(predictions.direct) <- c("Sex", "Environment", "Prediction", "SE", "CI.lb", "CI.ub", "n")
+predictions.direct <- predictions.direct %>%
+      mutate(Sex = replace(as.character(Sex), Sex == "B", "Both"),
+         Sex = replace(Sex, Sex == "M", "Male"),
+         Sex = replace(Sex, Sex == "F", "Female"),
+         Environment = replace(as.character(Environment), Environment == "Stressed", "Stressful"),
+         Environment = replace(Environment, Environment == "Unstressed", "Benign"),
+         Sex = factor(Sex, levels = c("Male", "Both", "Female")))
+
+predictions.direct <- format(predictions.direct, digits = 2)
+predictions.direct$Prediction = as.numeric(predictions.direct$Prediction)
+predictions.direct$CI.lb = as.numeric(predictions.direct$CI.lb)
+predictions.direct$CI.ub = as.numeric(predictions.direct$CI.ub)
+predictions.direct$n = as.numeric(predictions.direct$n)
+
+
+
+if(!file.exists("data/brms.direct.rds")){
+  brms.direct <- brm(g | se(SE)  ~ 1 + Sex * Environment 
+                        + (1|Taxon) 
+                        + (1|Study.ID) 
+                        + (1|Outcome), 
+                        family = "gaussian", 
+                        seed = 1,
+                        cores = 4, chains = 4, iter = 4000, 
+                        control = list(adapt_delta = 0.9999, max_treedepth = 15),
+                        data = strict_dataset %>% 
+                          filter(Outcome.Class == "Direct") %>% 
+                          mutate(SE = sqrt(var.g)))
+  saveRDS(brms.direct, file = "data/brms.direct.rds")
+}
+brms.direct <- readRDS(file = "data/brms.direct.rds")
+
+# lternatively you can obtain posterior samples manually.
+post.direct <- (posterior_samples(brms.direct, 
+                           pars = c("b_Intercept", "b_SexB", "b_SexF", 
+                                    "b_EnvironmentStressed", "b_SexB:EnvironmentStressed", 
+                                    "b_SexF:EnvironmentStressed")) %>%
+           mutate(both_benign = b_Intercept + b_SexB,
+                  both_stressful = b_Intercept + b_SexB + b_EnvironmentStressed + `b_SexB:EnvironmentStressed`,
+                  male_benign = b_Intercept,
+                  male_stressful = b_Intercept + b_EnvironmentStressed,
+                  female_benign = b_Intercept + b_SexF,
+                  female_stressful = b_Intercept + b_SexF + b_EnvironmentStressed + `b_SexF:EnvironmentStressed`))[,-(1:6)]
+
+# Add columns for Environment and Sex
+post.direct <- as.data.frame(t(post.direct))
+post.direct$Sex <- c("Both", "Both", "Male", "Male", "Female", "Female")
+post.direct$Environment <- c("Benign", "Stressful", "Benign", "Stressful", "Benign", "Stressful")
+
+#Clean up dataframe
+post.direct <- melt(post.direct, id = c("Sex", "Environment"))
+post.direct$variable <- NULL
+
+#Plot the posterior values from the Bayesian model as density ridges
+pd <- position_dodgev(height = 0.3)
+posterior.direct.plot <- post.direct %>% mutate(Sex = factor(Sex, levels = c("Male", "Both", "Female"))) %>% ggplot()+
+  stat_density_ridges(aes(x=value, y = Environment, fill = Sex), alpha = 0.65, scale = 0.6, position = position_nudge(y = 0.15), height = 10, show.legend = F, quantile_lines = T, quantiles = 2)+
+  geom_vline(xintercept = 0, linetype = 2, colour = "black") + 
+  ylab("Environment\n")+
+  xlab("\nEffect Size (Hedges' g)")+
+  # scale_fill_manual(values = c("Male" = "#e41a1c", "Female" = "#377eb8", "Both" = "#4daf4a"))+
+  # scale_color_manual(values = c("Male" = "#e41a1c", "Female" = "#377eb8", "Both" = "#4daf4a"))+
+  scale_fill_manual(values = c("Male" = "#ff7f00", "Female" = "#984ea3", "Both" = "#4daf4a"))+
+  scale_color_manual(values = c("Male" = "#ff7f00", "Female" = "#984ea3", "Both" = "#4daf4a"))+
+  scale_x_continuous(limits = c(-1.25, 1.25), breaks = c(-1, -.5, 0, 0.5, 1))+
+  
+  theme_bw()+
+  
+  theme(panel.spacing = unit(0.1, "lines"),
+        text = element_text(size=16),
+        panel.border= element_blank(),
+        axis.line=element_line(), 
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(), 
+        legend.text = element_text(size=16), 
+        legend.title=element_text(size=16, face = "bold"),
+        axis.title.x = element_text(hjust = 0.5, size = 14),
+        axis.title.y = element_text(size = 16, hjust = 0.35, margin = margin(r=-10)),
+        axis.text.y = element_text(angle = 0),
+        plot.title = element_text(size = 16))
+
+#Add the REML predictions as circles with error bars
+both.direct.plots <- posterior.direct.plot + 
+  geom_errorbarh(data = predictions.direct %>% mutate(Sex = factor(Sex, levels = c("Male", "Both", "Female"))), 
+                 aes(xmin = predictions.direct$CI.lb,
+                     xmax = predictions.direct$CI.ub, y = Environment,
+                     color = Sex), 
+                 height = 0, show.legend = F, position = pd)+
+  
+  geom_point(data = predictions.direct %>% mutate(Sex = factor(Sex, levels = c("Male", "Both", "Female"))), 
+             aes(x = Prediction, y = Environment, size=n, fill = Sex), 
+             shape=21, color = "grey20", position = pd) +
+  
+    guides(fill = guide_legend(reverse=T, override.aes = list(size = 7.5)))+
+    scale_size(guide = 'none')+
+  
+  scale_y_discrete(expand=c(0.075, 0))
+
+#pdf("PDF_RDS_files/SF3.pdf", width = 10, height = 6)
+grid.arrange(both.plots + 
+               guides(fill = FALSE)+
+               ggtitle("Indirect And Direct\n")+ theme(plot.title = element_text(size = 18, face = "bold", colour = "Red")),
+             both.direct.plots + ggtitle("Direct Only\n")+
+               theme(axis.title.y = element_blank(), 
+                     plot.title = element_text(size = 18, face = "bold", colour = "Red")), 
+             nrow = 1, 
+             widths = c(3,3.5))
+#dev.off
+```
+  
+**Supplementary Figure 3:** The comparison of model predictions between models that use a dataset compiled from direct **and** indirect fitness components against a model that only uses direct fitness components. Notably, in both cases there is a significant positive effect of sexual selection on fitness for females evolving in stressful conditions. Bayesian predictions are depicted by a density curve while REML predictions are depicted with a circle (size corresponds to _n_) and 95 % CIs.   
+
+**Supplementary Table 15:** The REML predictions for the 'direct model' in the plot above use the following dataframe.
+
+```{r, warning=FALSE}
+predictions.direct %>% pander()
+
+#saveRDS(predictions.direct, "PDF_RDS_files/ST15.rds")
+```
 
 ____________________
 
-###Estimating Hedges' g Heterogeneity Using _I^2^_
+###Estimating Hedges' g heterogeneity using _I^2^_
 
 Using a function from https://github.com/daniel1noble/metaAidR we can obtain confidence intervals for total _I^2^_ and the individual components of the random effects. There are different methods to obtain estimates of _I^2^_. Here we obtain an overall value of _I^2^_ that is weighted based on variance and where estimates of heterogeneity are sourced from sigma^2^ of the respective models. The values are based on the REML models. 
 
@@ -1535,16 +1703,20 @@ lnRR.plots <- posterior.lnRR.plot +
   
   scale_y_discrete(expand=c(0.075, 0))
 
+#pdf("PDF_RDS_files/SF4.pdf", width = 6, height = 6)
 lnRR.plots
+#dev.off()
 ```
   
-**Figure S3:** Using an alternative effect size (lnRR) sexual selection also increases population fitness. Circle size is proportional to sample size (shown below). The REML predictions are shown as circles with error bars and the Bayesian predictions as density ridges. Note that the magnitude of the effect sizes presented here should not be directly compared with those using Hedges' g as lnRR is a log-transformed value.
+**Supplementary Figure 4:** Using an alternative effect size (lnRR) sexual selection also increases population fitness. Circle size is proportional to sample size (shown below). The REML predictions are shown as circles with error bars and the Bayesian predictions as density ridges. Note that the magnitude of the effect sizes presented here should not be directly compared with those using Hedges' g as lnRR is a log-transformed value.
 
-**Table S16** The REML predictions for the meta-analysis using lnRR (plotted above) are formulated from the following model and predictions.  
+**Supplementary Table 16:** The REML predictions for the meta-analysis using lnRR (plotted above) are formulated from the following model and predictions.  
 
 ```{r}
 summary(lnRR.env.sex.model)
 predictions.lnRR %>% pander()
+
+#saveRDS(predictions.lnRR, "PDF_RDS_files/ST16.rds")
 ```
 
 
@@ -1625,7 +1797,7 @@ var.brms <- readRDS(file = "data/variance.brms.rds") #Avoid re-running model abo
 ```
 
 
-**Table S17** Model estimates, including random effect sigma value for the model of phenotypic variance (lnCVR)
+**Supplementary Table 17:** Model estimates, including random effect sigma value for the model of phenotypic variance (lnCVR)
 ```{r}
 post.variance <- (posterior_samples(var.brms, 
                            pars = c("b_Intercept", "b_SexB", "b_SexF", 
@@ -1739,10 +1911,12 @@ both.var.plots
 **Figure 2b:** Phenotypic variation changes under sexual selection in stressful environments. For females under stressful conditions phenotypic variation decreases (narrows). While for males in stressful environments it increases. For outcomes that measured a mix of both males and females (pooled samples) in stressful environments phenotypic variation decreased slightly. The REML predictions are shown as circles with error bars and the Bayesian predictions as density ridges. Circle size is proportional to sample size.
 
 
-**Table S18** The REML predictions in the plot above use the following dataframe.
+**Supplementary Table 18:** The REML predictions in the plot above use the following dataframe.
 ```{r}
 predictions.variance <- format(predictions.variance, digits = 2)
 predictions.variance %>% pander(digits = 2)
+
+#saveRDS(predictions.variance, "PDF_RDS_files/ST18.rds")
 ```
 
 ____________________
@@ -1751,7 +1925,7 @@ ____________________
 
 As we did for Hedges' $g$, we here conduct hypothesis tests between categorical groups, to identify groups that differ significantly in how much sexual selection affects the phenotypic variance. Positive values indivate the first term in the hypothesis is larger (which would be male for rows 1-2 or benign for rows 3-5).
 
-**Table S19** Bayesian hypothesis tests between categorical groups for phenotypic variation (lnCVR)
+**Supplementary Table 19:** Bayesian hypothesis tests between categorical groups for phenotypic variation (lnCVR)
 ```{r}
 #Obtain hypothesis estimates
 brms.hypothesis.var <- hypothesis(var.brms, c("0 = SexF",
@@ -1773,7 +1947,7 @@ brms.hypothesis.table.var <- format(brms.hypothesis.table.var, digits = 2)
 brms.hypothesis.table.var %>% pander(split.table = Inf)
 ```
 
-**Table S20** REML hypothesis tests between categorical groups for phenotypic variation (lnCVR)
+**Supplementary Table 20:** REML hypothesis tests between categorical groups for phenotypic variation (lnCVR)
 ```{r}
 #anova where you specify the values based on the list of moderators
 anova.1 = anova(variance.model, L=c(0, 0, -1, 0, 0, 0)) 
@@ -1805,6 +1979,8 @@ colnames(anova.frame.var)[colnames(anova.frame.var)=="star"] <- " "
 anova.frame.var$pval <- NULL
 row.names(anova.frame.var) <- c("M vs F, Benign", "M vs F, Stressful", "Benign vs Stressful, Female", "Benign vs Stressful, Male", "Benign vs Stressful, Both")
 anova.frame.var %>% pander(split.table = Inf)
+
+#saveRDS(anova.frame.var, "PDF_RDS_files/ST20.rds")
 ```
 
 ____________________
@@ -1866,7 +2042,7 @@ full_dataset %>% ggplot(aes(x = mean.high, y = sd.high))+
   geom_smooth(method = "lm", colour = "red")
 ```
 
-**Figure S4** The use of lnCVR (as opposed to lnVR) is justified in this meta-analysis due to the strong mean-variance relationship. In this case the standard deviation from the treatment group is compared to the means of the treatment group on a log-scale. 
+**Supplementary Figure 5:** The use of lnCVR (as opposed to lnVR) is justified in this meta-analysis due to the strong mean-variance relationship. In this case the standard deviation from the treatment group is compared to the means of the treatment group on a log-scale. 
 
 ```{r, warning = FALSE}
 lnVR.data <- 
@@ -2026,16 +2202,19 @@ both.lnVR.plots <- lnVR.plot.posterior +
   scale_size(guide = 'none')+  
   scale_y_discrete(expand=c(0.075,0))
 
+#pdf("PDF_RDS_files/SF6.pdf", width =6, height = 6)
 both.lnVR.plots
+#dev.off()
 ```
 
-**Figure S5:** The effects of sexual selection on the log-variance ratio (lnVR). Without accounting for the mean variance relationship (lnCVR) sexual selection has different effects on the variance measure.
+**Supplementary Figure 6:** The effects of sexual selection on the log-variance ratio (lnVR). Without accounting for the mean variance relationship (lnCVR) sexual selection has different effects on the variance measure.
 
 
-**Table S21** The points in the above plot are based on the following REML model and predictions. While the predicted effects of sexual selection on lnVR in stressful conditions is non-significantly negative, there is still a negative significant interaction between stressful environments and the female sex.   
+**Supplementary Table 21:** The points in the above plot are based on the following REML model and predictions. While the predicted effects of sexual selection on lnVR in stressful conditions is non-significantly negative, there is still a negative significant interaction between stressful environments and the female sex.   
 ```{r}
 summary(lnVR.model, digits = 2)
 predictions.lnVR %>% pander(digits = 2) 
+#saveRDS(predictions.lnVR, "PDF_RDS_files/ST21.rds")
 ```
 
 
@@ -2168,7 +2347,7 @@ JIF.plot <- ggplot(data = full_dataset, aes(x=JIF, y=g, size = 1 / var.g))+
 JIF.plot
 ```
 <br></br>
-**Figure 3a:** Journal impact factor is not correlated with effect size. Point size is proportional to the precision of the effect size.
+**Figure 3b:** Journal impact factor is not correlated with effect size. Point size is proportional to the precision of the effect size.
 
 Testing the effect of JIF on effect size with a simple linear model (slope = +0.1, p = 0.25): 
 ```{r}
@@ -2207,7 +2386,7 @@ time.plot <- full_dataset %>%
 time.plot
 ```
 <br></br>
-**Figure 3b:** The effect size dataset shows little to no signs of the time-lag bias: the average effect size from published studies has remained consistent across the two previous decades. Point size is proportional to the precision of the effect size.
+**Figure 3c:** The effect size dataset shows little to no signs of the time-lag bias: the average effect size from published studies has remained consistent across the two previous decades. Point size is proportional to the precision of the effect size.
 
 
 Again, a linear model for the regression line in the plot shows no effect (slope = -0.007, p = 0.3):
@@ -2247,11 +2426,11 @@ blind.plot <- df.forest.model %>% ggplot(aes(x=Blinding, y=g))+
         axis.title.x = element_text(size = 12),
         axis.title.y = element_text(size = 12))
 
-# ggsave(plot = blind.plot, filename = "figures/blind_plot.eps", height = 6, width = 8)
+#ggsave(plot = blind.plot, filename = "PDF_RDS_files/blind_plot.pdf", height = 6, width = 8)
 blind.plot
 ```
 <br></br>
-**Figure S6:** Blinding does not appear to alter the magnitude or direction of effect sizes for the studies used in this meta-analysis. However, this should not be viewed as evidence against the validity of blinding as a research method. 
+**Supplementary Figure 7:** Blinding does not appear to alter the magnitude or direction of effect sizes for the studies used in this meta-analysis. However, this should not be viewed as evidence against the validity of blinding as a research method. 
 
 ____________
 
@@ -2281,12 +2460,12 @@ generations.plot <- strict_dataset %>% ggplot(aes(x=Generations, y=g))+
         axis.title.x = element_text(size = 12),
         axis.title.y = element_text(size = 12))
 
-#ggsave(plot = generations.plot, filename = "figures/generations_plot.eps", height = 7.5, width = 10)
+#ggsave(plot = generations.plot, filename = "PDF_RDS_files/generations_plot.pdf", height = 7.5, width = 10)
 
 generations.plot
 ```
 <br></br>
-**Figure S7:** The number of generations an experimental evolution procedure is run for does not appear to affect the magnitude or direction of the effect size from the fitness related outcome measured at that point. 
+**Supplementary Figure 8:** The number of generations an experimental evolution procedure is run for does not appear to affect the magnitude or direction of the effect size from the fitness related outcome measured at that point. 
 
 
 A linear model shows next to no effect of generations on effect size: 
@@ -2319,11 +2498,11 @@ generations.plot.var <- strict_dataset %>% ggplot(aes(x=Generations, y=lnCVr))+
         axis.title.x = element_text(size = 12),
         axis.title.y = element_text(size = 12))
 
-# ggsave(plot = generations.plot, filename = "figures/generations_plot.eps", height = 7.5, width = 10)
+#ggsave(plot = generations.plot.var, filename = "PDF_RDS_files/generations_plot_var.pdf", height = 7.5, width = 10)
 generations.plot.var
 ```
 <br></br>
-**Figure S8:** Phenotypic variation (lnCVR) is not affected by the number of generations an experiment is ran for.
+**Supplementary Figure 9:** Phenotypic variation (lnCVR) is not affected by the number of generations an experiment is ran for.
 
 ```{r}
 summary(lm(lnCVr ~ Generations, data = strict_dataset))

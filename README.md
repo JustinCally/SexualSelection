@@ -10,7 +10,7 @@ Supplementary material to a meta-analysis on the population fitness effects of s
 
 **Data folder:**  
 
-+ `meta_analysis_dataset.csv` is the dataset used for our analysis  
++ `meta_analysis_dataset.csv` is the source data used for our analysis  
 + `Eligibility Workbook.csv` is the table documenting the reasons for inclusion/exclusion of studies. (presented in Supplementary Material)  
 + `Outcome.descriptions.csv` is the table documenting the ways fitness was measured across different studies. (presented in Supplementary Material)   
 

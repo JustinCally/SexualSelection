@@ -20,3 +20,9 @@ Manuscripts/Manuscript_With_Major_Changes_Highlighted.pdf
 
 #Ignore the rds files
 data/**/*.rds
+
+#Ignore pdf supp info
+PDF_RDS_files/
+Supplementary_Information_PDF_Version_cache/
+Supplementary_Information_PDF_Version_files/
+Supplementary_Information_PDF_Version.*
