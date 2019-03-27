@@ -1,9 +1,12 @@
 ---
 title: 'Meta-analytic evidence that sexual selection improves population fitness'
+author: 
+- Justin G. Cally, Devi Stuart-Fox and Luke Holman
 output:
   pdf_document: default
-subtitle: Response to Editorial Requests and Reviewer 1
+subtitle: Response to Editorial Requests and Reviewer
 bibliography: Manuscripts/Bibliography/Bibliography.bib
+csl: Manuscripts/Bibliography/NComms.csl
 header-includes: 
 - \usepackage{hyperref}\hypersetup{colorlinks=true, linkcolor=blue, filecolor=blue, urlcolor=blue} 
 ---
@@ -20,10 +23,10 @@ We are delighted to provide a revised manuscript for publication in \textit{Natu
 
 \begin{enumerate}
   \item \textit{Please supply the main manuscript file in Microsoft Word or LaTeX format. Please supply a Supplementary Information file in PDF format.} \\ 
-  The main manuscript is provided in LaTeX format (.tex) and the Supplementary Information is now in pdf format. However, we retain the HTML formatting for the Supplementary Information hosted on \hyperlink{https://justincally.github.io/SexualSelection/}{Github}.   
+  The main manuscript is provided in LaTeX format (.tex) and the Supplementary Information is now in pdf format. However, we retain the HTML formatting for the Supplementary Information hosted on \href{https://justincally.github.io/SexualSelection/}{Github}.   
 
   \item \textit{Please edit the title so that it is 15 words or fewer and does not include punctuation} \\
-  We have changed our title to: Meta-analytic evidence that sexual selection improves population fitness 
+  We have changed our title to: Meta-analytic evidence that sexual selection improves population fitness. 
   
   \item \textit{The final paragraph of the Introduction should summarise the major results and conclusions of this manuscript, in the present tense.} \\
   We have now replaced our aims in the last paragraph of the last paragraph of the introduction with a summary of the major results and colnclusions of the study.  
@@ -33,7 +36,7 @@ We are delighted to provide a revised manuscript for publication in \textit{Natu
   Sexual selection reduces phenotypic variance, for female traits in stressful environments \textbf{to} Effects of sexual selection on phenotypic variance
   
   \item \textit{Please do not use italics or bold font to convey emphasis (in both the main text and the display items).} \\
-  We only use italics for latin words or abbreviations (\textit{e.g., i.e., Prima facie}) and not for emphasis.  
+  We only use italics for phrases or abbreviations in Latin (\textit{e.g., i.e., Prima facie}) and not for emphasis.  
   
   \item \textit{Please avoid using speech marks around words or phrases. In most cases they are unnecessary.} \\
   Speech marks around the following words/phrases have now been removed: purged (l.175), softer (l.199), harder (l.199),  attractive (l.244), unambiguous (l.359).  \\
@@ -55,7 +58,7 @@ We are delighted to provide a revised manuscript for publication in \textit{Natu
   We have now ammended this section of the manuscript by seperating data availability and code availability as well as providing the relevent links to the data sources hosted on Github.  
   
   \item \textit{We strongly encourage authors to deposit all new data associated with the paper in a persistent repository where they can be freely and enduringly accessed.} \\
-  We have chosen to host our data on a Github repository alongside all our code and a neatly formatted html with supplementary information in an effort to maximise transparency of our analysis as well as allowing for the data and code to be easily reproduced and built upon by future studies.  
+  We have chosen to host our data on a Github repository alongside all our code and a neatly formatted HTML with supplementary information in an effort to maximise transparency of our analysis as well as allowing for the data and code to be easily reproduced and built upon by future studies.  
   
   \item \textit{For all studies developing new software or using custom code in the generation or processing of datasets, a statement must be included in the Methods section, under the subheading "Code Availability", indicating whether and how the code can be accessed, including any restrictions to access. This section should also include information on the versions of any software used, if relevant, and any specific variables or parameters used to generate, test, or process the current dataset.} \\
   Done. The Supplementary Information has a section at the end with `R Session Information`, which provides details of the attached packages and parameters of the operating system.  
@@ -133,7 +136,20 @@ We wish to make a small change to the last sentence of the above summary:
 
 \begin{enumerate}
   \item \textit{The authors made a good effort to address my concerns. In particular, they now report a separate analysis addressing the effect of sexual selection manipulation on traits with direct effect on population fitness, which is the most relevant analysis for the question being asked. This effect has proved ambiguous (significant with REML, but with 95\%Cis overlapping zero with Bayesian analysis), which, coupled with some evidence for publication bias (lines 147-151) , makes the main conclusion of positive effect of selection on population fitness rather tentative. This interpretational uncertainty, however, is not properly reflected in the revised manuscript, eg. in the abstract (l. 12-13 ) and discussion (172-175; 249-251). Furthermore, recommendations for conservation biology seem premature in this context.}\\
-  We have modified the title and abstract of the paper, and made it clear which conclusions are supported unambiguously and which are more tentative. For example…. [provide a quote or two].
+  We have modified the title and abstract of the paper, and made it clear which conclusions are supported unambiguously and which are more tentative. For example…
+  
+\begin{itemize}
+
+\item The title is now \textit{Meta-analytic evidence that sexual selection improves population fitness}.  
+
+\item In the abstract we include: \textbf{We find evidence} that sexual selection on males tends to elevate the mean and reduce the variance for many fitness traits.  
+
+\item In the abstract we include: However, sexual selection had comparatively less positive effects on traits directly related to fitness than those with indirect or ambiguous relationships.
+
+\item We have modified the 2nd, 3rd and 4th paragraphs of the discussion and take a more tentative approach in drawing conclusions (see following comments).
+
+\end{itemize}
+
 
   \item \textit{Sorry for not being clear with my point on random slopes, I meant the first option the authors identified, but (as I already indicated in my original review) I appreciate that dataset at hand may make this difficult. I’m OK with the way this comment was taken into account.}\\
   We are glad that the reviewer found the modifications we made satisfactory.
@@ -143,19 +159,40 @@ We wish to make a small change to the last sentence of the above summary:
 
 The section in questions rests upon the fundamental premise that the response to selection depends on A) genetic variance, and B) the strength of selection. This fact is captured in the Breeder’s equation, $R = h^2s$, where $R$ is the response to selection, $h^2$ is the narrow-sense heritability of the trait, and s is the selection differential. Because females responded more strongly than males did (bigger $R$ for females), our argument is that $h^2$ and/or $s$ must be bigger for females. We then list a number of mechanisms that might make $h^2$ or $s$ bigger for females.
 
-Here are the revised paragraphs:
+\end{enumerate}
+Here are the revised paragraphs: 
+
+The results of the meta-analysis support predictions that sexual selection on males can improve population fitness and accelerate adaptation [@RN94; @RN173; @RN54; @RN141; @RN230; @RN198; @RN58]. One possible mechanism is that male mating success is positively genetically correlated with traits that contribute to population fitness, allowing females to benefit from a genome that has been purged of deleterious alleles through competition between males [@RN94; @RN198; @RN95]. A second (non-exclusive) mechanism is that experimental manipulation of sexual selection on males might directly alter the selective pressures acting on females, causing female traits to evolve. For example, removing sexual selection via enforced monogamy probably alters selection on females, because it alters the frequency of interactions with males (as well as the evolved genotype of those males). What is less clear is why the manipulation of sexual selection had a larger effect on female trait means and variances as opposed to males -- this result is arguably the opposite of what one would expect, since it is males that experience stronger sexual selection. Below we discuss possible explanations for this result, in light of the core principle that the extent of adaptation depends on additive genetic (co)variance and the strength of selection [@RN317; @RN318]. 
+
+Firstly, it is possible that female traits show more additive genetic variation than male traits, causing female traits to respond more strongly to a change in selection. This hypothesis is plausible because males frequently do experience stronger selection than females [@Singh2018], and sustained strong selection reduces heritability. A systematic review found no overall difference in mean heritability between male and female traits [@RN342], but did record numerous instances in which trait heritability was higher for females than males [@RN342]. The sex chromosomes provide another reason for sex-specific heritability. Males are heterogametic in most of the species in our sample (*i.e.* the species with XY or XO sex determination), which can reduce father-to-son heritability relative to mother-to-daughter, since sons do not inherit the larger sex chromosome from their fathers [@RN340; @RN262; @RN147; @RN263], potentially slowing the adaptation of male traits [@RN263; @RN259]. 
+
+Secondly, selection on males might be weaker than selection on females, resulting in slower adaptation following the experimental manipulation of sexual selection. This explanation may initially seem implausible, because net selection on males is often stronger than on females [@Singh2018], due in part to the elevated importance of sexual selection in males as opposed to females [@RN304; @RN303; @RN337; @RN338]. However, an oft-overlooked aspect is that selection might frequently be softer on males and harder on females [@RN319], because the local competitive environment is usually more important for males than it is for females. For instance, a mediocre male genotype can have high fitness provided it outcompetes its local rivals, while low-fitness female genotypes might produce few offspring even when competing with other low-fitness females. Therefore, improvements in genetic quality might have stronger diminishing returns in males, possibly contributing to our finding that the genetic consequences of sexual selection lead to greater fitness benefits for females. Though this argument is speculative, we note that many experimental evolution designs exaggerate the sex difference in the softness of selection, relative to expectations for large, natural populations [@RN322; @RN277; @RN112]. For example, many studies [@RN110; @RN326; @RN300; @RN111; @RN227] have evolved insects in small sub-populations, each containing one female and multiple males, whose progeny are then mixed and randomly sampled to create the next generation; this design ensures that successful males simply needed to outcompete their rival(s) in the same sub-population (soft selection), while each female's reproductive output is measured against the entire female population (hard selection).
+
 
 \subsection {Other Comments}
 
+\begin{enumerate}
+\setcounter{enumi}{3}
   \item \textit{l. 21: I wonder if defining population fitness as an average (presumably in both sexes) makes sense? As the authors state later in abstract, what really matters is fitness of demographically-limiting sex (and the traits which affect the demography).}\\
   We have not made a change here, for two reasons.
 
 Firstly, it usually makes no difference if one thinks of population fitness as an average across all the females, or an average across both sexes. This is because the average fitness of males is always equal to the average fitness of females, assuming the population has obligate sexual reproduction and a 50:50 primary sex ratio (as most species in our meta-analysis do), because every offspring has one genetic mother and one genetic father. For example, if the average fitness across all the females is 1.1, the average fitness of all the males must be 1.1 as well, so one gets the same answer when averaging over females only, or the whole population.
 
-Secondly, ‘population fitness’ has a prominent technical definition that has been used by eminent figures in population geneticists (e.g. Wright, Fisher and Kimura), i.e. the average across the whole population. However, many of these classic models implicitly ignored males (e.g. by assuming isogamous sexual reproduction) for reasons of mathematical tractability. Later ecological and evolutionary models have incorporated the sexes explicitly, and unsurprisingly found that adaptation in males and females has different effects on the growth rate of the population (confusingly, the growth rate of the population is also called ‘population fitness’ by many ecologists). We believe that a clear, inclusive, and universally satisfying definition of population fitness is currently missing, but it is beyond the scope of this paper – instead, we use the standard definition.
+Secondly, ‘population fitness’ has a prominent technical definition that has been used by eminent figures in population geneticists (e.g. Wright, Fisher and Kimura), i.e. the average across the whole population. However, many of these classic models implicitly ignored males (e.g. by assuming isogamous sexual reproduction) for reasons of mathematical tractability. Later ecological and evolutionary models have incorporated the sexes explicitly, and unsurprisingly found that adaptation in males and females has different effects on the growth rate of the population (confusingly, the growth rate of the population is also called ‘population fitness’ by many ecologists). We believe that a clear, inclusive, and universally satisfying definition of population fitness is currently missing, but it is beyond the scope of this paper – instead, we use the standard definition.  
+
+  \item \textit{l. 162: low effect on sexual selection manipulation on traits like viability or female fecundity, compared to “indirect effect traits” which including male mating success, align with findings of meta-analysis of Prokop et al. 2012 – it would be appropriate to mention this consistency here.}\\
+Thank you – we have now added this reference to the sentence in question.
+
+  \item \textit{l. 165: but see recent metaanalysis by Kelly et al. (2018) showing no sex effect on immunity}\\
+This study is interesting, but ultimately we don’t think it is sufficiently relevant to cite here. Our results found evidence that the experimental manipulation of sexual selection causes immunocompetence to evolve, while Kelly et al. (2018) examined whether males and females are differently defended against pathogens.
+
+  \item \textit{I hope supplementary figures will be linked to the main text, as it is somewhat difficult to find them by the number in the supplement deposited in a repository.}\\
+In the revision, we have provided a more traditional PDF version of the supplementary material, which is a simple list of all the supplementary figures and tables (this was also added to conform to Nature Communications style). For the submitted version of the manuscript we have hyperlinked the Supplementary Figure/Table to the relevant section of the Github page. One can also find a particular figure in the HTML version using Ctrl + F to search for the figure by name.  
 
 \end{enumerate}
 
+\newpage
 
-
+# References
+<div id="refs"></div>  
 
