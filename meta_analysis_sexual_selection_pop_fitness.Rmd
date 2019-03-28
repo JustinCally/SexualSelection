@@ -165,10 +165,10 @@ ______________
 
 ## The Effect Size Dataset
 
-### Table of Effect Sizes
+### Table of Effect Sizes  
 
-**Source Data:** Table of effect sizes included in our meta-analysis. See the text following the table for an explanation of each column.
- <br/><br/> 
+**Source Data** Table of effect sizes included in our meta-analysis. See the text following the table for an explanation of each column.  
+
 ```{r}
 # Load the data and format the variables
 full_dataset <- read.csv('data/meta_analysis_dataset.csv') %>%
