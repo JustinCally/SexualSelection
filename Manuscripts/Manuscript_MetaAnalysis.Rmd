@@ -5,8 +5,8 @@ author:
 - '\textsuperscript{§}School of BioSciences, The University of Melbourne, Parkville, VIC, 3052, Australia'
 - '\textsuperscript{*}\textit{justin.g.cally@gmail.com}'
 output:
-  pdf_document: default
-  keep_tex: yes 
+  pdf_document:
+    keep_tex: true
 bibliography: Bibliography/Bibliography.bib
 subparagraph: yes
 urlcolor: blue

@@ -17,6 +17,7 @@ SS_Extinction.bib
 supplementary_material_meta_analysis.html
 Manuscripts/Manuscript_With_Major_Changes_Highlighted.Rmd
 Manuscripts/Manuscript_With_Major_Changes_Highlighted.pdf
+Manuscripts/Manuscript_MetaAnalysis.tex
 
 #Ignore the rds files
 data/**/*.rds
