@@ -144,9 +144,9 @@ We wish to make a small change to the last sentence of the above summary:
 
 \item In the abstract we include: \textbf{We find evidence} that sexual selection on males tends to elevate the mean and reduce the variance for many fitness traits.  
 
-\item In the abstract we include: However, sexual selection had comparatively less positive effects on traits directly related to fitness than those with indirect or ambiguous relationships.
+\item In the abstract we include: However, sexual selection had weaker positive effects on direct measures of population fitness, such as extinction rate and proportion of viable offspring, than on individual fitness measures with indirect or less clear relationships to population fitness.
 
-\item We have modified the 2nd, 3rd and 4th paragraphs of the discussion and take a more tentative approach in drawing conclusions (see following comments).
+\item We have modified the 1st paragraph of the discussion and make it clear which conclusions are more or less strongly supported by the data (see also following comments for additional changes to improve clarity of interpretation).
 
 \end{itemize}
 

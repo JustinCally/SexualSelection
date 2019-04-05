@@ -1310,7 +1310,7 @@ predictions.complete2 %>% pander()
 #saveRDS(predictions.complete2, "PDF_RDS_files/ST14.rds")
 ```
 
-##Effects of environment and sex on direct fitness components  
+###Effects of environment and sex on direct fitness components  
 
 ```{r, warning=FALSE, message=FALSE, error = FALSE, fig.align='center', fig.width = 10, fig.height=6}
 model.direct.only <- rma.mv(g, V = var.g, 
