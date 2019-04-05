@@ -6,9 +6,7 @@ author:
 - '\textsuperscript{*}\textit{justin.g.cally@gmail.com}'
 output:
   pdf_document: default
-  html_document: default
-  word_document:
-      pandoc_args: ["--smart"]
+  keep_tex: yes 
 bibliography: Bibliography/Bibliography.bib
 subparagraph: yes
 urlcolor: blue
