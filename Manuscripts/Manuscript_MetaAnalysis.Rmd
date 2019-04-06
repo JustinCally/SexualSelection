@@ -168,7 +168,7 @@ All data are freely available on Github (https://github.com/JustinCally/SexualSe
 We are very grateful to Paco Garcia-Gonzalez for sharing a collection of literature that helped to guide our study, and to Tim Connallon for comments on the manuscript.  \phantomsection
 
 #Author contributions  
-All authors designed the study; JGC collected the data; JGC and LH conducted the meta-analyses; JGC wrote the first draft of the manuscript; and all authors contributed substantially to all further revisions.  \phantomsection
+JGC, DSF and LH designed the study; JGC collected the data; JGC and LH conducted the meta-analyses; JGC wrote the first draft of the manuscript; JGC, DSF and LH contributed substantially to all further revisions.  \phantomsection
 
 #Competing interests  
 The authors declare no competing interests.
