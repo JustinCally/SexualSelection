@@ -18,7 +18,9 @@ supplementary_material_meta_analysis.html
 Manuscripts/Manuscript_With_Major_Changes_Highlighted.Rmd
 Manuscripts/Manuscript_With_Major_Changes_Highlighted.pdf
 Manuscripts/Manuscript_MetaAnalysis.tex
-
+Manuscripts/Manuscript_ChangesHighlighted.pdf
+Manuscripts/Manuscript_ChangesHighlighted.Rmd
+Manuscripts/Manuscript_ChangesHighlighted.tex
 #Ignore the rds files
 data/**/*.rds
 

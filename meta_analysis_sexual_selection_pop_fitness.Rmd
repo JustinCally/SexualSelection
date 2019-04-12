@@ -124,25 +124,17 @@ Criterion 4 is somewhat subjective, because there is rarely enough data justify 
 **Supplementary Table 1:** We classified each of the twenty fitness outcomes into three broad groups -- direct, indirect and ambiguous -- based on the established link with population fitness, the directionality of the measure. Here we detailed how these outcomes were measured in the primary studies.
 
 ```{r, warning=FALSE}
-read.csv('data/outcome.descriptions.csv', fileEncoding="UTF-8") %>%
+read.csv('data/outcome.descriptions.csv', fileEncoding="UTF-8") %>% select(-Examples) %>%
   kable("html") %>% kable_styling() %>%
   scroll_box(width = "100%", height = "500px")
 ```
 <br></br>
 
-#### References for Supplementary Table 1
-```{r, warning=FALSE}
-read.csv('data/references.tableS1.csv', fileEncoding="UTF-8") %>%
-  kable("html") %>% kable_styling() %>%
-  scroll_box(width = "100%", height = "250px")
-```
-<br></br>
-
-
 **Supplementary Table 2:** A study was deemed eligible for inclusion in the meta-analysis if it met all four criteria discussed above (referred to by their numbers, 1-4, in this table). We went through these four criteria in a step-wise fashion, for each of the 130 studies for which we read the full text, and noted the first criterion that was failed (if any). The table provides notes on our inclusion/exclusion decisions.
 
 ```{r}
-read.csv('data/Eligibility Workbook.csv', fileEncoding="UTF-8") %>%
+read.csv('data/Eligibility Workbook.csv', fileEncoding="UTF-8") %>% 
+  mutate(Citation = paste0('[@',Citation,']')) %>%
   kable("html") %>% kable_styling() %>%
   scroll_box(width = "100%", height = "500px")
 ```
@@ -1185,7 +1177,7 @@ make_text_summary(brms.complete2) %>% add_significance_stars() %>% tibble::rowna
 <br></br>
 
 
-**Supplementary Table 13:** Hypothesis tests for the Bayesian model are similar to the REML model (Supplementary Table 8), with slight differences to CIs.
+**Supplementary Table 13:** Hypothesis tests for the Bayesian model are similar to the REML model, with slight differences to CIs.
 
 ```{r}
 #Obtain hypothesis estimates
